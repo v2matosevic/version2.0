@@ -2,6 +2,7 @@ import { parsePage } from '@/lib/content/parse-page'
 import { loadTestimonials } from '@/lib/content/load-testimonials'
 import { loadPortfolioFeatured } from '@/lib/content/load-portfolio'
 import { HeroContent } from '@/components/home/hero-content'
+import { Hero3D } from '@/components/home/hero-3d'
 import { ServicesTeaser } from '@/components/home/services-teaser'
 import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
@@ -35,15 +36,17 @@ export default async function DeHomePage() {
       <LocalBusinessJsonLd lang="de" />
       <WebSiteJsonLd />
       <BreadcrumbJsonLd items={[{ name: 'Startseite', url: `${SITE_URL}/de/` }]} />
-      <HeroContent
-        overline={(fm?.overline as string) ?? 'Webentwicklung Studio'}
-        headline={(fm?.h1 as string) ?? 'Wir bauen, was andere nicht können.'}
-        subtext={(fm?.subtext as string) ?? 'Maßgeschneiderte Websites, Webanwendungen und KI-gestützte Tools. Von Grund auf gebaut. Keine Vorlagen.'}
-        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Unsere Arbeit ansehen'}
-        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/de/portfolio/'}
-        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Angebot anfordern'}
-        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/de/preise/'}
-      />
+      <Hero3D>
+        <HeroContent
+          overline={(fm?.overline as string) ?? 'Webentwicklung Studio'}
+          headline={(fm?.h1 as string) ?? 'Wir bauen, was andere nicht können.'}
+          subtext={(fm?.subtext as string) ?? 'Maßgeschneiderte Websites, Webanwendungen und KI-gestützte Tools. Von Grund auf gebaut. Keine Vorlagen.'}
+          ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Unsere Arbeit ansehen'}
+          ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/de/portfolio/'}
+          ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Angebot anfordern'}
+          ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/de/preise/'}
+        />
+      </Hero3D>
       <ServicesTeaser services={servicesTeaser} />
       <PortfolioHighlights projects={portfolioProjects} lang="de" />
       <Differentiators

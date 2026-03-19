@@ -23,76 +23,65 @@ function HeroContent({
   ctaSecondaryHref,
 }: HeroContentProps) {
   return (
-    <section className="relative min-h-screen" style={{ overflow: 'hidden' }}>
-      {/* CSS gradient fallback background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(ellipse at 30% 40%, #1c1c1c 0%, #0c0c0c 70%)',
-        }}
-        aria-hidden="true"
-      />
+    <Container>
+      <div className="relative flex flex-col justify-center min-h-screen py-24">
+        <div className="max-w-3xl lg:max-w-[58.33%]">
+          <p
+            className="mb-4 uppercase text-muted font-body"
+            style={{
+              fontSize: 'var(--text-overline)',
+              fontWeight: 'var(--font-weight-body-semibold)',
+              letterSpacing: 'var(--tracking-overline)',
+            } as React.CSSProperties}
+          >
+            {overline}
+          </p>
 
-      <Container>
-        <div className="relative flex flex-col justify-center min-h-screen py-24" style={{ zIndex: 10 }}>
-          <div className="max-w-3xl lg:max-w-[58.33%]">
-            <p
-              className="mb-4 uppercase text-muted font-body"
-              style={{
-                fontSize: 'var(--text-overline)',
-                fontWeight: 'var(--font-weight-body-semibold)',
-                letterSpacing: 'var(--tracking-overline)',
-              } as React.CSSProperties}
-            >
-              {overline}
-            </p>
+          <h1 className="sr-only">{headline}</h1>
+          <TextReveal
+            text={headline}
+            mode="chars"
+            trigger="mount"
+            className="font-heading text-foreground"
+            style={{
+              fontSize: 'var(--text-display)',
+              fontWeight: 'var(--font-weight-headline)',
+              lineHeight: 'var(--leading-display)',
+              letterSpacing: 'var(--tracking-display)',
+            } as React.CSSProperties}
+          />
 
-            <h1 className="sr-only">{headline}</h1>
-            <TextReveal
-              text={headline}
-              mode="chars"
-              trigger="mount"
-              className="font-heading text-foreground"
-              style={{
-                fontSize: 'var(--text-display)',
-                fontWeight: 'var(--font-weight-headline)',
-                lineHeight: 'var(--leading-display)',
-                letterSpacing: 'var(--tracking-display)',
-              } as React.CSSProperties}
-            />
+          <div
+            className="mt-4 mb-6"
+            style={{ width: '64px', height: '3px', background: 'var(--color-brand-red)' }}
+          />
 
-            <div
-              className="mt-4 mb-6"
-              style={{ width: '64px', height: '3px', background: 'var(--color-brand-red)' }}
-            />
+          <p
+            className="text-muted max-w-lg"
+            style={{
+              fontSize: 'var(--text-body-lg)',
+              lineHeight: 'var(--leading-body)',
+            } as React.CSSProperties}
+          >
+            {subtext}
+          </p>
 
-            <p
-              className="text-muted max-w-lg"
-              style={{
-                fontSize: 'var(--text-body-lg)',
-                lineHeight: 'var(--leading-body)',
-              } as React.CSSProperties}
-            >
-              {subtext}
-            </p>
-
-            <ScrollReveal direction="up" delay={0.4}>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
-                <Link href={ctaPrimaryHref}>
-                  <Button variant="primary" size="lg">
-                    {ctaPrimaryLabel}
-                  </Button>
-                </Link>
-                <Link href={ctaSecondaryHref}>
-                  <Button variant="secondary" size="lg">
-                    {ctaSecondaryLabel}
-                  </Button>
-                </Link>
-              </div>
-            </ScrollReveal>
-          </div>
+          <ScrollReveal direction="up" delay={0.4}>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+              <Link href={ctaPrimaryHref}>
+                <Button variant="primary" size="lg">
+                  {ctaPrimaryLabel}
+                </Button>
+              </Link>
+              <Link href={ctaSecondaryHref}>
+                <Button variant="secondary" size="lg">
+                  {ctaSecondaryLabel}
+                </Button>
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
-      </Container>
+      </div>
 
       {/* Scroll indicator */}
       <div
@@ -104,7 +93,7 @@ function HeroContent({
           style={{ background: 'var(--color-faint)' }}
         />
       </div>
-    </section>
+    </Container>
   )
 }
 

@@ -2,6 +2,7 @@ import { parsePage } from '@/lib/content/parse-page'
 import { loadTestimonials } from '@/lib/content/load-testimonials'
 import { loadPortfolioFeatured } from '@/lib/content/load-portfolio'
 import { HeroContent } from '@/components/home/hero-content'
+import { Hero3D } from '@/components/home/hero-3d'
 import { ServicesTeaser } from '@/components/home/services-teaser'
 import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
@@ -35,15 +36,17 @@ export default async function HomePage() {
       <LocalBusinessJsonLd lang="en" />
       <WebSiteJsonLd />
       <BreadcrumbJsonLd items={[{ name: 'Home', url: SITE_URL }]} />
-      <HeroContent
-        overline={(fm?.overline as string) ?? 'Web Development Studio'}
-        headline={(fm?.h1 as string) ?? 'We build what others can\'t.'}
-        subtext={(fm?.subtext as string) ?? 'Custom websites, web applications, and AI-powered tools. Built from scratch. No templates.'}
-        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'See Our Work'}
-        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/portfolio/'}
-        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Get a Quote'}
-        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/pricing/'}
-      />
+      <Hero3D>
+        <HeroContent
+          overline={(fm?.overline as string) ?? 'Web Development Studio'}
+          headline={(fm?.h1 as string) ?? 'We build what others can\'t.'}
+          subtext={(fm?.subtext as string) ?? 'Custom websites, web applications, and AI-powered tools. Built from scratch. No templates.'}
+          ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'See Our Work'}
+          ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/portfolio/'}
+          ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Get a Quote'}
+          ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/pricing/'}
+        />
+      </Hero3D>
 
       <ServicesTeaser services={servicesTeaser} />
 

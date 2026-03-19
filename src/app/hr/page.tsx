@@ -2,6 +2,7 @@ import { parsePage } from '@/lib/content/parse-page'
 import { loadTestimonials } from '@/lib/content/load-testimonials'
 import { loadPortfolioFeatured } from '@/lib/content/load-portfolio'
 import { HeroContent } from '@/components/home/hero-content'
+import { Hero3D } from '@/components/home/hero-3d'
 import { ServicesTeaser } from '@/components/home/services-teaser'
 import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
@@ -35,15 +36,17 @@ export default async function HrHomePage() {
       <LocalBusinessJsonLd lang="hr" />
       <WebSiteJsonLd />
       <BreadcrumbJsonLd items={[{ name: 'Početna', url: `${SITE_URL}/hr/` }]} />
-      <HeroContent
-        overline={(fm?.overline as string) ?? 'Studio za web razvoj'}
-        headline={(fm?.h1 as string) ?? 'Gradimo ono što drugi ne mogu.'}
-        subtext={(fm?.subtext as string) ?? 'Prilagođene web stranice, web aplikacije i alati pokretani umjetnom inteligencijom. Izrađeno od nule. Bez predložaka.'}
-        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Pogledajte naš rad'}
-        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/hr/portfolio/'}
-        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Zatražite ponudu'}
-        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/hr/cijene/'}
-      />
+      <Hero3D>
+        <HeroContent
+          overline={(fm?.overline as string) ?? 'Studio za web razvoj'}
+          headline={(fm?.h1 as string) ?? 'Gradimo ono što drugi ne mogu.'}
+          subtext={(fm?.subtext as string) ?? 'Prilagođene web stranice, web aplikacije i alati pokretani umjetnom inteligencijom. Izrađeno od nule. Bez predložaka.'}
+          ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Pogledajte naš rad'}
+          ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/hr/portfolio/'}
+          ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Zatražite ponudu'}
+          ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/hr/cijene/'}
+        />
+      </Hero3D>
       <ServicesTeaser services={servicesTeaser} />
       <PortfolioHighlights projects={portfolioProjects} lang="hr" />
       <Differentiators
