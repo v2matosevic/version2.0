@@ -3,11 +3,12 @@ import { buildPageMetadata } from '@/lib/seo'
 import { SITE_URL } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { PageHero } from '@/components/shared/page-hero'
-import { CTASection } from '@/components/shared/cta-section'
+import { WizardShell } from '@/components/pricing'
+import { PRICING_CONFIG } from '@/lib/pricing/load-pricing-config'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Preise',
-  description: 'Transparente Preise für Webdesign, Entwicklung und KI-Integration.',
+  description: 'Transparente Preise fur Webdesign, Entwicklung und KI-Integration.',
   routeKey: 'pricing',
 })
 
@@ -20,14 +21,10 @@ export default function PreisePage() {
       ]} />
       <PageHero
         headline="Preise"
-        subtext="Kommt bald. Kontaktieren Sie uns in der Zwischenzeit für ein individuelles Angebot."
+        subtext="Transparente Schatzungen in weniger als einer Minute. Keine Uberraschungen, keine versteckten Gebuhren."
+        minHeight="30vh"
       />
-      <CTASection
-        heading="Brauchen Sie ein Angebot?"
-        subtext="Jedes Projekt ist anders. Sagen Sie uns, was Sie brauchen, und wir erstellen ein transparentes Angebot."
-        ctaLabel="Kontakt aufnehmen"
-        ctaHref="/de/kontakt/"
-      />
+      <WizardShell config={PRICING_CONFIG} />
     </main>
   )
 }

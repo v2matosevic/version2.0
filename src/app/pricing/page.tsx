@@ -3,7 +3,8 @@ import { buildPageMetadata } from '@/lib/seo'
 import { SITE_URL } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { PageHero } from '@/components/shared/page-hero'
-import { CTASection } from '@/components/shared/cta-section'
+import { WizardShell } from '@/components/pricing'
+import { PRICING_CONFIG } from '@/lib/pricing/load-pricing-config'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Pricing',
@@ -20,14 +21,10 @@ export default function PricingPage() {
       ]} />
       <PageHero
         headline="Pricing"
-        subtext="Coming soon. In the meantime, get in touch for a custom quote."
+        subtext="Transparent estimates in under a minute. No surprises, no hidden fees."
+        minHeight="30vh"
       />
-      <CTASection
-        heading="Need a quote?"
-        subtext="Every project is different. Tell us what you need and we'll put together a transparent proposal."
-        ctaLabel="Get in Touch"
-        ctaHref="/contact/"
-      />
+      <WizardShell config={PRICING_CONFIG} />
     </main>
   )
 }

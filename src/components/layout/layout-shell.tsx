@@ -8,6 +8,8 @@ import { PageTransition } from '@/components/layout/page-transition'
 import { SmoothScroll } from '@/components/layout/smooth-scroll'
 import { CookieConsent } from '@/components/layout/cookie-consent'
 import { CustomCursor } from '@/components/animations/custom-cursor'
+import { Analytics } from '@/components/layout/analytics'
+import { Fab } from '@/components/layout/fab'
 import type { Language } from '@/types/i18n'
 import type { NavMenuItem } from '@/lib/content/get-menu-items'
 
@@ -22,6 +24,8 @@ function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
 
   const openMenu = useCallback(() => setMenuOpen(true), [])
   const closeMenu = useCallback(() => setMenuOpen(false), [])
+
+  const contactHref = lang === 'hr' ? '/hr/kontakt/' : lang === 'de' ? '/de/kontakt/' : '/contact/'
 
   return (
     <SmoothScroll>
@@ -42,6 +46,8 @@ function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
 
       <Footer lang={lang} />
       <CookieConsent />
+      <Analytics />
+      <Fab contactHref={contactHref} />
       <CustomCursor />
     </SmoothScroll>
   )
