@@ -1,0 +1,126 @@
+{
+  "_schema": "Centralized testimonials data. Each testimonial has tags for page-level selection. Pages reference testimonials by ID or filter by tag.",
+  "_source": "Google Maps reviews (5.0 stars, 29 reviews) + direct client testimonials. Extracted 2026-03-19.",
+  "testimonials": [
+    {
+      "id": "robert-brkljaca",
+      "quote": {
+        "en": "After one positive collaboration, I approached Marko for a second project as well. In both cases, Marko delivered exceptionally high quality work, quickly, gave advice, and respected all requirements. Everything went smoothly, incredibly fast, and within the deadline he clearly set at the beginning. The website exceeded expectations. Highly recommended.",
+        "hr": "Nakon jedne pozitivne suradnje obratio sam se Marku i za drugi projekt. U oba slučaja, Marko je posao odradio iznimno kvalitetno, brzo, davao savjete, i poštivao zahtjeve. Sve je prošlo glatko, iznimno brzo i u roku kojeg je odmah na početku dogovora jasno postavio. Web stranica je premašila očekivanja. Velika preporuka.",
+        "de": "Nach einer positiven Zusammenarbeit habe ich mich auch für ein zweites Projekt an Marko gewandt. In beiden Fällen hat Marko außergewöhnlich hochwertige Arbeit geliefert, schnell, hat Ratschläge gegeben und alle Anforderungen respektiert. Alles lief reibungslos, unglaublich schnell und innerhalb der Frist, die er zu Beginn klar festgelegt hatte. Die Website hat die Erwartungen übertroffen. Sehr empfehlenswert."
+      },
+      "name": "Robert Brkljača",
+      "role": "Client",
+      "company": "",
+      "industry": "Repeat Client",
+      "stars": 5,
+      "tags": ["quality", "speed", "exceeded-expectations", "homepage", "repeat-client"],
+      "featured": true
+    },
+    {
+      "id": "mirko-petrovic",
+      "quote": {
+        "en": "I am extremely satisfied with the website development service. Everything was delivered as agreed, the website was built professionally and without any issues. Communication was excellent, and the final result exceeded my expectations. I recommend to everyone looking for a reliable and skilled professional for website development. Thank you once again for the excellent work.",
+        "hr": "Izuzetno sam zadovoljan uslugom izrade web stranice. Sve je ispoštovano prema dogovoru, stranica je izrađena profesionalno i bez ikakvih problema. Komunikacija je bila odlična, a krajnji rezultat premašio je moja očekivanja. Preporučujem svima koji traže pouzdanog i stručnog profesionalca za izradu web stranica. Hvala još jednom na odlično obavljenom poslu.",
+        "de": "Ich bin äußerst zufrieden mit dem Website-Entwicklungsservice. Alles wurde wie vereinbart geliefert, die Website wurde professionell und ohne Probleme erstellt. Die Kommunikation war ausgezeichnet, und das Endergebnis hat meine Erwartungen übertroffen. Ich empfehle jedem, der einen zuverlässigen und kompetenten Fachmann für die Website-Entwicklung sucht. Nochmals vielen Dank für die hervorragende Arbeit."
+      },
+      "name": "Mirko Petrović",
+      "role": "Client",
+      "company": "",
+      "industry": "",
+      "stars": 5,
+      "tags": ["professional", "communication", "exceeded-expectations", "homepage", "reliable"],
+      "featured": true
+    },
+    {
+      "id": "dominik-tepes-rafaj",
+      "quote": {
+        "en": "A very positive experience — everything that was agreed upon was delivered within the set deadline. The website met expectations on all criteria. In short, a professional and quality service!",
+        "hr": "Vrlo pozitivno iskustvo - sve što je dogovoreno realizirano je unutar postavljenog roka. Web stranica je ispunila očekivanja po svim kriterijima. Ukratko, profesionalna i kvalitetna usluga!",
+        "de": "Eine sehr positive Erfahrung — alles, was vereinbart wurde, wurde innerhalb der gesetzten Frist geliefert. Die Website hat die Erwartungen in allen Kriterien erfüllt. Kurz gesagt, ein professioneller und qualitativ hochwertiger Service!"
+      },
+      "name": "Dominik Tepeš Rafaj",
+      "role": "Client",
+      "company": "",
+      "industry": "",
+      "stars": 5,
+      "tags": ["deadline", "professional", "quality", "homepage"],
+      "featured": true
+    },
+    {
+      "id": "adria-escape",
+      "quote": {
+        "en": "We are very happy with the website created for Adria Escape. It turned out exactly how we imagined it, and even better in some parts. The design feels clean, professional, and truly fits our brand. What we appreciated most was that the team did not just make the website look good, but also made it feel easy and natural to use. Everything feels well thought out, from the layout to the overall user experience. They understood our vision very well, paid attention to the details, and delivered a result we are genuinely proud of. We would gladly recommend them to anyone looking for a team that creates high-quality websites.",
+        "hr": "Vrlo smo zadovoljni web stranicom izrađenom za Adria Escape. Ispala je točno kako smo zamislili, a u nekim dijelovima čak i bolje. Dizajn djeluje čisto, profesionalno i zaista odgovara našem brandu. Ono što smo najviše cijenili je to što tim nije samo učinio stranicu lijepom, već ju je učinio laganom i prirodnom za korištenje. Sve djeluje promišljeno, od rasporeda do cjelokupnog korisničkog iskustva. Odlično su razumjeli našu viziju, obratili pozornost na detalje i isporučili rezultat na koji smo istinski ponosni. Rado bismo ih preporučili svima koji traže tim koji stvara visokokvalitetne web stranice.",
+        "de": "Wir sind sehr zufrieden mit der Website, die für Adria Escape erstellt wurde. Sie ist genau so geworden, wie wir es uns vorgestellt haben, und in einigen Teilen sogar besser. Das Design wirkt sauber, professionell und passt wirklich zu unserer Marke. Was wir am meisten geschätzt haben, ist, dass das Team die Website nicht nur gut aussehen ließ, sondern sie auch einfach und natürlich nutzbar machte. Alles fühlt sich durchdacht an, vom Layout bis zum gesamten Benutzererlebnis. Sie haben unsere Vision sehr gut verstanden, auf Details geachtet und ein Ergebnis geliefert, auf das wir wirklich stolz sind. Wir würden sie gerne jedem empfehlen, der ein Team sucht, das hochwertige Websites erstellt."
+      },
+      "name": "Adria Escape",
+      "role": "Client",
+      "company": "Adria Escape",
+      "industry": "Travel & Tourism Media",
+      "stars": 5,
+      "tags": ["design", "ux", "brand", "homepage", "portfolio-client", "vision"],
+      "featured": true
+    },
+    {
+      "id": "misha-gashi",
+      "quote": {
+        "en": "This isn't an ordinary website — it's a portal to a new version of you, one who dares to live the truth of their soul. In one place, you now have all my offerings: anonymous questions, 1-on-1 programs, retreat offers, galactic conversations, crystal therapy, blog, and webshop. This is home for all souls who know it's time for the next level of life, love, and consciousness!",
+        "hr": "Ovo nije obična web stranica nego portal u novu verziju tebe – onu koja se usudi živjeti istinu svoje duše. Na jednom mjestu sada imaš sve moje ponude: anonimno pitanje, 1 na 1 programe, retreat ponude, galaktički razgovor, kristaloterapiju, blog i web shop. Ovo je dom za sve duše koje znaju da je vrijeme za novi nivo života, ljubavi i svijesti!",
+        "de": "Dies ist keine gewöhnliche Website — es ist ein Portal zu einer neuen Version von dir, einer, die es wagt, die Wahrheit ihrer Seele zu leben. An einem Ort hast du jetzt alle meine Angebote: anonyme Fragen, 1-zu-1-Programme, Retreat-Angebote, galaktische Gespräche, Kristalltherapie, Blog und Webshop. Dies ist ein Zuhause für alle Seelen, die wissen, dass es Zeit für die nächste Stufe des Lebens, der Liebe und des Bewusstseins ist!"
+      },
+      "name": "Miša Gaši",
+      "role": "Founder",
+      "company": "Misha Gashi",
+      "industry": "Wellness & Personal Development",
+      "stars": 5,
+      "tags": ["platform", "comprehensive", "portfolio-client"],
+      "featured": false
+    },
+    {
+      "id": "sukosanska-vila",
+      "quote": {
+        "en": "Professional service from photos to website. We are very satisfied and can truly recommend them to anyone. Thank you once again!",
+        "hr": "Profesionalna usluga od slika do web stranice. Jako smo zadovoljni i možemo stvarno svakome preporučiti. Hvala vam još jednom!",
+        "de": "Professioneller Service von Fotos bis zur Website. Wir sind sehr zufrieden und können sie wirklich jedem empfehlen. Nochmals vielen Dank!"
+      },
+      "name": "Sukošanska Vila",
+      "role": "Client",
+      "company": "Sukošanska Vila",
+      "industry": "Hospitality",
+      "stars": 5,
+      "tags": ["photography", "full-service", "hospitality"],
+      "featured": false
+    },
+    {
+      "id": "ivan-zd",
+      "quote": {
+        "en": "I am extremely satisfied with the website development. Marko fulfilled all my requirements and wishes. The holiday house website is perfect.",
+        "hr": "Prezadovoljan sam izradom web stranice. Marko je ispunio sve moje zahtjeve i želje koja sam imao. Stranica za kuću za odmor je savršena.",
+        "de": "Ich bin äußerst zufrieden mit der Website-Entwicklung. Marko hat alle meine Anforderungen und Wünsche erfüllt. Die Ferienhaus-Website ist perfekt."
+      },
+      "name": "Ivan Zd",
+      "role": "Client",
+      "company": "",
+      "industry": "Hospitality",
+      "stars": 5,
+      "tags": ["satisfied", "hospitality", "requirements-met"],
+      "featured": false
+    },
+    {
+      "id": "antonio-babara",
+      "quote": {
+        "en": "A company with quality services and a professional approach to clients. Recommended.",
+        "hr": "Tvrtka sa kvalitetnim uslugama i profesionalnim pristupom klijentima. Preporučujem.",
+        "de": "Ein Unternehmen mit qualitativ hochwertigen Dienstleistungen und einem professionellen Kundenansatz. Empfehlenswert."
+      },
+      "name": "Antonio Babara",
+      "role": "Client",
+      "company": "",
+      "industry": "",
+      "stars": 5,
+      "tags": ["professional", "quality"],
+      "featured": false
+    }
+  ]
+}

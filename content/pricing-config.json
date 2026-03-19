@@ -1,0 +1,973 @@
+{
+  "_meta": {
+    "version": "2.0.0",
+    "lastUpdated": "2026-02-25",
+    "currency": "EUR",
+    "notes": [
+      "All prices in EUR, excluding VAT.",
+      "Every price is a [min, max] range — never show a single number.",
+      "Two price categories: one-time (project delivery) and monthly (ongoing services).",
+      "One-time formula: (base + sum(features) + sum(integrations)) * designMultiplier * timelineMultiplier + sum(services)",
+      "Services are flat add-ons NOT affected by design/timeline multipliers.",
+      "Monthly costs shown separately from one-time estimate.",
+      "The frontend runs this formula client-side for instant updates.",
+      "The backend holds an identical copy for server-side validation on submission.",
+      "Prices calibrated for competitive premium Croatian/EU studio positioning (Feb 2026)."
+    ]
+  },
+
+  "baseIncludes": [
+    "Responsive design (mobile, tablet, desktop)",
+    "Basic SEO (meta tags, semantic HTML, sitemap, robots.txt)",
+    "Contact form with email notifications",
+    "Google Analytics 4 setup",
+    "SSL certificate (Let's Encrypt)",
+    "1 language",
+    "2 rounds of design revisions",
+    "30 days post-launch support",
+    "Cross-browser testing (Chrome, Firefox, Safari, Edge)",
+    "Mobile optimization",
+    "Performance optimization (Core Web Vitals)"
+  ],
+
+  "steps": {
+    "projectType": {
+      "order": 1,
+      "headline": "What are we building?",
+      "subtitle": "Every project starts with a clear goal.",
+      "options": [
+        {
+          "id": "website",
+          "label": "Website",
+          "description": "A website that works as hard as you do.",
+          "icon": "globe"
+        },
+        {
+          "id": "webshop",
+          "label": "Webshop",
+          "description": "Sell online. No templates. No limits.",
+          "icon": "shopping-bag"
+        },
+        {
+          "id": "webapp",
+          "label": "Web Application",
+          "description": "Custom software built for your workflow.",
+          "icon": "layers"
+        },
+        {
+          "id": "other",
+          "label": "Something Else",
+          "description": "Tell us what you have in mind.",
+          "icon": "message-circle",
+          "redirectsToContact": true
+        }
+      ]
+    },
+
+    "scope": {
+      "order": 2,
+      "headline": "How big are we thinking?",
+      "subtitle": "Pick the scope that fits. We'll refine it together.",
+      "optionsByType": {
+        "website": [
+          {
+            "id": "landing",
+            "label": "Landing Page",
+            "detail": "1–3 pages",
+            "description": "One clear message. Maximum impact.",
+            "basePrice": [2500, 4500]
+          },
+          {
+            "id": "business",
+            "label": "Business Website",
+            "detail": "4–7 pages",
+            "description": "Everything your business needs online.",
+            "basePrice": [4500, 8000]
+          },
+          {
+            "id": "corporate",
+            "label": "Corporate Website",
+            "detail": "8–15 pages",
+            "description": "Multiple audiences. Multiple sections. One cohesive experience.",
+            "basePrice": [8000, 14000]
+          },
+          {
+            "id": "enterprise",
+            "label": "Enterprise Website",
+            "detail": "15+ pages",
+            "description": "Large-scale. Complex. Built to grow.",
+            "basePrice": [14000, 25000]
+          }
+        ],
+        "webshop": [
+          {
+            "id": "starter",
+            "label": "Starter Store",
+            "detail": "Up to 50 products",
+            "description": "Start selling with a solid foundation.",
+            "basePrice": [6500, 11000],
+            "includes": "Product catalog, cart, checkout with one payment gateway, basic order management."
+          },
+          {
+            "id": "growing",
+            "label": "Growing Store",
+            "detail": "50–500 products",
+            "description": "Categories, filters, the full toolkit.",
+            "basePrice": [11000, 20000],
+            "includes": "Everything in Starter plus advanced filtering, search, inventory management, discount codes."
+          },
+          {
+            "id": "enterprise",
+            "label": "Enterprise Store",
+            "detail": "500+ products",
+            "description": "High-volume. High-performance. Built for scale.",
+            "basePrice": [20000, 35000],
+            "includes": "Everything in Growing plus multi-warehouse, bulk operations, advanced analytics, API integrations."
+          }
+        ],
+        "webapp": [
+          {
+            "id": "simple",
+            "label": "Simple Application",
+            "detail": "1–3 user roles, focused scope",
+            "description": "Dashboards, portals, focused tools.",
+            "basePrice": [8000, 17000]
+          },
+          {
+            "id": "complex",
+            "label": "Complex Application",
+            "detail": "Multiple roles, business logic",
+            "description": "Multiple user roles. Real business logic.",
+            "basePrice": [17000, 32000]
+          },
+          {
+            "id": "enterprise",
+            "label": "Enterprise Application",
+            "detail": "Advanced logic, deep integrations",
+            "description": "Full-scale platform. Advanced integrations.",
+            "basePrice": [32000, 58000]
+          }
+        ]
+      }
+    },
+
+    "features": {
+      "order": 3,
+      "headline": "What should it do?",
+      "subtitle": "Select what you need. Skip what you don't.",
+      "note": "Every project includes responsive design, basic SEO, contact form, GA4, SSL, and one language.",
+      "sections": [
+        {
+          "id": "core",
+          "label": "Core Features",
+          "options": [
+            {
+              "id": "multilingual",
+              "label": "Multi-Language Support",
+              "description": "Reach more markets. We handle routing, SEO, and content structure for each language.",
+              "price": [800, 1800],
+              "perUnit": "per additional language",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 5,
+              "icon": "languages"
+            },
+            {
+              "id": "blog",
+              "label": "Blog / News Section",
+              "description": "Content hub with categories, search, and SEO-optimized posts.",
+              "price": [1000, 2200],
+              "icon": "file-text"
+            },
+            {
+              "id": "auth",
+              "label": "User Authentication & Member Area",
+              "description": "Login, registration, roles, protected content, user profiles.",
+              "price": [1800, 3500],
+              "icon": "lock"
+            },
+            {
+              "id": "social_login",
+              "label": "Social Login",
+              "description": "Sign in with Google, Facebook, Apple. One click, no forms.",
+              "price": [300, 600],
+              "icon": "user-check",
+              "requiresFeature": "auth"
+            },
+            {
+              "id": "booking",
+              "label": "Booking & Scheduling",
+              "description": "Calendar, availability, automated confirmations and reminders.",
+              "price": [1500, 3000],
+              "icon": "calendar"
+            },
+            {
+              "id": "admin",
+              "label": "Custom Admin Dashboard",
+              "description": "Manage content, users, and data through a tailored back-office.",
+              "price": [1800, 4000],
+              "icon": "layout-dashboard"
+            },
+            {
+              "id": "search",
+              "label": "Site-Wide Search",
+              "description": "Fast, fuzzy search across all content. Filters, instant results.",
+              "price": [500, 1200],
+              "icon": "search"
+            },
+            {
+              "id": "notifications",
+              "label": "Notification System",
+              "description": "Email, push, or SMS notifications. Triggered by events you define.",
+              "price": [700, 1800],
+              "icon": "bell"
+            },
+            {
+              "id": "file_management",
+              "label": "File Upload & Management",
+              "description": "Users upload, organize, and download files. Documents, images, media.",
+              "price": [500, 1200],
+              "icon": "upload"
+            },
+            {
+              "id": "comments",
+              "label": "Comments & Reviews",
+              "description": "User-generated feedback. Moderation tools included.",
+              "price": [400, 1000],
+              "icon": "message-square"
+            },
+            {
+              "id": "darkmode",
+              "label": "Dark Mode",
+              "description": "Full dual-theme system with toggle and system preference detection.",
+              "price": [500, 1000],
+              "icon": "moon"
+            },
+            {
+              "id": "animations",
+              "label": "Advanced Animations & 3D",
+              "description": "Custom scroll effects, WebGL, micro-interactions, page transitions.",
+              "price": [1000, 3200],
+              "icon": "sparkles"
+            },
+            {
+              "id": "ai",
+              "label": "AI-Powered Features",
+              "description": "Chatbot, intelligent search, recommendations, content generation.",
+              "price": [1800, 4500],
+              "icon": "brain"
+            },
+            {
+              "id": "accessibility",
+              "label": "Accessibility Audit & Compliance",
+              "description": "WCAG 2.2 AA. Screen reader testing. Keyboard navigation. Proper contrast.",
+              "price": [800, 1800],
+              "icon": "accessibility"
+            }
+          ]
+        },
+        {
+          "id": "ecommerce",
+          "label": "E-Commerce Features",
+          "showWhen": { "projectType": "webshop" },
+          "note": "Base webshop includes product catalog, cart, checkout, and basic order management.",
+          "options": [
+            {
+              "id": "product_variants",
+              "label": "Product Variants",
+              "description": "Sizes, colors, materials — each with its own stock and price.",
+              "price": [600, 1200],
+              "icon": "palette"
+            },
+            {
+              "id": "advanced_inventory",
+              "label": "Advanced Inventory Management",
+              "description": "Low stock alerts, reorder points, supplier management, stock history.",
+              "price": [800, 2000],
+              "icon": "package"
+            },
+            {
+              "id": "shipping_integration",
+              "label": "Shipping Integration",
+              "description": "Real-time rates from DHL, GLS, DPD, or local carriers. Label printing.",
+              "price": [700, 1800],
+              "icon": "truck"
+            },
+            {
+              "id": "multi_currency",
+              "label": "Multi-Currency",
+              "description": "Prices in EUR, HRK, USD, GBP — automatic conversion or fixed rates.",
+              "price": [500, 1000],
+              "icon": "banknote"
+            },
+            {
+              "id": "subscriptions",
+              "label": "Subscription & Recurring Billing",
+              "description": "Recurring products, membership boxes, SaaS billing. Automated renewal.",
+              "price": [1000, 2200],
+              "icon": "repeat"
+            },
+            {
+              "id": "wishlist",
+              "label": "Wishlist & Favorites",
+              "description": "Save products for later. Share wishlists. Back-in-stock alerts.",
+              "price": [300, 700],
+              "icon": "heart"
+            },
+            {
+              "id": "product_reviews",
+              "label": "Product Reviews & Ratings",
+              "description": "Star ratings, written reviews, verified buyer badges, moderation.",
+              "price": [400, 900],
+              "icon": "star"
+            },
+            {
+              "id": "discount_engine",
+              "label": "Discount Codes & Promotions",
+              "description": "Percentage off, fixed amount, free shipping, BOGO, tiered discounts.",
+              "price": [500, 1000],
+              "icon": "tag"
+            },
+            {
+              "id": "abandoned_cart",
+              "label": "Abandoned Cart Recovery",
+              "description": "Automatic emails when someone leaves items in their cart.",
+              "price": [600, 1200],
+              "icon": "shopping-cart"
+            },
+            {
+              "id": "order_tracking",
+              "label": "Customer Order Tracking",
+              "description": "Real-time order status. Tracking numbers. Delivery updates.",
+              "price": [500, 1000],
+              "icon": "map-pin"
+            },
+            {
+              "id": "invoicing",
+              "label": "Automated Invoicing",
+              "description": "PDF invoices generated on purchase. Tax-compliant formatting.",
+              "price": [400, 900],
+              "icon": "file-invoice"
+            },
+            {
+              "id": "product_comparison",
+              "label": "Product Comparison",
+              "description": "Side-by-side feature comparison table. Helps buyers decide.",
+              "price": [300, 700],
+              "icon": "columns"
+            },
+            {
+              "id": "quick_view",
+              "label": "Quick View & Quick Buy",
+              "description": "Preview product details and add to cart without leaving the listing.",
+              "price": [300, 600],
+              "icon": "eye"
+            }
+          ]
+        },
+        {
+          "id": "integrations",
+          "label": "Integrations",
+          "options": [
+            {
+              "id": "payment_stripe",
+              "label": "Stripe Integration",
+              "description": "Cards, Apple Pay, Google Pay, SEPA. The global standard.",
+              "price": [400, 800],
+              "note": "Included free with webshop base. This is for non-webshop projects.",
+              "freeWhen": { "projectType": "webshop" },
+              "icon": "credit-card"
+            },
+            {
+              "id": "payment_paypal",
+              "label": "PayPal Integration",
+              "description": "PayPal checkout, Pay Later, Venmo (US). Huge buyer trust.",
+              "price": [400, 800],
+              "icon": "wallet"
+            },
+            {
+              "id": "payment_local",
+              "label": "Local Payment Provider",
+              "description": "Monri, CorvusPay, or other regional payment gateway.",
+              "price": [500, 1000],
+              "icon": "landmark"
+            },
+            {
+              "id": "payment_crypto",
+              "label": "Crypto Payments",
+              "description": "Accept Bitcoin, Ethereum, and stablecoins via Coinbase Commerce or similar.",
+              "price": [400, 900],
+              "icon": "bitcoin"
+            },
+            {
+              "id": "crm",
+              "label": "CRM Integration",
+              "description": "HubSpot, Salesforce, Pipedrive, or custom. Sync contacts and leads.",
+              "price": [800, 2000],
+              "perUnit": "per CRM",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 3,
+              "icon": "users"
+            },
+            {
+              "id": "email_marketing",
+              "label": "Email Marketing Integration",
+              "description": "Mailchimp, ConvertKit, Brevo, or ActiveCampaign. Sync subscribers.",
+              "price": [400, 1000],
+              "icon": "mail"
+            },
+            {
+              "id": "marketing_automation",
+              "label": "Marketing Automation",
+              "description": "Automated email flows, lead scoring, behavioral triggers.",
+              "price": [800, 2000],
+              "icon": "workflow"
+            },
+            {
+              "id": "live_chat",
+              "label": "Live Chat Widget",
+              "description": "Intercom, Crisp, Tawk.to, or custom. Real-time visitor support.",
+              "price": [300, 700],
+              "icon": "message-circle"
+            },
+            {
+              "id": "erp",
+              "label": "ERP / Accounting Integration",
+              "description": "Connect to your accounting software. SAP, Xero, QuickBooks, or local solutions.",
+              "price": [1000, 2500],
+              "icon": "calculator"
+            },
+            {
+              "id": "maps",
+              "label": "Maps & Location Services",
+              "description": "Google Maps, Mapbox, or OpenStreetMap. Store locators, directions, geofencing.",
+              "price": [300, 700],
+              "icon": "map"
+            },
+            {
+              "id": "calendar_sync",
+              "label": "Calendar Integration",
+              "description": "Google Calendar, Outlook, Apple Calendar. Two-way sync.",
+              "price": [300, 700],
+              "icon": "calendar-check"
+            },
+            {
+              "id": "social_feed",
+              "label": "Social Media Feed",
+              "description": "Display your Instagram, Facebook, or TikTok feed directly on the site.",
+              "price": [300, 600],
+              "icon": "instagram"
+            },
+            {
+              "id": "api_custom",
+              "label": "Custom API Integration",
+              "description": "Connect to any third-party service with an API. Webhooks, data sync, automation.",
+              "price": [600, 1500],
+              "perUnit": "per API",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 5,
+              "icon": "plug"
+            }
+          ]
+        }
+      ]
+    },
+
+    "design": {
+      "order": 4,
+      "headline": "How should it look?",
+      "subtitle": "Every project gets a custom design. The question is how deep we go.",
+      "options": [
+        {
+          "id": "reference",
+          "label": "Reference-Based Design",
+          "description": "You have examples you like. We design with clear direction.",
+          "detail": "Fastest path to a design you'll love. You provide inspiration — we make it yours.",
+          "multiplier": 1.0
+        },
+        {
+          "id": "custom",
+          "label": "Custom Design From Scratch",
+          "description": "Original concept. Multiple rounds of exploration and refinement.",
+          "detail": "Mood boards, wireframes, unique visual direction. For projects that need to stand apart.",
+          "multiplier": 1.15
+        },
+        {
+          "id": "brand",
+          "label": "Brand Identity + Custom Design",
+          "description": "We build your brand from zero, then design the site around it.",
+          "detail": "Logo concepts, color palette, typography, brand guidelines — the full creative package.",
+          "multiplier": 1.25
+        }
+      ],
+      "addOns": [
+        {
+          "id": "illustrations",
+          "label": "Custom Illustrations",
+          "description": "Hand-crafted graphics that match your brand. No stock imagery.",
+          "price": [500, 1500],
+          "icon": "pen-tool"
+        },
+        {
+          "id": "iconography",
+          "label": "Custom Icon Set",
+          "description": "Branded icons designed to match your visual language.",
+          "price": [300, 800],
+          "icon": "grid"
+        },
+        {
+          "id": "motion_design",
+          "label": "Motion Design & Micro-Interactions",
+          "description": "Loading animations, hover effects, transition choreography. The details that make it feel alive.",
+          "price": [600, 1800],
+          "icon": "play"
+        },
+        {
+          "id": "prototype",
+          "label": "Interactive Prototype",
+          "description": "Clickable Figma prototype before development starts. Test flows, get feedback.",
+          "price": [400, 1000],
+          "icon": "figma"
+        }
+      ]
+    },
+
+    "services": {
+      "order": 5,
+      "headline": "Need anything else?",
+      "subtitle": "These are added flat — not affected by design or timeline choices.",
+      "note": "One-time services are added to your project total. Monthly services are shown separately.",
+      "sections": [
+        {
+          "id": "seo",
+          "label": "SEO",
+          "note": "Basic SEO is included in every project (meta tags, semantic HTML, sitemap, robots.txt).",
+          "options": [
+            {
+              "id": "seo_technical",
+              "label": "Technical SEO Audit & Optimization",
+              "description": "Site speed, crawlability, indexation, Core Web Vitals, structured data.",
+              "price": [800, 1800],
+              "icon": "settings"
+            },
+            {
+              "id": "seo_onpage",
+              "label": "On-Page SEO",
+              "description": "Keyword research, meta optimization, heading structure, internal linking strategy.",
+              "price": [600, 1500],
+              "icon": "file-search"
+            },
+            {
+              "id": "seo_local",
+              "label": "Local SEO Setup",
+              "description": "Google Business Profile, local citations, map pack optimization.",
+              "price": [400, 800],
+              "icon": "map-pin"
+            },
+            {
+              "id": "seo_content_strategy",
+              "label": "SEO Content Strategy",
+              "description": "Keyword mapping, content calendar, topic clusters, competitor gap analysis.",
+              "price": [800, 2000],
+              "icon": "target"
+            },
+            {
+              "id": "seo_schema",
+              "label": "Advanced Schema Markup",
+              "description": "Rich snippets, FAQ schema, product schema, breadcrumbs, organization data.",
+              "price": [400, 800],
+              "icon": "code"
+            },
+            {
+              "id": "seo_monthly",
+              "label": "Monthly SEO Reporting",
+              "description": "Rankings, traffic, conversions, recommendations. Delivered monthly.",
+              "price": [200, 500],
+              "recurring": "monthly",
+              "icon": "bar-chart"
+            }
+          ]
+        },
+        {
+          "id": "content",
+          "label": "Content",
+          "options": [
+            {
+              "id": "copywriting",
+              "label": "Professional Copywriting",
+              "description": "We write your page content. Clear, on-brand, conversion-focused.",
+              "price": [80, 200],
+              "perUnit": "per page",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 30,
+              "icon": "pen"
+            },
+            {
+              "id": "seo_copywriting",
+              "label": "SEO Copywriting",
+              "description": "Keyword-optimized content that ranks AND reads well.",
+              "price": [120, 280],
+              "perUnit": "per page",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 30,
+              "icon": "pen-line"
+            },
+            {
+              "id": "translation",
+              "label": "Content Translation",
+              "description": "Professional translation, not machine output. Adapted for local market.",
+              "price": [60, 150],
+              "perUnit": "per page per language",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 50,
+              "icon": "languages"
+            },
+            {
+              "id": "product_descriptions",
+              "label": "Product Descriptions",
+              "description": "Compelling product copy that sells. SEO-optimized.",
+              "price": [20, 60],
+              "perUnit": "per product",
+              "hasQuantity": true,
+              "minQuantity": 10,
+              "maxQuantity": 500,
+              "icon": "tag"
+            },
+            {
+              "id": "photography",
+              "label": "Photography Session",
+              "description": "Product, team, or location photography. Professional quality.",
+              "price": [400, 1200],
+              "perUnit": "per session",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 5,
+              "icon": "camera"
+            },
+            {
+              "id": "video_production",
+              "label": "Video Production",
+              "description": "Promo video, product demo, or brand film. Script, shoot, edit.",
+              "price": [1200, 3500],
+              "perUnit": "per video",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 5,
+              "icon": "video"
+            }
+          ]
+        },
+        {
+          "id": "analytics",
+          "label": "Analytics & Tracking",
+          "note": "Google Analytics 4 basic setup is included in every project.",
+          "options": [
+            {
+              "id": "analytics_advanced",
+              "label": "Advanced Analytics Setup",
+              "description": "Custom events, goals, funnels, e-commerce tracking, cross-domain.",
+              "price": [400, 1000],
+              "icon": "bar-chart-2"
+            },
+            {
+              "id": "analytics_heatmaps",
+              "label": "Heatmaps & Session Recording",
+              "description": "Hotjar or similar. See exactly how visitors use your site.",
+              "price": [300, 700],
+              "icon": "flame"
+            },
+            {
+              "id": "analytics_conversion",
+              "label": "Conversion Tracking",
+              "description": "Google Ads, Facebook Pixel, LinkedIn Insight Tag. Track what matters.",
+              "price": [300, 600],
+              "perUnit": "per platform",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 4,
+              "icon": "target"
+            },
+            {
+              "id": "analytics_dashboard",
+              "label": "Custom Analytics Dashboard",
+              "description": "Your own real-time dashboard. No more digging through GA4.",
+              "price": [1200, 3000],
+              "icon": "monitor"
+            },
+            {
+              "id": "analytics_ab",
+              "label": "A/B Testing Setup",
+              "description": "Test headlines, layouts, CTAs. Data-driven design decisions.",
+              "price": [400, 1000],
+              "icon": "split"
+            }
+          ]
+        },
+        {
+          "id": "hosting",
+          "label": "Hosting & Infrastructure",
+          "options": [
+            {
+              "id": "domain",
+              "label": "Domain Registration",
+              "description": "We register and configure your domain. .com, .hr, .eu, or any TLD.",
+              "price": [15, 50],
+              "recurring": "yearly",
+              "icon": "at-sign"
+            },
+            {
+              "id": "hosting_shared",
+              "label": "Shared Hosting",
+              "description": "Reliable hosting for standard websites. Fast, secure, maintained.",
+              "price": [8, 20],
+              "recurring": "monthly",
+              "icon": "server"
+            },
+            {
+              "id": "hosting_vps",
+              "label": "VPS / Cloud Hosting",
+              "description": "Dedicated resources. For high-traffic sites, web apps, and e-commerce.",
+              "price": [25, 60],
+              "recurring": "monthly",
+              "icon": "cloud"
+            },
+            {
+              "id": "email_hosting",
+              "label": "Business Email Setup",
+              "description": "Professional email at your domain. Google Workspace, Zoho, or Titan.",
+              "price": [3, 12],
+              "recurring": "monthly",
+              "perUnit": "per user",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 50,
+              "icon": "mail"
+            },
+            {
+              "id": "cdn",
+              "label": "CDN Setup",
+              "description": "Cloudflare or similar. Faster load times worldwide. DDoS protection included.",
+              "price": [200, 500],
+              "icon": "globe"
+            },
+            {
+              "id": "staging",
+              "label": "Staging Environment",
+              "description": "Test changes before they go live. Separate copy of your site.",
+              "price": [200, 400],
+              "icon": "git-branch"
+            },
+            {
+              "id": "backups",
+              "label": "Automated Backups",
+              "description": "Daily backups with one-click restore. Never lose data.",
+              "price": [100, 250],
+              "recurring": "yearly",
+              "icon": "hard-drive"
+            },
+            {
+              "id": "ssl_premium",
+              "label": "Premium SSL Certificate",
+              "description": "Extended Validation (EV) or Organization Validated (OV). Green bar trust.",
+              "price": [80, 250],
+              "recurring": "yearly",
+              "note": "Basic SSL (Let's Encrypt) is included free. This is for enhanced trust signals.",
+              "icon": "shield"
+            }
+          ]
+        },
+        {
+          "id": "maintenance",
+          "label": "Support & Maintenance",
+          "note": "Every project includes 30 days of post-launch support. These plans kick in after.",
+          "options": [
+            {
+              "id": "maintenance_none",
+              "label": "No Ongoing Maintenance",
+              "description": "One-time delivery. You handle updates yourself after the 30-day support window.",
+              "price": [0, 0],
+              "recurring": "monthly",
+              "icon": "x",
+              "isDefault": true
+            },
+            {
+              "id": "maintenance_basic",
+              "label": "Basic Maintenance",
+              "description": "Security updates, uptime monitoring, monthly health check. 2 hours support.",
+              "price": [120, 250],
+              "recurring": "monthly",
+              "icon": "shield-check"
+            },
+            {
+              "id": "maintenance_standard",
+              "label": "Standard Maintenance",
+              "description": "Everything in Basic plus content updates, bug fixes, performance monitoring. 5 hours support.",
+              "price": [250, 500],
+              "recurring": "monthly",
+              "icon": "wrench"
+            },
+            {
+              "id": "maintenance_premium",
+              "label": "Premium Maintenance",
+              "description": "Priority support, monthly review calls, proactive optimization, new features. 10 hours support.",
+              "price": [500, 1000],
+              "recurring": "monthly",
+              "icon": "crown"
+            }
+          ]
+        },
+        {
+          "id": "training",
+          "label": "Training & Handoff",
+          "options": [
+            {
+              "id": "training_session",
+              "label": "CMS Training Session",
+              "description": "1-2 hour video call. We walk you through managing your site.",
+              "price": [150, 300],
+              "icon": "presentation"
+            },
+            {
+              "id": "training_docs",
+              "label": "Documentation Package",
+              "description": "Written guide with screenshots. How to update content, manage products, read analytics.",
+              "price": [250, 500],
+              "icon": "book-open"
+            },
+            {
+              "id": "training_videos",
+              "label": "Video Tutorial Series",
+              "description": "Recorded screencasts for your team. Watch anytime, share with new hires.",
+              "price": [400, 800],
+              "icon": "play-circle"
+            },
+            {
+              "id": "training_hours",
+              "label": "Support Hours Package",
+              "description": "10 hours of on-demand support. Use for questions, tweaks, or guidance.",
+              "price": [500, 900],
+              "perUnit": "per 10-hour block",
+              "hasQuantity": true,
+              "minQuantity": 1,
+              "maxQuantity": 5,
+              "icon": "clock"
+            }
+          ]
+        }
+      ]
+    },
+
+    "timeline": {
+      "order": 6,
+      "headline": "When do you need it?",
+      "subtitle": "Good work takes time. But we move fast when you need us to.",
+      "options": [
+        {
+          "id": "flexible",
+          "label": "Flexible",
+          "description": "No rush. We fit it around our schedule.",
+          "detail": "Best value. We deliver on a comfortable timeline — typically our standard speed or slightly longer.",
+          "multiplier": 0.95,
+          "badge": "Best Value"
+        },
+        {
+          "id": "standard",
+          "label": "Standard",
+          "description": "Our normal timeline. Fast by industry standards.",
+          "detail": "Most projects: 4–10 weeks depending on scope. We don't drag things out.",
+          "multiplier": 1.0,
+          "badge": "Most Popular"
+        },
+        {
+          "id": "priority",
+          "label": "Priority",
+          "description": "Front of the queue. Dedicated resources.",
+          "detail": "Accelerated delivery. Your project gets priority scheduling and a faster feedback loop.",
+          "multiplier": 1.35,
+          "badge": "Fastest"
+        }
+      ]
+    },
+
+    "summary": {
+      "order": 7,
+      "headline": "Here's your estimate.",
+      "subtitle": "A starting point, not a final quote. The real number comes after we talk.",
+      "disclaimer": "Estimates are based on typical project complexity. Final pricing depends on specific requirements, content volume, and integration depth. All prices exclude VAT.",
+      "ctaPrimary": {
+        "label": "Get Exact Quote",
+        "action": "contact_form"
+      },
+      "ctaSecondary": {
+        "label": "Schedule a Call",
+        "action": "booking"
+      },
+      "rangeExplanation": "We show a range because no two projects are the same. The lower end assumes straightforward requirements. The upper end accounts for complexity we'll discover together.",
+      "displaySections": {
+        "oneTime": {
+          "label": "One-Time Project Cost",
+          "description": "Design, development, and launch."
+        },
+        "monthly": {
+          "label": "Monthly Costs",
+          "description": "Hosting, maintenance, and recurring services.",
+          "note": "Starts after 30-day post-launch support period."
+        },
+        "yearly": {
+          "label": "Yearly Costs",
+          "description": "Domain, SSL, backups."
+        }
+      }
+    }
+  },
+
+  "calculation": {
+    "formula": {
+      "oneTime": "(basePrice + sum(featurePrices) + sum(integrationPrices) + sum(designAddOnPrices)) * designMultiplier * timelineMultiplier + sum(servicePrices_oneTime)",
+      "monthly": "sum(all items with recurring: 'monthly')",
+      "yearly": "sum(all items with recurring: 'yearly')"
+    },
+    "rounding": "round to nearest 100 for one-time, nearest 10 for monthly/yearly",
+    "displayFormat": {
+      "oneTime": "€X,XXX — €XX,XXX",
+      "monthly": "€XX — €XXX /mo",
+      "yearly": "€XX — €XXX /yr"
+    },
+    "minimumEstimate": 2500,
+    "notes": [
+      "Feature/integration prices with hasQuantity are multiplied by the selected quantity.",
+      "Design and timeline multipliers apply to: base + features + integrations + design add-ons.",
+      "Service prices (SEO, content, hosting, maintenance, training, analytics) are added flat — NOT multiplied.",
+      "Monthly and yearly costs are shown separately from the one-time project cost.",
+      "If the calculated one-time minimum falls below €2,500, clamp it to €2,500.",
+      "Features with 'freeWhen' conditions cost €0 when the condition is met.",
+      "Features with 'requiresFeature' are only selectable when the dependency is active.",
+      "Maintenance plan is mutually exclusive — only one can be selected."
+    ]
+  },
+
+  "estimatedTimelines": {
+    "_note": "Approximate delivery weeks by scope tier. Shown on summary step for context.",
+    "website": {
+      "landing": { "standard": "3–4 weeks", "priority": "2–3 weeks" },
+      "business": { "standard": "4–6 weeks", "priority": "3–4 weeks" },
+      "corporate": { "standard": "6–10 weeks", "priority": "4–7 weeks" },
+      "enterprise": { "standard": "10–16 weeks", "priority": "7–11 weeks" }
+    },
+    "webshop": {
+      "starter": { "standard": "5–8 weeks", "priority": "4–6 weeks" },
+      "growing": { "standard": "8–12 weeks", "priority": "6–9 weeks" },
+      "enterprise": { "standard": "12–20 weeks", "priority": "9–14 weeks" }
+    },
+    "webapp": {
+      "simple": { "standard": "6–10 weeks", "priority": "4–7 weeks" },
+      "complex": { "standard": "10–16 weeks", "priority": "7–11 weeks" },
+      "enterprise": { "standard": "16–26 weeks", "priority": "11–18 weeks" }
+    }
+  }
+}

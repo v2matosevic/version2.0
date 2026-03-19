@@ -1,0 +1,28 @@
+import type { Metadata } from 'next'
+import '@/styles/globals.css'
+
+export const metadata: Metadata = {
+  title: 'Version2 — Web Design & Development Studio',
+  description: 'Premium web design, development, and AI integration studio based in Zadar, Croatia.',
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('v2_theme');if(t==='light'||(!t&&window.matchMedia('(prefers-color-scheme: light)').matches)){document.documentElement.classList.add('light')}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-base text-foreground font-body">
+        {children}
+      </body>
+    </html>
+  )
+}

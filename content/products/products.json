@@ -1,0 +1,173 @@
+{
+  "_note": "Product URLs removed — products are displayed via the card customizer on the services overview page, not as individual routes. Old product URLs redirect to /services/ via .htaccess.",
+  "category": {
+    "en": "Digital Business Cards",
+    "hr": "Digitalne Vizitke",
+    "de": "Digitale Visitenkarten"
+  },
+  "pricing": {
+    "original": 39.99,
+    "sale": 29.99,
+    "currency": "EUR"
+  },
+  "shared": {
+    "weight": "5 g",
+    "dimensions": "86 x 54 x 0.8 mm",
+    "brand": "Version2",
+    "nfcModel": "NFC215",
+    "material": "PVC",
+    "tags": ["NFC", "Digital Business Card"]
+  },
+  "features": {
+    "en": [
+      "NFC technology for instant contact sharing",
+      "Fully customizable dynamic content",
+      "Interactive platform at app.version2.hr",
+      "Eco-friendly and cost-effective (replaces paper cards forever)",
+      "Built-in analytics and engagement insights"
+    ],
+    "hr": [
+      "NFC tehnologija za trenutno dijeljenje kontakata",
+      "Potpuno prilagodljiv dinamički sadržaj",
+      "Interaktivna platforma na app.version2.hr",
+      "Ekološki prihvatljivo i isplativo (zauvijek zamjenjuje papirnate vizitke)",
+      "Ugrađena analitika i uvidi o angažmanu"
+    ],
+    "de": [
+      "NFC-Technologie für sofortigen Kontaktaustausch",
+      "Vollständig anpassbarer dynamischer Inhalt",
+      "Interaktive Plattform auf app.version2.hr",
+      "Umweltfreundlich und kostengünstig (ersetzt Papierkarten dauerhaft)",
+      "Integrierte Analyse- und Engagement-Einblicke"
+    ]
+  },
+  "products": [
+    {
+      "slug": "darkprism",
+      "name": "DarkPrism",
+      "image": "./assets/dark-prism.webp",
+      "color": { "en": "Black", "hr": "Crna", "de": "Schwarz" }
+    },
+    {
+      "slug": "crystalnet",
+      "name": "CrystalNet",
+      "image": "./assets/crystal-net.webp",
+      "color": { "en": "Blue", "hr": "Plava", "de": "Blau" }
+    },
+    {
+      "slug": "silkwave",
+      "name": "SilkWave",
+      "image": "./assets/silk-wave.webp",
+      "color": { "en": "Pink", "hr": "Roza", "de": "Rosa" }
+    },
+    {
+      "slug": "sunsatin",
+      "name": "SunSatin",
+      "image": "./assets/sun-satin.webp",
+      "color": { "en": "Yellow", "hr": "Žuta", "de": "Gelb" }
+    },
+    {
+      "slug": "sunarc",
+      "name": "SunArc",
+      "image": "./assets/sun-arc.webp",
+      "color": { "en": "Orange", "hr": "Narančasta", "de": "Orange" }
+    },
+    {
+      "slug": "swirlharmony",
+      "name": "SwirlHarmony",
+      "image": "./assets/swirl-harmony.webp",
+      "color": { "en": "Multicolor", "hr": "Višebojna", "de": "Mehrfarbig" }
+    },
+    {
+      "slug": "swirlsync",
+      "name": "SwirlSync",
+      "image": "./assets/swirl-sync.webp",
+      "color": { "en": "Multicolor", "hr": "Višebojna", "de": "Mehrfarbig" }
+    },
+    {
+      "slug": "twilightfade",
+      "name": "TwilightFade",
+      "image": "./assets/twilight-fade.webp",
+      "color": { "en": "Purple", "hr": "Ljubičasta", "de": "Lila" }
+    },
+    {
+      "slug": "velocitys",
+      "name": "VelocityS",
+      "image": "./assets/velocity-s.webp",
+      "color": { "en": "Gray", "hr": "Siva", "de": "Grau" }
+    },
+    {
+      "slug": "amberswirl",
+      "name": "AmberSwirl",
+      "image": "./assets/amber-swirl.webp",
+      "color": { "en": "Orange", "hr": "Narančasta", "de": "Orange" }
+    },
+    {
+      "slug": "colorstream",
+      "name": "ColorStream",
+      "image": "./assets/color-stream.webp",
+      "color": { "en": "Multicolor", "hr": "Višebojna", "de": "Mehrfarbig" }
+    },
+    {
+      "slug": "scarletred",
+      "name": "ScarletRed",
+      "image": "./assets/scarlet-red.webp",
+      "color": { "en": "Red", "hr": "Crvena", "de": "Rot" }
+    },
+    {
+      "slug": "purplemosaic",
+      "name": "PurpleMosaic",
+      "image": "./assets/purple-mosaic.webp",
+      "color": { "en": "Purple", "hr": "Ljubičasta", "de": "Lila" }
+    },
+    {
+      "slug": "orangecraft",
+      "name": "OrangeCraft",
+      "image": "./assets/orange-craft.webp",
+      "color": { "en": "Orange", "hr": "Narančasta", "de": "Orange" }
+    },
+    {
+      "slug": "marbleflow",
+      "name": "MarbleFlow",
+      "image": "./assets/marble-flow.webp",
+      "color": { "en": "White", "hr": "Bijela", "de": "Weiß" }
+    },
+    {
+      "slug": "goldmarble",
+      "name": "GoldMarble",
+      "image": "./assets/gold-marble.webp",
+      "color": { "en": "Gold", "hr": "Zlatna", "de": "Gold" }
+    },
+    {
+      "slug": "goldenbliss",
+      "name": "GoldenBliss",
+      "image": "./assets/golden-bliss.webp",
+      "color": { "en": "Gold", "hr": "Zlatna", "de": "Gold" }
+    },
+    {
+      "slug": "geopurple",
+      "name": "GeoPurple",
+      "image": "./assets/geo-purple.webp",
+      "color": { "en": "Purple", "hr": "Ljubičasta", "de": "Lila" }
+    },
+    {
+      "slug": "geochroma",
+      "name": "GeoChroma",
+      "image": "./assets/geo-chroma.webp",
+      "color": { "en": "Multicolor", "hr": "Višebojna", "de": "Mehrfarbig" }
+    },
+    {
+      "slug": "emeraldf",
+      "name": "EmeraldF",
+      "image": "./assets/emerald-f.webp",
+      "color": { "en": "Green", "hr": "Zelena", "de": "Grün" }
+    },
+    {
+      "slug": "custom-design",
+      "name": "Custom Design",
+      "image": "./assets/custom-design.webp",
+      "color": { "en": "Custom", "hr": "Po narudžbi", "de": "Nach Wunsch" },
+      "isCustom": true
+    }
+  ]
+}

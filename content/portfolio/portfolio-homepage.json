@@ -1,0 +1,103 @@
+{
+  "_schema": "Homepage portfolio highlights. Featured projects for the asymmetric grid. Each project links to its case study page at /portfolio/[slug]/.",
+  "_status": "ACTIVE — 6 custom-code projects documented",
+  "_updated": "2026-03-19",
+  "featured": [
+    {
+      "slug": "misha-gashi",
+      "name": {
+        "en": "Misha Gashi",
+        "hr": "Misha Gashi",
+        "de": "Misha Gashi"
+      },
+      "industry": {
+        "en": "Wellness & Personal Development",
+        "hr": "Wellness i osobni razvoj",
+        "de": "Wellness & Persönliche Entwicklung"
+      },
+      "tech_highlights": ["Next.js", "Stripe", "Custom CMS", "User Portal", "Course Platform"],
+      "image": "/portfolio/screenshots/misha-gashi/homepage-full.png",
+      "grid_size": "large"
+    },
+    {
+      "slug": "village-homes-drage",
+      "name": {
+        "en": "Village Homes Drage",
+        "hr": "Village Homes Drage",
+        "de": "Village Homes Drage"
+      },
+      "industry": {
+        "en": "Real Estate & Tourism",
+        "hr": "Nekretnine i turizam",
+        "de": "Immobilien & Tourismus"
+      },
+      "tech_highlights": ["Next.js", "Interactive Maps", "Comparison Tool", "4 Languages"],
+      "image": "/portfolio/screenshots/village-homes-drage/homepage-full.png",
+      "grid_size": "standard"
+    },
+    {
+      "slug": "adria-escape",
+      "name": {
+        "en": "Adria Escape",
+        "hr": "Adria Escape",
+        "de": "Adria Escape"
+      },
+      "industry": {
+        "en": "Travel & Tourism Media",
+        "hr": "Putovanja i turistički mediji",
+        "de": "Reise- & Tourismusmedien"
+      },
+      "tech_highlights": ["Next.js", "5 Languages", "Dark/Light Mode", "Custom CMS", "SEO Platform"],
+      "image": "/portfolio/screenshots/adria-escape/homepage-light-full.png",
+      "grid_size": "standard"
+    },
+    {
+      "slug": "villa-nadja-tamaris",
+      "name": {
+        "en": "Villa Nadja & Tamaris",
+        "hr": "Villa Nadja & Tamaris",
+        "de": "Villa Nadja & Tamaris"
+      },
+      "industry": {
+        "en": "Hospitality & Vacation Rentals",
+        "hr": "Ugostiteljstvo i smještaj",
+        "de": "Gastgewerbe & Ferienvermietung"
+      },
+      "tech_highlights": ["Next.js", "Google Maps", "Booking System", "2 Languages"],
+      "image": "/portfolio/screenshots/villa-nadja-tamaris/homepage-full.png",
+      "grid_size": "standard"
+    },
+    {
+      "slug": "fiore-paklenica",
+      "name": {
+        "en": "Fiore Paklenica",
+        "hr": "Fiore Paklenica",
+        "de": "Fiore Paklenica"
+      },
+      "industry": {
+        "en": "Hospitality & Vacation Rentals",
+        "hr": "Ugostiteljstvo i smještaj",
+        "de": "Gastgewerbe & Ferienvermietung"
+      },
+      "tech_highlights": ["Vanilla JS", "6 Languages", "Ultra-Fast", "Attractions Guide"],
+      "image": "/portfolio/screenshots/fiore-paklenica/homepage-full.png",
+      "grid_size": "standard"
+    },
+    {
+      "slug": "sima-office",
+      "name": {
+        "en": "SIMA Office",
+        "hr": "SIMA Office",
+        "de": "SIMA Office"
+      },
+      "industry": {
+        "en": "Professional Services",
+        "hr": "Profesionalne usluge",
+        "de": "Professionelle Dienstleistungen"
+      },
+      "tech_highlights": ["Vanilla JS", "Schema.org", "2 Languages", "One-Page"],
+      "image": "/portfolio/screenshots/sima-office/homepage-full.png",
+      "grid_size": "standard"
+    }
+  ]
+}

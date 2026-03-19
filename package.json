@@ -1,0 +1,53 @@
+{
+  "name": "version2-hr",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@hookform/resolvers": "^5.2.2",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@sentry/nextjs": "^10.45.0",
+    "detect-gpu": "^5.0.70",
+    "fuse.js": "^7.1.0",
+    "gray-matter": "^4.0.3",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.19",
+    "lucide-react": "^0.577.0",
+    "motion": "^12.38.0",
+    "next": "16.2.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.71.2",
+    "rehype-highlight": "^7.0.2",
+    "rehype-stringify": "^10.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "three": "^0.183.2",
+    "unified": "^11.0.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.183.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.0",
+    "satori": "^0.25.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}

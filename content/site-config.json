@@ -1,0 +1,234 @@
+{
+  "site": {
+    "name": "Version2",
+    "url": "https://version2.hr",
+    "tagline": "We build what others can't.",
+    "description": "Web Development Studio",
+    "languages": ["en", "hr", "de"],
+    "defaultLanguage": "en"
+  },
+  "business": {
+    "legalName": "Version2 j.d.o.o.",
+    "director": "Marko Matošević",
+    "oib": "91496405628",
+    "mbs": "110121143",
+    "courtRegistration": "Trgovački sud u Zadru",
+    "address": {
+      "street": "Novigradska ulica 21",
+      "city": "Zadar",
+      "postalCode": "23000",
+      "country": "Hrvatska"
+    },
+    "banking": {
+      "bank": "OTP BANKA",
+      "iban": "HR74 2407 0001 1002 7040 0",
+      "swift": "OTPVHR2X"
+    }
+  },
+  "contact": {
+    "email": "info@version2.hr",
+    "phone": "+385 99 561 7706",
+    "whatsapp": "https://wa.me/385995617706"
+  },
+  "social": {
+    "facebook": "https://facebook.com/version2hr",
+    "instagram": "https://instagram.com/version2hr",
+    "x": "https://x.com/version2hr",
+    "tiktok": "https://tiktok.com/@version2hr"
+  },
+  "analytics": {
+    "googleAnalytics4": "GT-NBBTZS5",
+    "googleAds": ["AW-11213118615", "AW-16539026255"],
+    "facebookPixel": "557616629917733"
+  },
+  "branding": {
+    "colors": {
+      "brandRed": "#991717",
+      "brandRedLight": "#cc2323",
+      "brandRedDark": "#7a1212",
+      "darkBase": "#141414",
+      "darkRaised": "#1c1c1c",
+      "darkSunken": "#0c0c0c",
+      "lightBase": "#F5F0EB",
+      "lightRaised": "#FFFFFF",
+      "lightSunken": "#EDE8E3",
+      "foreground": "#F0E8E0",
+      "muted": "#9A918A",
+      "faint": "#6A625C",
+      "line": "#2a2a2a",
+      "lineSubtle": "#1f1f1f"
+    },
+    "typography": {
+      "headlineFont": "Albert Sans",
+      "headlineWeights": [300, 700],
+      "bodyFont": "Manrope",
+      "bodyWeights": [400, 600],
+      "fallback": "system-ui, -apple-system, sans-serif"
+    }
+  },
+  "navigation": {
+    "header": [
+      {
+        "label": { "en": "Portfolio", "hr": "Portfolio", "de": "Portfolio" },
+        "url": { "en": "/portfolio/", "hr": "/hr/portfolio/", "de": "/de/portfolio/" }
+      },
+      {
+        "label": { "en": "Pricing", "hr": "Cijene", "de": "Preise" },
+        "url": { "en": "/pricing/", "hr": "/hr/cijene/", "de": "/de/preise/" }
+      },
+      {
+        "label": { "en": "Contact", "hr": "Kontakt", "de": "Kontakt" },
+        "url": { "en": "/contact/", "hr": "/hr/kontakt/", "de": "/de/kontakt/" }
+      }
+    ],
+    "menu": [
+      {
+        "label": { "en": "Home", "hr": "Naslovna", "de": "Startseite" },
+        "url": { "en": "/", "hr": "/hr/", "de": "/de/" }
+      },
+      {
+        "label": { "en": "Services", "hr": "Usluge", "de": "Dienstleistungen" },
+        "url": { "en": "/services/", "hr": "/hr/usluge/", "de": "/de/dienstleistungen/" },
+        "children": [
+          {
+            "label": { "en": "Web Design", "hr": "Web Dizajn", "de": "Web Design" },
+            "url": { "en": "/services/web-design/", "hr": "/hr/usluge/web-dizajn/", "de": "/de/dienstleistungen/web-design/" }
+          },
+          {
+            "label": { "en": "Web Applications", "hr": "Web Aplikacije", "de": "Web-Anwendungen" },
+            "url": { "en": "/services/web-applications/", "hr": "/hr/usluge/web-aplikacije/", "de": "/de/dienstleistungen/web-anwendungen/" }
+          },
+          {
+            "label": { "en": "E-Commerce", "hr": "E-Trgovina", "de": "E-Commerce" },
+            "url": { "en": "/services/e-commerce/", "hr": "/hr/usluge/e-trgovina/", "de": "/de/dienstleistungen/e-commerce/" }
+          },
+          {
+            "label": { "en": "AI Integration", "hr": "AI Integracija", "de": "KI-Integration" },
+            "url": { "en": "/services/ai-integration/", "hr": "/hr/usluge/ai-integracija/", "de": "/de/dienstleistungen/ki-integration/" }
+          },
+          {
+            "label": { "en": "SEO", "hr": "SEO", "de": "SEO" },
+            "url": { "en": "/services/seo/", "hr": "/hr/usluge/seo/", "de": "/de/dienstleistungen/seo/" }
+          }
+        ]
+      },
+      {
+        "label": { "en": "Portfolio", "hr": "Portfolio", "de": "Portfolio" },
+        "url": { "en": "/portfolio/", "hr": "/hr/portfolio/", "de": "/de/portfolio/" }
+      },
+      {
+        "label": { "en": "Pricing", "hr": "Cijene", "de": "Preise" },
+        "url": { "en": "/pricing/", "hr": "/hr/cijene/", "de": "/de/preise/" }
+      },
+      {
+        "label": { "en": "About", "hr": "O Nama", "de": "Über Uns" },
+        "url": { "en": "/about/", "hr": "/hr/o-nama/", "de": "/de/uber-uns/" }
+      },
+      {
+        "label": { "en": "Blog", "hr": "Blog", "de": "Blog" },
+        "url": { "en": "/blog/", "hr": "/hr/blog/", "de": "/de/blog/" }
+      },
+      {
+        "label": { "en": "Career", "hr": "Karijera", "de": "Karriere" },
+        "url": { "en": "/career/", "hr": "/hr/karijera/", "de": "/de/karriere/" }
+      },
+      {
+        "label": { "en": "Analysis", "hr": "Analiza", "de": "Analyse" },
+        "url": { "en": "/analysis/", "hr": "/hr/analiza/", "de": "/de/analyse/" }
+      },
+      {
+        "label": { "en": "Contact", "hr": "Kontakt", "de": "Kontakt" },
+        "url": { "en": "/contact/", "hr": "/hr/kontakt/", "de": "/de/kontakt/" }
+      }
+    ],
+    "footer": {
+      "services": [
+        {
+          "label": { "en": "Web Design", "hr": "Web Dizajn", "de": "Web Design" },
+          "url": { "en": "/services/web-design/", "hr": "/hr/usluge/web-dizajn/", "de": "/de/dienstleistungen/web-design/" }
+        },
+        {
+          "label": { "en": "Web Applications", "hr": "Web Aplikacije", "de": "Web-Anwendungen" },
+          "url": { "en": "/services/web-applications/", "hr": "/hr/usluge/web-aplikacije/", "de": "/de/dienstleistungen/web-anwendungen/" }
+        },
+        {
+          "label": { "en": "E-Commerce", "hr": "E-Trgovina", "de": "E-Commerce" },
+          "url": { "en": "/services/e-commerce/", "hr": "/hr/usluge/e-trgovina/", "de": "/de/dienstleistungen/e-commerce/" }
+        },
+        {
+          "label": { "en": "AI Integration", "hr": "AI Integracija", "de": "KI-Integration" },
+          "url": { "en": "/services/ai-integration/", "hr": "/hr/usluge/ai-integracija/", "de": "/de/dienstleistungen/ki-integration/" }
+        },
+        {
+          "label": { "en": "SEO", "hr": "SEO", "de": "SEO" },
+          "url": { "en": "/services/seo/", "hr": "/hr/usluge/seo/", "de": "/de/dienstleistungen/seo/" }
+        }
+      ],
+      "company": [
+        {
+          "label": { "en": "About", "hr": "O Nama", "de": "Über Uns" },
+          "url": { "en": "/about/", "hr": "/hr/o-nama/", "de": "/de/uber-uns/" }
+        },
+        {
+          "label": { "en": "Portfolio", "hr": "Portfolio", "de": "Portfolio" },
+          "url": { "en": "/portfolio/", "hr": "/hr/portfolio/", "de": "/de/portfolio/" }
+        },
+        {
+          "label": { "en": "Blog", "hr": "Blog", "de": "Blog" },
+          "url": { "en": "/blog/", "hr": "/hr/blog/", "de": "/de/blog/" }
+        },
+        {
+          "label": { "en": "Career", "hr": "Karijera", "de": "Karriere" },
+          "url": { "en": "/career/", "hr": "/hr/karijera/", "de": "/de/karriere/" }
+        },
+        {
+          "label": { "en": "Pricing", "hr": "Cijene", "de": "Preise" },
+          "url": { "en": "/pricing/", "hr": "/hr/cijene/", "de": "/de/preise/" }
+        },
+        {
+          "label": { "en": "Analysis", "hr": "Analiza", "de": "Analyse" },
+          "url": { "en": "/analysis/", "hr": "/hr/analiza/", "de": "/de/analyse/" }
+        }
+      ],
+      "legal": [
+        {
+          "label": { "en": "Legal Notice", "hr": "Pravna Obavijest", "de": "Impressum" },
+          "url": { "en": "/legal-notice/", "hr": "/hr/pravna-obavijest/", "de": "/de/impressum/" }
+        },
+        {
+          "label": { "en": "Terms & Conditions", "hr": "Uvjeti Korištenja", "de": "Nutzungsbedingungen" },
+          "url": { "en": "/terms-and-conditions/", "hr": "/hr/uvjeti-koristenja/", "de": "/de/nutzungsbedingungen/" }
+        },
+        {
+          "label": { "en": "Privacy Policy", "hr": "Politika Privatnosti", "de": "Datenschutz" },
+          "url": { "en": "/privacy-policy/", "hr": "/hr/politika-privatnosti/", "de": "/de/datenschutz/" }
+        },
+        {
+          "label": { "en": "Cookies", "hr": "Kolačići", "de": "Cookies" },
+          "url": { "en": "/cookies/", "hr": "/hr/kolacici/", "de": "/de/cookies/" }
+        },
+        {
+          "label": { "en": "Refund Policy", "hr": "Politika Povrata", "de": "Widerrufsrecht" },
+          "url": { "en": "/refund-policy/", "hr": "/hr/politika-povrata/", "de": "/de/widerrufsrecht/" }
+        },
+        {
+          "label": { "en": "Accessibility", "hr": "Pristupačnost", "de": "Barrierefreiheit" },
+          "url": { "en": "/accessibility/", "hr": "/hr/izjava-o-pristupacnosti/", "de": "/de/barrierefreiheit/" }
+        }
+      ]
+    }
+  },
+  "forms": {
+    "contact": {
+      "fields": [
+        { "name": "name", "type": "text", "required": true, "label": { "hr": "Ime", "en": "Name", "de": "Name" } },
+        { "name": "email", "type": "email", "required": true, "label": { "hr": "Email", "en": "Email", "de": "E-Mail" } },
+        { "name": "message", "type": "textarea", "required": true, "label": { "hr": "Poruka", "en": "Message", "de": "Nachricht" } }
+      ],
+      "submitLabel": { "hr": "Pošalji", "en": "Send", "de": "Senden" }
+    }
+  },
+  "seo": {
+    "sitemapUrl": "https://version2.hr/sitemap.xml"
+  }
+}
