@@ -1,5 +1,20 @@
 import type { Metadata } from 'next'
+import { Albert_Sans, Manrope } from 'next/font/google'
 import '@/styles/globals.css'
+
+const albertSans = Albert_Sans({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '700'],
+  display: 'swap',
+  variable: '--font-albert-sans',
+})
+
+const manrope = Manrope({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '600'],
+  display: 'swap',
+  variable: '--font-manrope',
+})
 
 export const metadata: Metadata = {
   title: 'Version2 — Web Design & Development Studio',
@@ -12,7 +27,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${albertSans.variable} ${manrope.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
