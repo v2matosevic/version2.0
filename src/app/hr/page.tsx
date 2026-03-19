@@ -10,8 +10,8 @@ import { CTASection } from '@/components/shared/cta-section'
 import { LocalBusinessJsonLd, WebSiteJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
 
-export default async function HomePage() {
-  const page = await parsePage('home', 'en')
+export default async function HrHomePage() {
+  const page = await parsePage('home', 'hr')
   const testimonials = loadTestimonials()
   const portfolio = loadPortfolioFeatured()
 
@@ -22,8 +22,8 @@ export default async function HomePage() {
 
   const portfolioProjects = portfolio.map((p) => ({
     slug: p.slug,
-    name: p.name.en ?? p.name.hr,
-    industry: p.industry.en ?? p.industry.hr,
+    name: p.name.hr ?? p.name.en,
+    industry: p.industry.hr ?? p.industry.en,
     tech: p.tech_highlights,
     grid_size: p.grid_size as 'large' | 'standard',
   }))
@@ -32,33 +32,28 @@ export default async function HomePage() {
 
   return (
     <main id="main-content" className="flex-1">
-      <LocalBusinessJsonLd lang="en" />
+      <LocalBusinessJsonLd lang="hr" />
       <WebSiteJsonLd />
-      <BreadcrumbJsonLd items={[{ name: 'Home', url: SITE_URL }]} />
+      <BreadcrumbJsonLd items={[{ name: 'Početna', url: `${SITE_URL}/hr/` }]} />
       <HeroContent
-        overline={(fm?.overline as string) ?? 'Web Development Studio'}
-        headline={(fm?.h1 as string) ?? 'We build what others can\'t.'}
-        subtext={(fm?.subtext as string) ?? 'Custom websites, web applications, and AI-powered tools. Built from scratch. No templates.'}
-        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'See Our Work'}
-        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/portfolio/'}
-        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Get a Quote'}
-        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/pricing/'}
+        overline={(fm?.overline as string) ?? 'Studio za web razvoj'}
+        headline={(fm?.h1 as string) ?? 'Gradimo ono što drugi ne mogu.'}
+        subtext={(fm?.subtext as string) ?? 'Prilagođene web stranice, web aplikacije i alati pokretani umjetnom inteligencijom. Izrađeno od nule. Bez predložaka.'}
+        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Pogledajte naš rad'}
+        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/hr/portfolio/'}
+        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Zatražite ponudu'}
+        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/hr/cijene/'}
       />
-
       <ServicesTeaser services={servicesTeaser} />
-
-      <PortfolioHighlights projects={portfolioProjects} lang="en" />
-
+      <PortfolioHighlights projects={portfolioProjects} lang="hr" />
       <Differentiators
-        overline="Why Version2"
-        heading="Every line is ours."
+        overline="Zašto Version2"
+        heading="Svaka linija koda je naša."
         items={differentiators}
       />
-
       {featuredTestimonials.length > 0 && (
-        <Testimonials testimonials={featuredTestimonials} lang="en" />
+        <Testimonials testimonials={featuredTestimonials} lang="hr" />
       )}
-
       {ctaSection && (
         <CTASection
           heading={ctaSection.heading}

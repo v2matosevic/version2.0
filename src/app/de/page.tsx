@@ -10,8 +10,8 @@ import { CTASection } from '@/components/shared/cta-section'
 import { LocalBusinessJsonLd, WebSiteJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
 
-export default async function HomePage() {
-  const page = await parsePage('home', 'en')
+export default async function DeHomePage() {
+  const page = await parsePage('home', 'de')
   const testimonials = loadTestimonials()
   const portfolio = loadPortfolioFeatured()
 
@@ -22,8 +22,8 @@ export default async function HomePage() {
 
   const portfolioProjects = portfolio.map((p) => ({
     slug: p.slug,
-    name: p.name.en ?? p.name.hr,
-    industry: p.industry.en ?? p.industry.hr,
+    name: p.name.de ?? p.name.en,
+    industry: p.industry.de ?? p.industry.en,
     tech: p.tech_highlights,
     grid_size: p.grid_size as 'large' | 'standard',
   }))
@@ -32,33 +32,28 @@ export default async function HomePage() {
 
   return (
     <main id="main-content" className="flex-1">
-      <LocalBusinessJsonLd lang="en" />
+      <LocalBusinessJsonLd lang="de" />
       <WebSiteJsonLd />
-      <BreadcrumbJsonLd items={[{ name: 'Home', url: SITE_URL }]} />
+      <BreadcrumbJsonLd items={[{ name: 'Startseite', url: `${SITE_URL}/de/` }]} />
       <HeroContent
-        overline={(fm?.overline as string) ?? 'Web Development Studio'}
-        headline={(fm?.h1 as string) ?? 'We build what others can\'t.'}
-        subtext={(fm?.subtext as string) ?? 'Custom websites, web applications, and AI-powered tools. Built from scratch. No templates.'}
-        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'See Our Work'}
-        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/portfolio/'}
-        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Get a Quote'}
-        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/pricing/'}
+        overline={(fm?.overline as string) ?? 'Webentwicklung Studio'}
+        headline={(fm?.h1 as string) ?? 'Wir bauen, was andere nicht können.'}
+        subtext={(fm?.subtext as string) ?? 'Maßgeschneiderte Websites, Webanwendungen und KI-gestützte Tools. Von Grund auf gebaut. Keine Vorlagen.'}
+        ctaPrimaryLabel={(fm?.cta_primary_label as string) ?? 'Unsere Arbeit ansehen'}
+        ctaPrimaryHref={(fm?.cta_primary_href as string) ?? '/de/portfolio/'}
+        ctaSecondaryLabel={(fm?.cta_secondary_label as string) ?? 'Angebot anfordern'}
+        ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/de/preise/'}
       />
-
       <ServicesTeaser services={servicesTeaser} />
-
-      <PortfolioHighlights projects={portfolioProjects} lang="en" />
-
+      <PortfolioHighlights projects={portfolioProjects} lang="de" />
       <Differentiators
-        overline="Why Version2"
-        heading="Every line is ours."
+        overline="Warum Version2"
+        heading="Jede Zeile gehört uns."
         items={differentiators}
       />
-
       {featuredTestimonials.length > 0 && (
-        <Testimonials testimonials={featuredTestimonials} lang="en" />
+        <Testimonials testimonials={featuredTestimonials} lang="de" />
       )}
-
       {ctaSection && (
         <CTASection
           heading={ctaSection.heading}

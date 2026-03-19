@@ -21,23 +21,23 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   ...buildPageMetadata({
-    title: 'Web Design & Development Studio',
-    description: 'Premium web design, development, and AI integration studio based in Zadar, Croatia. Custom websites, web applications, and AI-powered tools built from scratch.',
+    title: 'Web Dizajn & Razvoj Studio',
+    description: 'Premium web dizajn, razvoj i AI integracija studio sa sjedištem u Zadru, Hrvatska. Prilagođene web stranice, web aplikacije i AI alati izrađeni od nule.',
     routeKey: 'home',
   }),
   metadataBase: new URL('https://version2.hr'),
 }
 
-export default function RootLayout({
+export default function HrLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const navItems = getMenuItems('en')
+  const navItems = getMenuItems('hr')
 
   return (
     <html
-      lang="en"
+      lang="hr"
       className={`${albertSans.variable} ${manrope.variable} h-full antialiased`}
       suppressHydrationWarning
     >
@@ -49,7 +49,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-base text-foreground font-body">
-        <LayoutShell lang="en" navItems={navItems}>
+        <LayoutShell lang="hr" navItems={navItems}>
           {children}
         </LayoutShell>
       </body>
