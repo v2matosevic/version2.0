@@ -1,30 +1,4 @@
-function emailWrapper(title: string, body: string): string {
-  return `<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"><title>${title}</title></head>
-<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
-  <div style="border-bottom:3px solid #991717;padding-bottom:10px;margin-bottom:20px;">
-    <h1 style="color:#991717;margin:0;font-size:20px;">${title}</h1>
-  </div>
-  ${body}
-  <div style="margin-top:30px;padding-top:15px;border-top:1px solid #eee;font-size:12px;color:#888;">
-    Version2.hr — Automated notification
-  </div>
-</body>
-</html>`
-}
-
-function row(label: string, value: string): string {
-  return `<tr><td style="padding:8px 12px;font-weight:bold;vertical-align:top;white-space:nowrap;">${label}</td><td style="padding:8px 12px;">${escapeHtml(value)}</td></tr>`
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
+import { brandedWrapper, dataRow, escapeHtml, ctaButton } from '@/lib/email-layout'
 
 type ContactData = {
   id: string
@@ -36,20 +10,47 @@ type ContactData = {
   language: string
 }
 
-export function contactNotification(data: ContactData): string {
+function contactNotification(data: ContactData): string {
   const isAnalysis = data.type === 'analysis'
   const title = isAnalysis ? 'New Analysis Request' : 'New Contact Form Submission'
+  const preheader = `${data.name} (${data.email}) submitted a ${isAnalysis ? 'website analysis' : 'contact'} form`
   const body = `
-    <table style="width:100%;border-collapse:collapse;">
-      ${row('Reference', data.id)}
-      ${row('Name', data.name)}
-      ${row('Email', data.email)}
-      ${row('Type', isAnalysis ? 'Website Analysis' : 'General Contact')}
-      ${isAnalysis && data.websiteUrl ? row('Website', data.websiteUrl) : ''}
-      ${row('Language', data.language.toUpperCase())}
-      ${row('Message', data.message)}
+    <p style="margin:16px 0;font-size:14px;color:#6a625c;">A new submission has been received.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #eee;border-radius:8px;overflow:hidden;">
+      ${dataRow('Reference', data.id)}
+      ${dataRow('Name', data.name)}
+      ${dataRow('Email', data.email)}
+      ${dataRow('Type', isAnalysis ? 'Website Analysis' : 'General Contact')}
+      ${isAnalysis && data.websiteUrl ? dataRow('Website', data.websiteUrl) : ''}
+      ${dataRow('Language', data.language.toUpperCase())}
+      ${dataRow('Message', data.message)}
     </table>`
-  return emailWrapper(title, body)
+  return brandedWrapper(title, preheader, body)
+}
+
+function contactConfirmation(data: ContactData): string {
+  const titles: Record<string, string> = {
+    en: 'Thank You for Reaching Out',
+    hr: 'Hvala Vam na poruci',
+    de: 'Vielen Dank für Ihre Nachricht',
+  }
+  const bodies: Record<string, string> = {
+    en: `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Hi ${escapeHtml(data.name)},</p>
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">We've received your message and will get back to you within 24 hours.</p>
+      <p style="margin:16px 0;font-size:14px;color:#6a625c;">In the meantime, feel free to explore our work:</p>
+      ${ctaButton('View Our Portfolio', 'https://version2.hr/portfolio/')}
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— The Version2 Team</p>`,
+    hr: `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Poštovani ${escapeHtml(data.name)},</p>
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Primili smo Vašu poruku i javit ćemo Vam se unutar 24 sata.</p>
+      ${ctaButton('Pogledajte naš portfolio', 'https://version2.hr/hr/portfolio/')}
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— Version2 tim</p>`,
+    de: `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Hallo ${escapeHtml(data.name)},</p>
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Wir haben Ihre Nachricht erhalten und werden uns innerhalb von 24 Stunden bei Ihnen melden.</p>
+      ${ctaButton('Unser Portfolio ansehen', 'https://version2.hr/de/portfolio/')}
+      <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— Das Version2 Team</p>`,
+  }
+  const lang = data.language in titles ? data.language : 'en'
+  return brandedWrapper(titles[lang], 'We received your message', bodies[lang])
 }
 
 type CareerData = {
@@ -61,17 +62,29 @@ type CareerData = {
   language: string
 }
 
-export function careerNotification(data: CareerData): string {
+function careerNotification(data: CareerData): string {
   const body = `
-    <table style="width:100%;border-collapse:collapse;">
-      ${row('Reference', data.id)}
-      ${row('Name', data.name)}
-      ${row('Email', data.email)}
-      ${data.portfolioUrl ? row('Portfolio', data.portfolioUrl) : ''}
-      ${row('Language', data.language.toUpperCase())}
-      ${row('Message', data.message)}
+    <p style="margin:16px 0;font-size:14px;color:#6a625c;">A new career application has been submitted.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #eee;border-radius:8px;">
+      ${dataRow('Reference', data.id)}
+      ${dataRow('Name', data.name)}
+      ${dataRow('Email', data.email)}
+      ${data.portfolioUrl ? dataRow('Portfolio', data.portfolioUrl) : ''}
+      ${dataRow('Language', data.language.toUpperCase())}
+      ${dataRow('Message', data.message)}
     </table>`
-  return emailWrapper('New Career Application', body)
+  return brandedWrapper('New Career Application', `${data.name} applied`, body)
+}
+
+function careerConfirmation(data: CareerData): string {
+  return brandedWrapper(
+    'Application Received',
+    'Thank you for your interest in Version2',
+    `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Hi ${escapeHtml(data.name)},</p>
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Thank you for your interest in joining Version2. We've received your application and will review it carefully.</p>
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">We'll be in touch soon.</p>
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— The Version2 Team</p>`,
+  )
 }
 
 type PricingData = {
@@ -84,22 +97,79 @@ type PricingData = {
   estimate: { oneTime: [number, number]; monthly: [number, number]; yearly: [number, number] }
 }
 
-export function pricingNotification(data: PricingData): string {
+function pricingNotification(data: PricingData): string {
   const est = data.estimate
   const body = `
-    <table style="width:100%;border-collapse:collapse;">
-      ${row('Reference', data.id)}
-      ${row('Name', data.name)}
-      ${row('Email', data.email)}
-      ${row('Language', data.language.toUpperCase())}
-      ${row('One-time', `€${est.oneTime[0].toLocaleString()} — €${est.oneTime[1].toLocaleString()}`)}
-      ${row('Monthly', `€${est.monthly[0].toLocaleString()} — €${est.monthly[1].toLocaleString()}`)}
-      ${row('Yearly', `€${est.yearly[0].toLocaleString()} — €${est.yearly[1].toLocaleString()}`)}
-      ${data.message ? row('Message', data.message) : ''}
+    <p style="margin:16px 0;font-size:14px;color:#6a625c;">A pricing estimate was requested.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #eee;border-radius:8px;">
+      ${dataRow('Reference', data.id)}
+      ${dataRow('Name', data.name)}
+      ${dataRow('Email', data.email)}
+      ${dataRow('Language', data.language.toUpperCase())}
+      ${dataRow('One-time', `€${est.oneTime[0].toLocaleString()} – €${est.oneTime[1].toLocaleString()}`)}
+      ${dataRow('Monthly', `€${est.monthly[0].toLocaleString()} – €${est.monthly[1].toLocaleString()}`)}
+      ${dataRow('Yearly', `€${est.yearly[0].toLocaleString()} – €${est.yearly[1].toLocaleString()}`)}
+      ${data.message ? dataRow('Message', data.message) : ''}
     </table>
-    <details style="margin-top:15px;">
-      <summary style="cursor:pointer;font-weight:bold;">Full Selections</summary>
-      <pre style="background:#f5f5f5;padding:12px;border-radius:4px;overflow-x:auto;font-size:12px;">${escapeHtml(JSON.stringify(data.selections, null, 2))}</pre>
+    <details style="margin-top:20px;">
+      <summary style="cursor:pointer;font-weight:600;font-size:13px;color:#6a625c;">Full Selections JSON</summary>
+      <pre style="background:#f5f5f5;padding:12px;border-radius:8px;overflow-x:auto;font-size:11px;margin-top:8px;">${escapeHtml(JSON.stringify(data.selections, null, 2))}</pre>
     </details>`
-  return emailWrapper('New Pricing Estimate Request', body)
+  return brandedWrapper('New Pricing Estimate Request', `${data.name} requested a quote`, body)
+}
+
+function pricingConfirmation(data: PricingData): string {
+  const est = data.estimate
+  return brandedWrapper(
+    'Your Pricing Estimate',
+    `Estimate: €${est.oneTime[0].toLocaleString()} – €${est.oneTime[1].toLocaleString()}`,
+    `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Hi ${escapeHtml(data.name)},</p>
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Here's a summary of your pricing estimate:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #eee;border-radius:8px;">
+      ${dataRow('One-time', `€${est.oneTime[0].toLocaleString()} – €${est.oneTime[1].toLocaleString()}`)}
+      ${est.monthly[1] > 0 ? dataRow('Monthly', `€${est.monthly[0].toLocaleString()} – €${est.monthly[1].toLocaleString()} /mo`) : ''}
+      ${est.yearly[1] > 0 ? dataRow('Yearly', `€${est.yearly[0].toLocaleString()} – €${est.yearly[1].toLocaleString()} /yr`) : ''}
+    </table>
+    <p style="margin:20px 0 8px;font-size:13px;color:#6a625c;">This is an estimate based on your selections. The final price depends on specific requirements.</p>
+    ${ctaButton('Schedule a Free Consultation', 'https://version2.hr/contact/')}
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— The Version2 Team</p>`,
+  )
+}
+
+type TrackingData = {
+  orderId: string
+  trackingNumber: string
+  carrier: string
+  customerName: string
+  customerEmail: string
+}
+
+function trackingNotification(data: TrackingData): string {
+  return brandedWrapper(
+    'Your Order Tracking Update',
+    `Tracking number: ${data.trackingNumber}`,
+    `<p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Hi ${escapeHtml(data.customerName)},</p>
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">Here are the tracking details for your order:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;border:1px solid #eee;border-radius:8px;">
+      ${dataRow('Order', data.orderId)}
+      ${dataRow('Tracking #', data.trackingNumber)}
+      ${dataRow('Carrier', data.carrier)}
+    </table>
+    ${ctaButton('Track Your Order', `https://version2.hr/tracking/?order=${encodeURIComponent(data.orderId)}`)}
+    <p style="margin:16px 0;font-size:14px;color:#2d2d2d;">— The Version2 Team</p>`,
+  )
+}
+
+export {
+  contactNotification,
+  contactConfirmation,
+  careerNotification,
+  careerConfirmation,
+  pricingNotification,
+  pricingConfirmation,
+  trackingNotification,
+  type ContactData,
+  type CareerData,
+  type PricingData,
+  type TrackingData,
 }
