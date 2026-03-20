@@ -1,6 +1,5 @@
 import type { NextConfig } from 'next'
-import fs from 'node:fs'
-import path from 'node:path'
+import { BLOG_REDIRECTS } from './src/lib/blog-redirects'
 
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -21,17 +20,6 @@ const securityHeaders = [
   },
 ]
 
-function loadBlogSlugRedirects(): Array<{ source: string; destination: string; permanent: boolean }> {
-  const filePath = path.join(process.cwd(), 'src', 'lib', 'content', 'blog-slug-redirects.txt')
-  if (!fs.existsSync(filePath)) return []
-
-  const lines = fs.readFileSync(filePath, 'utf-8').trim().split('\n')
-  return lines.map((line) => {
-    const [enSlug, hrSlug] = line.trim().split(' ')
-    return { source: `/blog/${enSlug}/`, destination: `/blog/${hrSlug}/`, permanent: true }
-  })
-}
-
 const nextConfig: NextConfig = {
   output: 'standalone',
   trailingSlash: true,
@@ -50,7 +38,7 @@ const nextConfig: NextConfig = {
     ]
   },
   async redirects() {
-    return loadBlogSlugRedirects()
+    return BLOG_REDIRECTS
   },
   async rewrites() {
     return []
