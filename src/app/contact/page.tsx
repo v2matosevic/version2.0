@@ -7,6 +7,7 @@ import { JsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { PageHero } from '@/components/shared/page-hero'
 import { ContentSection } from '@/components/shared/content-section'
 import { ContactForm } from '@/components/shared/contact-form'
+import { BookingWidget } from '@/components/booking/booking-widget'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Contact',
@@ -86,6 +87,10 @@ export default function ContactPage() {
             })}
           </div>
         </div>
+      </ContentSection>
+
+      <ContentSection background="base">
+        <BookingWidget lang="en" />
       </ContentSection>
     </main>
   )
