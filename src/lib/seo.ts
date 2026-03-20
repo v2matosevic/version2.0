@@ -3,7 +3,7 @@ import type { Language } from '@/types/i18n'
 
 const SITE_URL = 'https://version2.hr'
 const SITE_NAME = 'Version2'
-const DEFAULT_OG_IMAGE = '/og-default.jpg'
+const DEFAULT_OG_IMAGE = '/opengraph-image'
 
 /**
  * Route map for all pages across languages.

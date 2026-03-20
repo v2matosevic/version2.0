@@ -26,6 +26,7 @@ export default async function HrHomePage() {
     name: p.name.hr ?? p.name.en,
     industry: p.industry.hr ?? p.industry.en,
     tech: p.tech_highlights,
+    image: p.image,
     grid_size: p.grid_size as 'large' | 'standard',
   }))
 

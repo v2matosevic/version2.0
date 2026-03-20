@@ -45,7 +45,7 @@ function AnalysisFormDe() {
     }
 
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/contact/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -139,7 +139,7 @@ function AnalysisFormDe() {
               </div>
             )}
 
-            <div className="absolute left-[-9999px] opacity-0 h-0 pointer-events-none" aria-hidden="true">
+            <div className="sr-only" aria-hidden="true">
               <input type="text" name="_honey" tabIndex={-1} autoComplete="off" />
             </div>
 

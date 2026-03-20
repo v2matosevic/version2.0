@@ -195,7 +195,7 @@ function BookingWidget({ lang }: BookingWidgetProps) {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-        <div className="absolute left-[-9999px] opacity-0 h-0 pointer-events-none" aria-hidden="true">
+        <div className="sr-only" aria-hidden="true">
           <input type="text" name="_honey" tabIndex={-1} autoComplete="off" />
         </div>
 
