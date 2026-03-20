@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Mail, MessageCircle, ChevronUp, Plus } from 'lucide-react'
+import { Mail, MessageCircle, MessageSquare, ChevronUp, Plus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 const WHATSAPP_NUMBER = '385957174804'
@@ -19,9 +19,10 @@ type FabAction = {
 
 type FabProps = {
   contactHref?: string
+  onOpenChat?: () => void
 }
 
-function Fab({ contactHref = '/contact/' }: FabProps) {
+function Fab({ contactHref = '/contact/', onOpenChat }: FabProps) {
   const [isOpen, setIsOpen] = useState(false)
   const fabRef = useRef<HTMLDivElement>(null)
 
@@ -53,10 +54,16 @@ function Fab({ contactHref = '/contact/' }: FabProps) {
     return () => document.removeEventListener('keydown', handleKey)
   }, [isOpen, close])
 
+  const openChat = useCallback(() => {
+    if (onOpenChat) onOpenChat()
+    close()
+  }, [onOpenChat, close])
+
   const actions: FabAction[] = [
-    { label: 'Contact', href: contactHref, icon: Mail, delay: 0 },
-    { label: 'WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, external: true, delay: 0.05 },
-    { label: 'Scroll to Top', onClick: scrollToTop, icon: ChevronUp, delay: 0.1 },
+    ...(onOpenChat ? [{ label: 'Live Chat', onClick: openChat, icon: MessageSquare as LucideIcon, delay: 0 }] : []),
+    { label: 'Contact', href: contactHref, icon: Mail, delay: 0.05 },
+    { label: 'WhatsApp', href: WHATSAPP_URL, icon: MessageCircle, external: true, delay: 0.1 },
+    { label: 'Scroll to Top', onClick: scrollToTop, icon: ChevronUp, delay: 0.15 },
   ]
 
   return (

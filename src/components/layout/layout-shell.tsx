@@ -10,6 +10,7 @@ import { CookieConsent } from '@/components/layout/cookie-consent'
 import { CustomCursor } from '@/components/animations/custom-cursor'
 import { Analytics } from '@/components/layout/analytics'
 import { Fab } from '@/components/layout/fab'
+import { ChatWidget } from '@/components/chat/chat-widget'
 import type { Language } from '@/types/i18n'
 import type { NavMenuItem } from '@/lib/content/get-menu-items'
 
@@ -21,9 +22,11 @@ type LayoutShellProps = {
 
 function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [chatOpen, setChatOpen] = useState(false)
 
   const openMenu = useCallback(() => setMenuOpen(true), [])
   const closeMenu = useCallback(() => setMenuOpen(false), [])
+  const openChat = useCallback(() => setChatOpen(true), [])
 
   const contactHref = lang === 'hr' ? '/hr/kontakt/' : lang === 'de' ? '/de/kontakt/' : '/contact/'
 
@@ -47,7 +50,8 @@ function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
       <Footer lang={lang} />
       <CookieConsent />
       <Analytics />
-      <Fab contactHref={contactHref} />
+      <Fab contactHref={contactHref} onOpenChat={openChat} />
+      <ChatWidget lang={lang} isOpen={chatOpen} onClose={() => setChatOpen(false)} />
       <CustomCursor />
     </SmoothScroll>
   )
