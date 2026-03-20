@@ -40,8 +40,8 @@ function LocalBusinessJsonLd({ lang }: { lang: Language }) {
         description: descMap[lang],
         url: SITE_URL,
         logo: `${SITE_URL}/logo.svg`,
-        image: `${SITE_URL}/og-default.jpg`,
-        telephone: '+385957174804',
+        image: `${SITE_URL}/opengraph-image`,
+        telephone: '+385995617706',
         email: 'info@version2.hr',
         address: {
           '@type': 'PostalAddress',

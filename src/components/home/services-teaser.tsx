@@ -17,6 +17,7 @@ function ServicesTeaser({ services }: ServicesTeaserProps) {
   return (
     <section className="py-16 md:py-24 lg:py-32 bg-base">
       <Container>
+        <h2 className="sr-only">Services</h2>
         <StaggerReveal stagger={0.1}>
           {services.map((service, index) => (
             <Link
