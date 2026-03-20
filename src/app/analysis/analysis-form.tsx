@@ -34,14 +34,13 @@ function AnalysisForm() {
     setErrorMessage('')
 
     const formData = new FormData(event.currentTarget)
-    const honeypot = formData.get('_honey')
-    if (honeypot) return
 
     const body = {
       name: formData.get('name') as string,
       email: formData.get('email') as string,
-      website: formData.get('website') as string,
-      type: 'analysis',
+      websiteUrl: formData.get('website') as string,
+      _honey: (formData.get('_honey') as string) ?? '',
+      type: 'analysis' as const,
       language: 'en',
     }
 

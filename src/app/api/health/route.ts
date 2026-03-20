@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server'
+import Database from 'better-sqlite3'
+import path from 'node:path'
 import { ensureDatabase } from '@/db/migrate'
 
 let dbInitialized = false
@@ -9,9 +11,6 @@ function checkDatabase(): boolean {
       ensureDatabase()
       dbInitialized = true
     }
-    // Import dynamically to test the connection
-    const Database = require('better-sqlite3')
-    const path = require('node:path')
     const dbPath = path.join(process.cwd(), 'data', 'version2.db')
     const sqlite = new Database(dbPath, { readonly: true })
     const result = sqlite.prepare('SELECT 1 as ok').get() as { ok: number }
