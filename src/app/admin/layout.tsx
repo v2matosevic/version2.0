@@ -26,7 +26,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   // Don't wrap login page in admin layout
-  if (pathname === '/admin/login') {
+  const isLoginPage = pathname === '/admin/login' || pathname === '/admin/login/'
+  if (isLoginPage) {
     return <>{children}</>
   }
 
