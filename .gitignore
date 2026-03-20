@@ -40,7 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# database backup
+# database
+data/
 *.sql
 
 # IDE
