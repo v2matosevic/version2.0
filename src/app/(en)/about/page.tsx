@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Camera } from 'lucide-react'
 import { buildPageMetadata } from '@/lib/seo'
 import { SITE_URL } from '@/lib/seo'
 import { JsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
@@ -74,9 +75,60 @@ export default function AboutPage() {
             </p>
           </div>
           <div
-            className="rounded-xl bg-raised border border-line-subtle"
+            className="relative overflow-hidden rounded-xl border border-line-subtle"
             style={{ aspectRatio: '3 / 4' }}
-          />
+          >
+            {/* Warm charcoal gradient background */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(160deg, #1a1714 0%, #252220 35%, #1e1b18 65%, #151311 100%)',
+              }}
+            />
+            {/* Subtle grain overlay */}
+            <div
+              className="absolute inset-0 opacity-[0.03]"
+              style={{
+                backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+                backgroundSize: '128px 128px',
+              }}
+            />
+            {/* Warm accent glow */}
+            <div
+              className="absolute inset-0 opacity-[0.06]"
+              style={{
+                background: 'radial-gradient(ellipse at 30% 70%, #991717, transparent 60%)',
+              }}
+            />
+            {/* Content */}
+            <div className="relative flex h-full flex-col items-center justify-center gap-6 px-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-line-subtle/50 bg-base/10 backdrop-blur-sm">
+                <Camera size={28} className="text-muted/60" strokeWidth={1.5} />
+              </div>
+              <div>
+                <p
+                  className="font-heading text-foreground/80"
+                  style={{
+                    fontSize: 'var(--text-h4)',
+                    fontWeight: 'var(--font-weight-headline)',
+                    lineHeight: 'var(--leading-tight)',
+                  } as React.CSSProperties}
+                >
+                  Version2
+                </p>
+                <p
+                  className="mt-2 text-muted/50"
+                  style={{
+                    fontSize: 'var(--text-small)',
+                    lineHeight: 'var(--leading-body)',
+                  }}
+                >
+                  Studio Photo Coming Soon
+                </p>
+              </div>
+              <div className="mt-2 h-px w-12 bg-brand-red/30" />
+            </div>
+          </div>
         </div>
       </ContentSection>
       </ScrollReveal>

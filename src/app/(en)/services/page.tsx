@@ -9,6 +9,8 @@ import { buildPageMetadata } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
 import { ScrollReveal } from '@/components/animations/scroll-reveal'
+import { ServiceVisual } from '@/components/services/service-visual'
+import type { ServiceSlug } from '@/components/services/service-visual'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Services',
@@ -85,7 +87,12 @@ export default function ServicesPage() {
                   </Link>
                 </div>
               </div>
-              <div className={`rounded-xl bg-sunken border border-line-subtle aspect-[4/3] ${index % 2 !== 0 ? 'lg:order-1' : ''}`} />
+              <div className={index % 2 !== 0 ? 'lg:order-1' : ''}>
+                <ServiceVisual
+                  service={service.href.split('/services/')[1].replace('/', '') as ServiceSlug}
+                  number={service.number}
+                />
+              </div>
             </div>
           </Container>
         </section>

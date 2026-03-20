@@ -1,5 +1,6 @@
 'use client'
 
+import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import { Section } from '@/components/ui/section'
@@ -36,6 +37,9 @@ const TYPE_LEVELS = [
 ] as const
 
 function DevKitchenSink() {
+  // Only accessible in development
+  if (process.env.NODE_ENV === 'production') notFound()
+
   const { theme } = useTheme()
 
   return (

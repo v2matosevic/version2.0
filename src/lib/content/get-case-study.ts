@@ -4,6 +4,7 @@ import { parseMarkdown } from '@/lib/content/parse-markdown'
 import type { Language } from '@/types/i18n'
 
 const PORTFOLIO_DIR = path.join(process.cwd(), 'content', 'portfolio')
+const SCREENSHOTS_DIR = path.join(process.cwd(), 'public', 'portfolio', 'screenshots')
 
 type CaseStudyFrontmatter = {
   slug: string
@@ -58,5 +59,16 @@ function getPortfolioSlugs(): string[] {
   return [...PORTFOLIO_SLUGS]
 }
 
-export { getCaseStudy, getPortfolioSlugs }
+function getPortfolioScreenshots(slug: string): string[] {
+  const dir = path.join(SCREENSHOTS_DIR, slug)
+  if (!fs.existsSync(dir)) return []
+
+  return fs
+    .readdirSync(dir)
+    .filter((file) => /\.(png|jpe?g|webp|avif)$/i.test(file))
+    .sort()
+    .map((file) => `/portfolio/screenshots/${slug}/${file}`)
+}
+
+export { getCaseStudy, getPortfolioSlugs, getPortfolioScreenshots }
 export type { CaseStudy, CaseStudyFrontmatter }

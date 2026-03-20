@@ -3,12 +3,13 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
-import { getCaseStudy, getPortfolioSlugs } from '@/lib/content/get-case-study'
+import { getCaseStudy, getPortfolioSlugs, getPortfolioScreenshots } from '@/lib/content/get-case-study'
 import { buildPageMetadata, SITE_URL } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { Container } from '@/components/ui/container'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { ScreenshotGallery } from '@/components/portfolio/screenshot-gallery'
 import '@/styles/blog-prose.css'
 
 type CaseStudyPageProps = {
@@ -38,6 +39,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
   if (!study) notFound()
 
   const { frontmatter, html } = study
+  const screenshots = getPortfolioScreenshots(slug)
 
   return (
     <main id="main-content" className="flex-1">
@@ -142,6 +144,22 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                   <span className="text-faint ml-2">{frontmatter.testimonial.role}</span>
                 </footer>
               </blockquote>
+            )}
+
+            {screenshots.length > 0 && (
+              <div className="mt-16">
+                <h2
+                  className="mb-8 font-heading text-foreground"
+                  style={{
+                    fontSize: 'var(--text-h3)',
+                    fontWeight: 'var(--font-weight-headline)',
+                    lineHeight: 'var(--leading-tight)',
+                  }}
+                >
+                  Screenshots
+                </h2>
+                <ScreenshotGallery images={screenshots} alt={frontmatter.title} />
+              </div>
             )}
 
             <div className="mt-12 flex items-center gap-4">
