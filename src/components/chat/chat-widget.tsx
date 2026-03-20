@@ -12,23 +12,54 @@ type ChatWidgetProps = {
   onClose: () => void
 }
 
+type ToolResult = {
+  type: 'navigation' | 'pricing' | 'booking' | 'blog_results'
+  data: Record<string, unknown>
+}
+
 type Message = {
   role: 'user' | 'assistant'
   content: string
   sources?: string[]
+  toolResults?: ToolResult[]
 }
 
-const LABELS = {
-  en: { title: 'Chat with us', placeholder: 'Ask about our services...', close: 'Close chat' },
-  hr: { title: 'Razgovarajte s nama', placeholder: 'Pitajte o našim uslugama...', close: 'Zatvori chat' },
-  de: { title: 'Chatten Sie mit uns', placeholder: 'Fragen Sie nach unseren Dienstleistungen...', close: 'Chat schließen' },
+const LABELS: Record<string, {
+  title: string
+  placeholder: string
+  close: string
+  welcome: string
+  suggestions: string[]
+}> = {
+  en: {
+    title: 'Chat with Z.AI',
+    placeholder: 'Ask about our services...',
+    close: 'Close chat',
+    welcome: "Hi! I'm Z.AI, the Version2 assistant. I can help you with pricing, services, booking a consultation, or answering web development questions.",
+    suggestions: ['What services do you offer?', 'How much does a website cost?', 'Book a consultation'],
+  },
+  hr: {
+    title: 'Razgovor sa Z.AI',
+    placeholder: 'Pitajte o našim uslugama...',
+    close: 'Zatvori chat',
+    welcome: 'Pozdrav! Ja sam Z.AI, Version2 asistent. Mogu Vam pomoći s cijenama, uslugama, rezervacijom konzultacije ili pitanjima o web razvoju.',
+    suggestions: ['Koje usluge nudite?', 'Koliko košta web stranica?', 'Rezerviraj konzultaciju'],
+  },
+  de: {
+    title: 'Chat mit Z.AI',
+    placeholder: 'Fragen Sie nach unseren Dienstleistungen...',
+    close: 'Chat schließen',
+    welcome: 'Hallo! Ich bin Z.AI, der Version2-Assistent. Ich kann Ihnen bei Preisen, Dienstleistungen, Terminbuchung oder Fragen zur Webentwicklung helfen.',
+    suggestions: ['Welche Dienstleistungen bieten Sie an?', 'Was kostet eine Website?', 'Beratungstermin buchen'],
+  },
 }
 
 function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
-  const t = LABELS[lang as keyof typeof LABELS] ?? LABELS.en
+  const t = LABELS[lang] ?? LABELS.en
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
+  const [showSuggestions, setShowSuggestions] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Restore conversation from sessionStorage
@@ -36,6 +67,7 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
     const storedId = sessionStorage.getItem('v2_chat_conversation_id')
     if (storedId) {
       setConversationId(storedId)
+      setShowSuggestions(false)
       fetch(`/api/chat/${storedId}/`)
         .then((res) => res.ok ? res.json() : null)
         .then((data) => {
@@ -58,6 +90,7 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
   const handleSend = useCallback(async (message: string) => {
     setMessages((prev) => [...prev, { role: 'user', content: message }])
     setIsLoading(true)
+    setShowSuggestions(false)
 
     try {
       const response = await fetch('/api/chat/', {
@@ -70,7 +103,13 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
         }),
       })
 
-      const data = await response.json()
+      const data = await response.json() as {
+        conversationId?: string
+        response?: string
+        sources?: string[]
+        toolResults?: ToolResult[]
+        error?: string
+      }
 
       if (response.ok) {
         if (!conversationId && data.conversationId) {
@@ -79,8 +118,9 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
         }
         setMessages((prev) => [...prev, {
           role: 'assistant',
-          content: data.response,
+          content: data.response ?? '',
           sources: data.sources,
+          toolResults: data.toolResults,
         }])
       } else {
         setMessages((prev) => [...prev, {
@@ -125,9 +165,22 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+            {/* Welcome message */}
+            {messages.length === 0 && (
+              <ChatMessage role="assistant" content={t.welcome} />
+            )}
+
             {messages.map((msg, i) => (
-              <ChatMessage key={i} role={msg.role} content={msg.content} sources={msg.sources} />
+              <ChatMessage
+                key={i}
+                role={msg.role}
+                content={msg.content}
+                sources={msg.sources}
+                toolResults={msg.toolResults}
+              />
             ))}
+
+            {/* Typing indicator */}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="rounded-xl bg-raised border border-line-subtle px-4 py-3">
@@ -141,6 +194,22 @@ function ChatWidget({ lang, isOpen, onClose }: ChatWidgetProps) {
             )}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Suggested questions */}
+          {showSuggestions && messages.length === 0 && (
+            <div className="flex gap-2 px-3 pb-2 flex-wrap">
+              {t.suggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => handleSend(suggestion)}
+                  disabled={isLoading}
+                  className="rounded-lg border border-line bg-raised px-3 py-1.5 text-xs text-muted transition-colors hover:border-brand-red hover:text-foreground disabled:opacity-50"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Input */}
           <div className="border-t border-line p-3">

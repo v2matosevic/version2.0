@@ -71,11 +71,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     content: data.message,
   }).run()
 
-  // RAG search
-  const ragResults = searchRag(data.message, data.language, 3)
-  const context = ragResults.map((r) => r.chunk.source)
+  // RAG search for context
+  const ragResults = searchRag(data.message, data.language, 5)
+  const context = ragResults.map((r) => `[${r.chunk.title}] ${r.chunk.content.slice(0, 300)}`)
 
-  // Generate response
+  // Generate response with function calling
   const llmResult = await generateResponse({
     message: data.message,
     context,
@@ -129,5 +129,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     conversationId,
     response: llmResult.response,
     sources: llmResult.sources,
+    toolResults: llmResult.toolResults,
   })
 }

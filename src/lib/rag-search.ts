@@ -7,6 +7,7 @@ type RagChunk = {
   content: string
   source: string
   language: string
+  category: string
   keywords: string[]
 }
 
@@ -35,7 +36,7 @@ const STOP_WORDS = new Set([
 function tokenize(text: string): string[] {
   return text
     .toLowerCase()
-    .replace(/[^a-zA-Z0-9\s\u00C0-\u024F]/g, ' ')
+    .replace(/[^a-zA-Z0-9\s\u00C0-\u024F\u0100-\u017F]/g, ' ')
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOP_WORDS.has(w))
 }
@@ -45,31 +46,53 @@ type SearchResult = {
   score: number
 }
 
+type SearchOptions = {
+  maxResults?: number
+  category?: string
+}
+
 /**
- * Keyword-based search with title bonus.
+ * Keyword-based search with title, keyword, and category bonuses.
  */
-export function searchRag(query: string, language: string, maxResults = 5): SearchResult[] {
+function searchRag(
+  query: string,
+  language: string,
+  maxResultsOrOptions?: number | SearchOptions,
+): SearchResult[] {
   const allChunks = loadChunks()
   const queryTokens = tokenize(query)
 
   if (queryTokens.length === 0) return []
 
+  const maxResults = typeof maxResultsOrOptions === 'number'
+    ? maxResultsOrOptions
+    : maxResultsOrOptions?.maxResults ?? 5
+  const categoryFilter = typeof maxResultsOrOptions === 'object'
+    ? maxResultsOrOptions.category
+    : undefined
+
   const results: SearchResult[] = []
 
   for (const chunk of allChunks) {
+    // Language filter: include English as fallback, plus requested language
     if (chunk.language !== language && chunk.language !== 'en') continue
+
+    // Category filter
+    if (categoryFilter && chunk.category !== categoryFilter) continue
 
     let score = 0
     const titleLower = chunk.title.toLowerCase()
     const contentLower = chunk.content.toLowerCase()
 
     for (const token of queryTokens) {
-      // Title match (3x weight)
       if (titleLower.includes(token)) score += 3
-      // Keyword match (2x weight)
       if (chunk.keywords.includes(token)) score += 2
-      // Content match (1x weight)
       if (contentLower.includes(token)) score += 1
+    }
+
+    // Boost exact language matches over English fallback
+    if (chunk.language === language && language !== 'en') {
+      score *= 1.2
     }
 
     if (score > 0) {
@@ -81,3 +104,5 @@ export function searchRag(query: string, language: string, maxResults = 5): Sear
     .sort((a, b) => b.score - a.score)
     .slice(0, maxResults)
 }
+
+export { searchRag, type RagChunk, type SearchResult }
