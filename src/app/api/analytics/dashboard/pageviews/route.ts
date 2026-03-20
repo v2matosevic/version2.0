@@ -2,14 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sql } from 'drizzle-orm'
 import { validateAuth } from '@/lib/auth'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 export function GET(request: NextRequest): NextResponse {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { searchParams } = new URL(request.url)
   const interval = searchParams.get('interval') === 'week' ? 'week' : 'day'

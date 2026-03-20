@@ -5,9 +5,7 @@ import { validateAdminCookie } from '@/lib/admin-auth'
 import { generateId } from '@/lib/generate-id'
 import { parseZodErrors } from '@/lib/parse-zod-errors'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 const createDraftSchema = z.object({
   slug: z.string().min(1).max(200),
@@ -23,7 +21,7 @@ const createDraftSchema = z.object({
 export function GET(request: NextRequest): NextResponse {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { searchParams } = new URL(request.url)
   const language = searchParams.get('language')
@@ -41,7 +39,7 @@ export function GET(request: NextRequest): NextResponse {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   let body: unknown
   try {

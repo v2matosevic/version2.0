@@ -9,11 +9,9 @@ import { pricingNotification } from '@/lib/notification-emails'
 import { calculateEstimate } from '@/lib/pricing/calculate-estimate'
 import { PRICING_CONFIG } from '@/lib/pricing/load-pricing-config'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
+import { initDatabase } from '@/db/init'
 import type { WizardSelections, AddonSelection } from '@/types/pricing'
 import type { PricingSelections } from '@/lib/validation/schemas/pricing-schema'
-
-let dbReady = false
 
 const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 
@@ -51,7 +49,7 @@ function toWizardSelections(sel: PricingSelections): WizardSelections {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'pricing', { windowMs: 60_000, maxRequests: 10 })

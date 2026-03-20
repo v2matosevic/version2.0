@@ -4,14 +4,12 @@ import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
 import { trackParcel, type Carrier } from '@/lib/scrapers/track'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 type RouteParams = { params: Promise<{ trackingNumber: string }> }
 
 export async function GET(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'tracking', { windowMs: 60_000, maxRequests: 10 })

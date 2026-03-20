@@ -5,13 +5,7 @@ import { validateAdminCookie } from '@/lib/admin-auth'
 import { parseZodErrors } from '@/lib/parse-zod-errors'
 import { sendEmail } from '@/lib/email'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
-
-function initDb(): void {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
-}
+import { initDatabase } from '@/db/init'
 
 const updateOrderSchema = z.object({
   trackingNumber: z.string().max(100).optional(),
@@ -28,8 +22,7 @@ export async function GET(
 ): Promise<NextResponse> {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-  initDb()
-
+  initDatabase()
   const { id } = await context.params
 
   const order = db.select().from(schema.orders).where(eq(schema.orders.id, id)).get()
@@ -46,8 +39,7 @@ export async function PUT(
 ): Promise<NextResponse> {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-  initDb()
-
+  initDatabase()
   const { id } = await context.params
 
   const existing = db.select().from(schema.orders).where(eq(schema.orders.id, id)).get()
@@ -113,8 +105,7 @@ export async function DELETE(
 ): Promise<NextResponse> {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-  initDb()
-
+  initDatabase()
   const { id } = await context.params
 
   const existing = db.select().from(schema.orders).where(eq(schema.orders.id, id)).get()

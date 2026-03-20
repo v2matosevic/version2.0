@@ -2,16 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 import { validateAuth } from '@/lib/auth'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
 export async function GET(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
 

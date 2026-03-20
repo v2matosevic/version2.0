@@ -2,16 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 import { generateIcs } from '@/lib/ics'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 
 type RouteParams = { params: Promise<{ bookingId: string }> }
 
 export async function GET(_request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { bookingId } = await params
 

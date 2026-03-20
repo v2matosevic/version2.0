@@ -2,18 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sql, desc } from 'drizzle-orm'
 import { validateAdminCookie } from '@/lib/admin-auth'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 export function GET(request: NextRequest): NextResponse {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-
-  if (!dbReady) {
-    ensureDatabase()
-    dbReady = true
-  }
+  initDatabase()
 
   const today = new Date().toISOString().split('T')[0]
 

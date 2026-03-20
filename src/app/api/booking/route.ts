@@ -9,14 +9,12 @@ import { generateIcs } from '@/lib/ics'
 import { sendEmail } from '@/lib/email'
 import { bookingTeamNotification, bookingConfirmation } from '@/lib/booking-emails'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'booking', { windowMs: 60_000, maxRequests: 5 })

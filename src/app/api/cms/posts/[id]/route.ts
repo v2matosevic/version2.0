@@ -4,9 +4,7 @@ import { eq } from 'drizzle-orm'
 import { validateAuth } from '@/lib/auth'
 import { parseZodErrors } from '@/lib/parse-zod-errors'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
@@ -24,7 +22,7 @@ const updateDraftSchema = z.object({
 export async function GET(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
   const draft = db.select().from(schema.blogDrafts).where(eq(schema.blogDrafts.id, id)).get()
@@ -39,7 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
 export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
 
@@ -75,7 +73,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
 export async function DELETE(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
 

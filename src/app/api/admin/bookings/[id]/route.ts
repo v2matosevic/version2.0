@@ -3,9 +3,7 @@ import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { validateAdminCookie } from '@/lib/admin-auth'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 const updateStatusSchema = z.object({
   status: z.enum(['cancelled', 'confirmed', 'completed']),
@@ -17,11 +15,7 @@ export async function PUT(
 ): Promise<NextResponse> {
   const authError = validateAdminCookie(request)
   if (authError) return authError
-
-  if (!dbReady) {
-    ensureDatabase()
-    dbReady = true
-  }
+  initDatabase()
 
   const { id } = await params
 

@@ -5,9 +5,7 @@ import { validateAuth } from '@/lib/auth'
 import { parseZodErrors } from '@/lib/parse-zod-errors'
 import { sendEmail } from '@/lib/email'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 type RouteParams = { params: Promise<{ id: string }> }
 
@@ -21,7 +19,7 @@ const updateOrderSchema = z.object({
 export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
 
@@ -74,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
 export async function DELETE(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
   const authError = validateAuth(request)
   if (authError) return authError
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const { id } = await params
 

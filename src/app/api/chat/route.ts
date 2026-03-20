@@ -10,16 +10,14 @@ import { searchRag } from '@/lib/rag-search'
 import { generateResponse } from '@/lib/llm'
 import { sendEmail } from '@/lib/email'
 import { db, schema } from '@/db'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 const MAX_MESSAGES_PER_CONVERSATION = 50
 const FLAG_KEYWORDS = /pricing|urgent|dring|hitno|cijena|preis|human|čovjek|mensch|contact.*us|javite.*se/i
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'chat', { windowMs: 60_000, maxRequests: 30 })

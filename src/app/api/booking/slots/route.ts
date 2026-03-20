@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAvailableSlots } from '@/lib/booking-availability'
 import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
-import { ensureDatabase } from '@/db/migrate'
-
-let dbReady = false
+import { initDatabase } from '@/db/init'
 
 export function GET(request: NextRequest): NextResponse {
-  if (!dbReady) { ensureDatabase(); dbReady = true }
+  initDatabase()
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'booking-slots', { windowMs: 60_000, maxRequests: 30 })
