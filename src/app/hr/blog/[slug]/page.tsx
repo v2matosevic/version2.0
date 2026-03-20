@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { CURATED_SLUGS } from '@/lib/content/curated-slugs'
 import { getPostBySlug } from '@/lib/content/get-post-by-slug'
@@ -8,8 +9,10 @@ import { BlogPostingJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { Container } from '@/components/ui/container'
 import { Badge } from '@/components/ui/badge'
 import { BlogPostContent } from '@/components/blog/blog-post-content'
+import { TableOfContents } from '@/components/blog/table-of-contents'
 import { ShareButtons } from '@/components/blog/share-buttons'
 import { RelatedPosts } from '@/components/blog/related-posts'
+import { injectHeadingIds } from '@/lib/content/inject-heading-ids'
 import '@/styles/blog-prose.css'
 
 type HrBlogPostPageProps = {
@@ -53,6 +56,7 @@ export default async function HrBlogPostPage({ params }: HrBlogPostPageProps) {
   const allPosts = await getAllPosts('hr')
   const { title, excerpt, category, date, tags, lastModified, author, featuredImage } = post.frontmatter
   const postUrl = `${SITE_URL}/hr/blog/${slug}/`
+  const htmlWithIds = injectHeadingIds(post.html)
 
   return (
     <main id="main-content" className="flex-1">
@@ -120,27 +124,50 @@ export default async function HrBlogPostPage({ params }: HrBlogPostPageProps) {
         </Container>
       </section>
 
+      {/* Featured Image */}
+      {featuredImage && (
+        <section className="bg-base pb-8 md:pb-12">
+          <Container>
+            <div className="max-w-4xl">
+              <Image
+                src={`/api/blog-image/${slug}/`}
+                alt={title}
+                width={1200}
+                height={675}
+                className="w-full h-auto rounded-xl border border-line"
+                style={{ aspectRatio: '16 / 9', objectFit: 'cover' }}
+                priority
+              />
+            </div>
+          </Container>
+        </section>
+      )}
+
       {/* Content */}
       <section className="bg-base pb-16 md:pb-24">
         <Container>
-          <div className="max-w-3xl">
-            <BlogPostContent html={post.html} />
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 max-w-5xl">
+            <div>
+              <TableOfContents html={htmlWithIds} />
+              <BlogPostContent html={htmlWithIds} />
 
-            <div className="mt-12 pt-8 border-t border-line">
-              <ShareButtons
-                url={postUrl}
-                title={title}
-                label="Podijeli ovaj clanak"
+              <div className="mt-12 pt-8 border-t border-line">
+                <ShareButtons
+                  url={postUrl}
+                  title={title}
+                  label="Podijeli ovaj clanak"
+                />
+              </div>
+
+              <RelatedPosts
+                currentSlug={slug}
+                currentCategory={category}
+                allPosts={allPosts}
+                langPrefix="/hr"
+                heading="Povezani clanci"
               />
             </div>
-
-            <RelatedPosts
-              currentSlug={slug}
-              currentCategory={category}
-              allPosts={allPosts}
-              langPrefix="/hr"
-              heading="Povezani clanci"
-            />
+            <TableOfContents html={htmlWithIds} />
           </div>
         </Container>
       </section>

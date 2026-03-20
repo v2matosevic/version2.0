@@ -6,6 +6,8 @@ import { PageHero } from '@/components/shared/page-hero'
 import { ContentSection } from '@/components/shared/content-section'
 import { CTASection } from '@/components/shared/cta-section'
 import { Badge } from '@/components/ui/badge'
+import { CounterAnimation } from '@/components/animations/counter-animation'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'About Version2',
@@ -13,12 +15,11 @@ export const metadata: Metadata = buildPageMetadata({
   routeKey: 'about',
 })
 
-const STATS = [
-  { number: '100+', label: 'Projects' },
-  { number: '100+', label: 'Clients' },
-  { number: '5.0', label: 'Rating' },
-  { number: '40+', label: 'Reviews' },
-  { number: '2022', label: 'Founded' },
+const ANIMATED_STATS = [
+  { target: 100, suffix: '+', decimals: 0, label: 'Projects' },
+  { target: 100, suffix: '+', decimals: 0, label: 'Clients' },
+  { target: 5, suffix: '', decimals: 1, label: 'Rating' },
+  { target: 40, suffix: '+', decimals: 0, label: 'Reviews' },
 ] as const
 
 const VALUES = [
@@ -55,6 +56,7 @@ export default function AboutPage() {
         minHeight="50vh"
       />
 
+      <ScrollReveal>
       <ContentSection background="base">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr]">
           <div
@@ -77,7 +79,9 @@ export default function AboutPage() {
           />
         </div>
       </ContentSection>
+      </ScrollReveal>
 
+      <ScrollReveal>
       <ContentSection background="raised" heading="What We Believe">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {VALUES.map((value) => (
@@ -99,11 +103,13 @@ export default function AboutPage() {
           ))}
         </div>
       </ContentSection>
+      </ScrollReveal>
 
+      <ScrollReveal>
       <section className="py-12 md:py-16 lg:py-20 bg-sunken">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap justify-between items-center gap-8">
-            {STATS.map((stat) => (
+            {ANIMATED_STATS.map((stat) => (
               <div key={stat.label} className="text-center">
                 <div
                   className="font-heading text-foreground"
@@ -112,15 +118,33 @@ export default function AboutPage() {
                     fontWeight: 'var(--font-weight-headline-bold)',
                   } as React.CSSProperties}
                 >
-                  {stat.number}
+                  <CounterAnimation
+                    target={stat.target}
+                    suffix={stat.suffix}
+                    decimals={stat.decimals}
+                  />
                 </div>
                 <p className="mt-1 text-sm text-muted">{stat.label}</p>
               </div>
             ))}
+            <div className="text-center">
+              <div
+                className="font-heading text-foreground"
+                style={{
+                  fontSize: 'var(--text-h2)',
+                  fontWeight: 'var(--font-weight-headline-bold)',
+                } as React.CSSProperties}
+              >
+                2022
+              </div>
+              <p className="mt-1 text-sm text-muted">Founded</p>
+            </div>
           </div>
         </div>
       </section>
+      </ScrollReveal>
 
+      <ScrollReveal>
       <ContentSection background="base" heading="What We Build With">
         <div className="flex flex-col gap-8">
           {TECH_STACK.map((group) => (
@@ -165,13 +189,16 @@ export default function AboutPage() {
           Novigradska 21, 23000 Zadar, Croatia
         </p>
       </ContentSection>
+      </ScrollReveal>
 
+      <ScrollReveal>
       <CTASection
         heading="Want to see if we're the right fit?"
         subtext="Let's start with a conversation. No pitch decks. No sales calls."
         ctaLabel="Get in Touch"
         ctaHref="/contact/"
       />
+      </ScrollReveal>
     </main>
   )
 }

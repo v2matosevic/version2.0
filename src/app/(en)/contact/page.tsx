@@ -8,6 +8,7 @@ import { PageHero } from '@/components/shared/page-hero'
 import { ContentSection } from '@/components/shared/content-section'
 import { ContactForm } from '@/components/shared/contact-form'
 import { BookingWidget } from '@/components/booking/booking-widget'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Contact',
@@ -51,6 +52,7 @@ export default function ContactPage() {
         subtext="We respond within 24 hours. Usually faster."
       />
 
+      <ScrollReveal>
       <ContentSection background="raised" heading="Send Us a Message" id="contact-form">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_auto]">
           <ContactForm lang="en" />
@@ -88,10 +90,13 @@ export default function ContactPage() {
           </div>
         </div>
       </ContentSection>
+      </ScrollReveal>
 
+      <ScrollReveal>
       <ContentSection background="base">
         <BookingWidget lang="en" />
       </ContentSection>
+      </ScrollReveal>
     </main>
   )
 }

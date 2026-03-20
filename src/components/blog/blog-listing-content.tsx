@@ -6,6 +6,7 @@ import { BlogCard } from '@/components/blog/blog-card'
 import { CategoryFilter } from '@/components/blog/category-filter'
 import { BlogSearch } from '@/components/blog/blog-search'
 import { Button } from '@/components/ui/button'
+import { StaggerReveal } from '@/components/animations/stagger-reveal'
 import type { BlogPostMeta, BlogCategory } from '@/types/blog'
 
 type BlogListingContentProps = {
@@ -47,7 +48,7 @@ function BlogListingInner({ posts, categories, langPrefix = '' }: BlogListingCon
 
       {/* Post grid */}
       {visiblePosts.length > 0 ? (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <StaggerReveal className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {visiblePosts.map((post) => (
             <BlogCard
               key={post.directorySlug}
@@ -55,7 +56,7 @@ function BlogListingInner({ posts, categories, langPrefix = '' }: BlogListingCon
               langPrefix={langPrefix}
             />
           ))}
-        </div>
+        </StaggerReveal>
       ) : (
         <p
           className="text-center text-muted py-16"

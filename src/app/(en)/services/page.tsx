@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { buildPageMetadata } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Services',
@@ -52,6 +53,7 @@ export default function ServicesPage() {
       />
 
       {CORE_SERVICES.map((service, index) => (
+        <ScrollReveal key={service.number}>
         <section
           key={service.number}
           className={`py-16 md:py-24 lg:py-32 ${index % 2 === 0 ? 'bg-base' : 'bg-raised'}`}
@@ -87,6 +89,7 @@ export default function ServicesPage() {
             </div>
           </Container>
         </section>
+        </ScrollReveal>
       ))}
 
       <ContentSection background="raised" overline="Also" heading="Supporting Services">

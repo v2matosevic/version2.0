@@ -9,6 +9,7 @@ import { PageHero } from '@/components/shared/page-hero'
 import { CTASection } from '@/components/shared/cta-section'
 import { Container } from '@/components/ui/container'
 import { Badge } from '@/components/ui/badge'
+import { StaggerReveal } from '@/components/animations/stagger-reveal'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Portfolio',
@@ -33,7 +34,7 @@ export default function PortfolioPage() {
 
       <section className="py-16 md:py-24 bg-base">
         <Container>
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <StaggerReveal className="grid grid-cols-1 gap-12 md:grid-cols-2">
             {projects.map((project) => (
               <Link
                 key={project.slug}
@@ -75,7 +76,7 @@ export default function PortfolioPage() {
                 </div>
               </Link>
             ))}
-          </div>
+          </StaggerReveal>
         </Container>
       </section>
 

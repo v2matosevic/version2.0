@@ -8,6 +8,7 @@ import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
 import { Testimonials } from '@/components/shared/testimonials'
 import { CTASection } from '@/components/shared/cta-section'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
 import { LocalBusinessJsonLd, WebSiteJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
 
@@ -49,27 +50,37 @@ export default async function HomePage() {
         />
       </Hero3D>
 
-      <ServicesTeaser services={servicesTeaser} />
+      <ScrollReveal>
+        <ServicesTeaser services={servicesTeaser} />
+      </ScrollReveal>
 
-      <PortfolioHighlights projects={portfolioProjects} lang="en" />
+      <ScrollReveal>
+        <PortfolioHighlights projects={portfolioProjects} lang="en" />
+      </ScrollReveal>
 
-      <Differentiators
-        overline="Why Version2"
-        heading="Every line is ours."
-        items={differentiators}
-      />
+      <ScrollReveal>
+        <Differentiators
+          overline="Why Version2"
+          heading="Every line is ours."
+          items={differentiators}
+        />
+      </ScrollReveal>
 
       {featuredTestimonials.length > 0 && (
-        <Testimonials testimonials={featuredTestimonials} lang="en" />
+        <ScrollReveal>
+          <Testimonials testimonials={featuredTestimonials} lang="en" />
+        </ScrollReveal>
       )}
 
       {ctaSection && (
-        <CTASection
-          heading={ctaSection.heading}
-          subtext={ctaSection.subtext}
-          ctaLabel={ctaSection.label}
-          ctaHref={ctaSection.href}
-        />
+        <ScrollReveal>
+          <CTASection
+            heading={ctaSection.heading}
+            subtext={ctaSection.subtext}
+            ctaLabel={ctaSection.label}
+            ctaHref={ctaSection.href}
+          />
+        </ScrollReveal>
       )}
     </main>
   )
