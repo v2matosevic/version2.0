@@ -1,21 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sql, desc } from 'drizzle-orm'
-import { verifySessionCookie } from '@/app/api/admin/auth/route'
+import { validateAdminCookie } from '@/lib/admin-auth'
 import { db, schema } from '@/db'
 import { ensureDatabase } from '@/db/migrate'
 
 let dbReady = false
-
-function validateAdminCookie(request: NextRequest): NextResponse | null {
-  const sessionCookie = request.cookies.get('v2_admin_session')
-  if (!sessionCookie?.value || !verifySessionCookie(sessionCookie.value)) {
-    return NextResponse.json(
-      { success: false, error: 'Unauthorized' },
-      { status: 401 },
-    )
-  }
-  return null
-}
 
 export function GET(request: NextRequest): NextResponse {
   const authError = validateAdminCookie(request)

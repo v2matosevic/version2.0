@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac } from 'node:crypto'
+import { verifySession } from '@/lib/admin-auth'
 
 const SUPPORTED_LANGUAGES = ['en', 'hr', 'de'] as const
 const DEFAULT_LANGUAGE = 'en'
 const COOKIE_NAME = 'v2_lang'
-const DEV_KEY = 'v2-dev-admin-key'
 
 const SKIP_PATHS = [
   '/_next/',
@@ -57,22 +56,13 @@ function getLanguageFromPath(pathname: string): typeof SUPPORTED_LANGUAGES[numbe
   return 'en'
 }
 
-function verifyAdminSession(cookieValue: string): boolean {
-  const parts = cookieValue.split('.')
-  if (parts.length !== 2) return false
-  const [sessionId, signature] = parts
-  const key = process.env.ADMIN_API_KEY || DEV_KEY
-  const expected = createHmac('sha256', key).update(sessionId!).digest('hex')
-  return signature === expected
-}
-
 export function proxy(request: NextRequest): NextResponse | undefined {
   const { pathname } = request.nextUrl
 
   // Admin auth check — protect /admin/ routes except /admin/login
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
     const sessionCookie = request.cookies.get('v2_admin_session')
-    if (!sessionCookie?.value || !verifyAdminSession(sessionCookie.value)) {
+    if (!sessionCookie?.value || !verifySession(sessionCookie.value)) {
       const loginUrl = new URL('/admin/login', request.url)
       loginUrl.searchParams.set('from', pathname)
       return NextResponse.redirect(loginUrl)

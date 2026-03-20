@@ -1,26 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac, randomBytes } from 'node:crypto'
-
-const DEV_KEY = 'v2-dev-admin-key'
-
-function getAdminKey(): string {
-  return process.env.ADMIN_API_KEY || DEV_KEY
-}
-
-function signToken(sessionId: string): string {
-  const key = getAdminKey()
-  return createHmac('sha256', key).update(sessionId).digest('hex')
-}
-
-export function verifySessionCookie(cookieValue: string): boolean {
-  const parts = cookieValue.split('.')
-  if (parts.length !== 2) return false
-  const [sessionId, signature] = parts
-  const expected = signToken(sessionId!)
-  return signature === expected
-}
+import { rateLimit } from '@/lib/rate-limiter'
+import { getClientIp } from '@/lib/client-ip'
+import {
+  getAdminKey,
+  verifyPassword,
+  createSession,
+  setSessionCookie,
+} from '@/lib/admin-auth'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const ip = getClientIp(request)
+
+  // 5 attempts per minute
+  const minuteLimit = rateLimit(ip, 'admin-login', { windowMs: 60_000, maxRequests: 5 })
+  if (minuteLimit) return minuteLimit
+
+  // 10 attempts per 15 minutes (lockout)
+  const lockoutLimit = rateLimit(ip, 'admin-login-lockout', { windowMs: 15 * 60_000, maxRequests: 10 })
+  if (lockoutLimit) return lockoutLimit
+
   let body: unknown
   try {
     body = await request.json()
@@ -39,32 +37,29 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     )
   }
 
-  const adminKey = getAdminKey()
-  if (password !== adminKey) {
+  // Ensure admin key is configured (throws in production if missing)
+  try {
+    getAdminKey()
+  } catch (err) {
+    return NextResponse.json(
+      { success: false, error: (err as Error).message },
+      { status: 500 },
+    )
+  }
+
+  if (!verifyPassword(password)) {
     return NextResponse.json(
       { success: false, error: 'Invalid credentials' },
       { status: 401 },
     )
   }
 
-  const sessionId = randomBytes(32).toString('hex')
-  const signature = signToken(sessionId)
-  const token = `${sessionId}.${signature}`
-
-  const isDevKey = !process.env.ADMIN_API_KEY
-
+  const { token, isDevKey } = createSession()
   const response = NextResponse.json({
     success: true,
     warning: isDevKey ? 'Using default dev key. Set ADMIN_API_KEY in production.' : undefined,
   })
 
-  response.cookies.set('v2_admin_session', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  })
-
+  setSessionCookie(response, token)
   return response
 }

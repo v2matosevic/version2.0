@@ -26,6 +26,11 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
     return NextResponse.json({ success: false, error: 'Conversation not found' }, { status: 404 })
   }
 
+  // Verify the requesting IP matches the conversation creator
+  if (conversation.ip && conversation.ip !== ip) {
+    return NextResponse.json({ success: false, error: 'Conversation not found' }, { status: 404 })
+  }
+
   const messages = db.select({
     role: schema.chatMessages.role,
     content: schema.chatMessages.content,
