@@ -82,6 +82,7 @@ function Analytics() {
         `}
       </Script>
       <noscript>
+        {/* Tracking pixel — empty alt is intentional (decorative 1x1 image, not content) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           height="1"

@@ -29,9 +29,12 @@ function StaggerReveal({
 
     const items = containerRef.current.children
 
-    gsap.from(items, {
-      opacity: 0,
-      y: 40,
+    // Set initial hidden state via GSAP — content visible by default in HTML
+    gsap.set(items, { opacity: 0, y: 40 })
+
+    gsap.to(items, {
+      opacity: 1,
+      y: 0,
       duration,
       stagger,
       ease: 'power2.out',

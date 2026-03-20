@@ -64,7 +64,7 @@ function Header({ lang, onMenuOpen, isMenuOpen }: HeaderProps) {
           >
             <Image
               src="/logo.svg"
-              alt=""
+              alt="Version2"
               width={32}
               height={32}
               className="w-8 h-8"

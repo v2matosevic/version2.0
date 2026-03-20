@@ -37,11 +37,7 @@ function HeroContent({
             {overline}
           </p>
 
-          <h1 className="sr-only">{headline}</h1>
-          <TextReveal
-            text={headline}
-            mode="chars"
-            trigger="mount"
+          <h1
             className="font-heading text-foreground"
             style={{
               fontSize: 'var(--text-display)',
@@ -49,7 +45,13 @@ function HeroContent({
               lineHeight: 'var(--leading-display)',
               letterSpacing: 'var(--tracking-display)',
             } as React.CSSProperties}
-          />
+          >
+            <TextReveal
+              text={headline}
+              mode="chars"
+              trigger="mount"
+            />
+          </h1>
 
           <div
             className="mt-4 mb-6"

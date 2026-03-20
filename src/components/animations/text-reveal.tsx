@@ -41,9 +41,12 @@ function TextReveal({
     const spans = containerRef.current.querySelectorAll('[data-split]')
     if (spans.length === 0) return
 
+    // Set initial hidden state via GSAP (not inline styles) — progressive enhancement
+    gsap.set(spans, { opacity: 0, y: 20 })
+
     const animConfig: gsap.TweenVars = {
-      opacity: 0,
-      y: 20,
+      opacity: 1,
+      y: 0,
       duration,
       stagger: stagger ?? defaultStagger,
       ease: 'power2.out',
@@ -57,10 +60,10 @@ function TextReveal({
       }
     }
 
-    gsap.from(spans, animConfig)
+    gsap.to(spans, animConfig)
   }, { dependencies: [prefersReducedMotion, text, mode, trigger, stagger, duration] })
 
-  // Split text into spans
+  // Split text into spans — visible by default, GSAP animates as progressive enhancement
   const parts = mode === 'chars'
     ? text.split('').map((char, i) => (
         <span
@@ -69,7 +72,6 @@ function TextReveal({
           style={{
             display: 'inline-block',
             whiteSpace: char === ' ' ? 'pre' : undefined,
-            ...(prefersReducedMotion ? {} : { opacity: 0 }),
           }}
         >
           {char === ' ' ? '\u00A0' : char}
@@ -79,10 +81,7 @@ function TextReveal({
         <span
           key={i}
           data-split=""
-          style={{
-            display: 'inline-block',
-            ...(prefersReducedMotion ? {} : { opacity: 0 }),
-          }}
+          style={{ display: 'inline-block' }}
         >
           {word}{i < arr.length - 1 ? '\u00A0' : ''}
         </span>
@@ -90,7 +89,7 @@ function TextReveal({
 
   return (
     <div ref={containerRef} className={className} style={style} role="presentation">
-      {prefersReducedMotion ? text : parts}
+      {parts}
     </div>
   )
 }
