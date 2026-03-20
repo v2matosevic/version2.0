@@ -9,6 +9,7 @@ import { SmoothScroll } from '@/components/layout/smooth-scroll'
 import { CookieConsent } from '@/components/layout/cookie-consent'
 import { CustomCursor } from '@/components/animations/custom-cursor'
 import { Analytics } from '@/components/layout/analytics'
+import { AnalyticsTracker } from '@/components/layout/analytics-tracker'
 import { Fab } from '@/components/layout/fab'
 import { ChatWidget } from '@/components/chat/chat-widget'
 import type { Language } from '@/types/i18n'
@@ -50,6 +51,7 @@ function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
       <Footer lang={lang} />
       <CookieConsent />
       <Analytics />
+      <AnalyticsTracker />
       <Fab contactHref={contactHref} onOpenChat={openChat} />
       <ChatWidget lang={lang} isOpen={chatOpen} onClose={() => setChatOpen(false)} />
       <CustomCursor />
