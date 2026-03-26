@@ -13,16 +13,34 @@ type CTASectionProps = {
 function CTASection({ heading, subtext, ctaLabel, ctaHref }: CTASectionProps) {
   return (
     <section
-      className="py-20 md:py-28 lg:py-36"
+      className="relative py-24 md:py-32 lg:py-40 overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, var(--color-base) 0%, var(--color-sunken) 100%)',
+        background: 'linear-gradient(180deg, var(--color-base) 0%, var(--color-sunken) 40%, var(--color-sunken) 60%, var(--color-base) 100%)',
       }}
     >
+      {/* Grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Subtle red glow */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse, rgba(153, 23, 23, 0.06) 0%, transparent 70%)',
+        }}
+        aria-hidden="true"
+      />
+
       <Container>
         <ScrollReveal direction="up">
-          <div className="text-center">
+          <div className="relative text-center max-w-2xl mx-auto">
             <h2
-              className="font-heading text-foreground max-w-xl mx-auto"
+              className="font-heading text-foreground"
               style={{
                 fontSize: 'var(--text-h1)',
                 fontWeight: 'var(--font-weight-headline)',
@@ -33,7 +51,7 @@ function CTASection({ heading, subtext, ctaLabel, ctaHref }: CTASectionProps) {
               {heading}
             </h2>
             <p
-              className="mt-4 text-muted max-w-md mx-auto"
+              className="mt-5 text-muted mx-auto max-w-md"
               style={{
                 fontSize: 'var(--text-body-lg)',
                 lineHeight: 'var(--leading-body)',
@@ -41,7 +59,7 @@ function CTASection({ heading, subtext, ctaLabel, ctaHref }: CTASectionProps) {
             >
               {subtext}
             </p>
-            <div className="mt-8">
+            <div className="mt-10">
               <Link href={ctaHref}>
                 <Button variant="primary" size="lg">
                   {ctaLabel}

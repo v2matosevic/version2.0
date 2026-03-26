@@ -7,7 +7,7 @@ import { ServicesTeaser } from '@/components/home/services-teaser'
 import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
 import { Testimonials } from '@/components/shared/testimonials'
-import { CTASection } from '@/components/shared/cta-section'
+import { SectionConnector } from '@/components/home/section-connector'
 import { ScrollReveal } from '@/components/animations/scroll-reveal'
 import { LocalBusinessJsonLd, WebSiteJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
@@ -20,8 +20,6 @@ export default async function HomePage() {
   const fm = page?.frontmatter as Record<string, unknown> | undefined
   const servicesTeaser = (fm?.services_teaser as Array<{ name: string; description: string; href: string }>) ?? []
   const differentiators = (fm?.differentiators as Array<{ number: string; title: string; copy: string }>) ?? []
-  const ctaSection = fm?.cta_section as { heading: string; subtext: string; label: string; href: string } | undefined
-
   const portfolioProjects = portfolio.map((p) => ({
     slug: p.slug,
     name: p.name.en ?? p.name.hr,
@@ -38,6 +36,8 @@ export default async function HomePage() {
       <LocalBusinessJsonLd lang="en" />
       <WebSiteJsonLd />
       <BreadcrumbJsonLd items={[{ name: 'Home', url: SITE_URL }]} />
+
+      {/* Hero — 3D particles + headline */}
       <Hero3D>
         <HeroContent
           overline={(fm?.overline as string) ?? 'Web Development Studio'}
@@ -50,36 +50,42 @@ export default async function HomePage() {
         />
       </Hero3D>
 
+      {/* Services — numbered list with hover interactions */}
       <ScrollReveal>
         <ServicesTeaser services={servicesTeaser} />
       </ScrollReveal>
 
+      {/* Connector: Services → Portfolio */}
+      <SectionConnector variant="line" />
+
+      {/* Portfolio — featured hero + compact grid */}
       <ScrollReveal>
         <PortfolioHighlights projects={portfolioProjects} lang="en" />
       </ScrollReveal>
 
-      <ScrollReveal>
-        <Differentiators
-          overline="Why Version2"
-          heading="Every line is ours."
-          items={differentiators}
-        />
-      </ScrollReveal>
+      {/* Connector: Portfolio → Differentiators */}
+      <div
+        style={{
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-brand-red) 15%, transparent), transparent)',
+        }}
+        aria-hidden="true"
+      />
 
+      {/* Differentiators — full-viewport typography monument */}
+      <Differentiators
+        overline="Why Version2"
+        heading="Every line is ours."
+        items={differentiators}
+      />
+
+      {/* Breathing space before testimonials */}
+      <SectionConnector variant="space" />
+
+      {/* Testimonials — real Google reviews */}
       {featuredTestimonials.length > 0 && (
         <ScrollReveal>
           <Testimonials testimonials={featuredTestimonials} lang="en" />
-        </ScrollReveal>
-      )}
-
-      {ctaSection && (
-        <ScrollReveal>
-          <CTASection
-            heading={ctaSection.heading}
-            subtext={ctaSection.subtext}
-            ctaLabel={ctaSection.label}
-            ctaHref={ctaSection.href}
-          />
         </ScrollReveal>
       )}
     </main>

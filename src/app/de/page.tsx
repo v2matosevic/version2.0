@@ -7,7 +7,8 @@ import { ServicesTeaser } from '@/components/home/services-teaser'
 import { Differentiators } from '@/components/home/differentiators'
 import { PortfolioHighlights } from '@/components/home/portfolio-highlights'
 import { Testimonials } from '@/components/shared/testimonials'
-import { CTASection } from '@/components/shared/cta-section'
+import { SectionConnector } from '@/components/home/section-connector'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
 import { LocalBusinessJsonLd, WebSiteJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
 
@@ -19,8 +20,6 @@ export default async function DeHomePage() {
   const fm = page?.frontmatter as Record<string, unknown> | undefined
   const servicesTeaser = (fm?.services_teaser as Array<{ name: string; description: string; href: string }>) ?? []
   const differentiators = (fm?.differentiators as Array<{ number: string; title: string; copy: string }>) ?? []
-  const ctaSection = fm?.cta_section as { heading: string; subtext: string; label: string; href: string } | undefined
-
   const portfolioProjects = portfolio.map((p) => ({
     slug: p.slug,
     name: p.name.de ?? p.name.en,
@@ -48,23 +47,34 @@ export default async function DeHomePage() {
           ctaSecondaryHref={(fm?.cta_secondary_href as string) ?? '/de/preise/'}
         />
       </Hero3D>
-      <ServicesTeaser services={servicesTeaser} />
-      <PortfolioHighlights projects={portfolioProjects} lang="de" />
+
+      <ScrollReveal>
+        <ServicesTeaser services={servicesTeaser} />
+      </ScrollReveal>
+
+      <SectionConnector variant="line" />
+
+      <ScrollReveal>
+        <PortfolioHighlights projects={portfolioProjects} lang="de" />
+      </ScrollReveal>
+
+      <div
+        style={{ height: '1px', background: 'linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-brand-red) 15%, transparent), transparent)' }}
+        aria-hidden="true"
+      />
+
       <Differentiators
         overline="Warum Version2"
         heading="Jede Zeile gehört uns."
         items={differentiators}
       />
+
+      <SectionConnector variant="space" />
+
       {featuredTestimonials.length > 0 && (
-        <Testimonials testimonials={featuredTestimonials} lang="de" />
-      )}
-      {ctaSection && (
-        <CTASection
-          heading={ctaSection.heading}
-          subtext={ctaSection.subtext}
-          ctaLabel={ctaSection.label}
-          ctaHref={ctaSection.href}
-        />
+        <ScrollReveal>
+          <Testimonials testimonials={featuredTestimonials} lang="de" />
+        </ScrollReveal>
       )}
     </main>
   )

@@ -9,6 +9,9 @@ import { generateId } from '@/lib/generate-id'
 import { searchRag } from '@/lib/rag-search'
 import { generateResponse } from '@/lib/llm'
 import { sendEmail } from '@/lib/email'
+import { escapeHtml } from '@/lib/email-layout'
+import { reportError } from '@/lib/monitoring'
+import { validateRequestOrigin } from '@/lib/request-origin'
 import { db, schema } from '@/db'
 import { initDatabase } from '@/db/init'
 
@@ -18,6 +21,9 @@ const FLAG_KEYWORDS = /pricing|urgent|dring|hitno|cijena|preis|human|čovjek|men
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   initDatabase()
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'chat', { windowMs: 60_000, maxRequests: 30 })
@@ -118,11 +124,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     sendEmail({
       to: TEAM_EMAIL,
-      subject: `[Version2 Chat] Flagged conversation — ${conversationId.slice(0, 8)}`,
+      subject: `[Version2 Chat] Flagged conversation - ${conversationId.slice(0, 8)}`,
       html: `<p>A chat conversation was flagged for follow-up.</p>
-        <p><strong>Message:</strong> ${data.message}</p>
-        <p><strong>Conversation:</strong> ${conversationId}</p>`,
-    }).catch((err) => console.error('[Chat] Flag email failed:', err))
+        <p><strong>Message:</strong> ${escapeHtml(data.message)}</p>
+        <p><strong>Conversation:</strong> ${escapeHtml(conversationId)}</p>`,
+    }).catch((err) => reportError(err, {
+      scope: 'Chat flag email failed',
+      extras: { conversationId, ip },
+    }))
   }
 
   return NextResponse.json({

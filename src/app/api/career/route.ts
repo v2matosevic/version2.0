@@ -5,7 +5,9 @@ import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
 import { generateId } from '@/lib/generate-id'
 import { sendEmail } from '@/lib/email'
+import { reportError } from '@/lib/monitoring'
 import { careerNotification } from '@/lib/notification-emails'
+import { validateRequestOrigin } from '@/lib/request-origin'
 import { db, schema } from '@/db'
 import { initDatabase } from '@/db/init'
 
@@ -13,6 +15,9 @@ const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   initDatabase()
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'career', { windowMs: 60_000, maxRequests: 3 })
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }),
     })
   } catch (err) {
-    console.error('[Career] Email send failed:', err)
+    reportError(err, { scope: 'Career email send failed', extras: { id, ip } })
   }
 
   return NextResponse.json({ success: true, id })

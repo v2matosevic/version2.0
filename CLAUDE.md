@@ -159,38 +159,46 @@ Use the right tool for the job:
 
 ## Current Build Phase
 
-**Status: Ready to build. All planning complete. 39/39 decisions resolved.**
+**Status: All functionality built. Design phase next. Still on localhost — not deployed yet.**
 
-### Sprint 1.1 — Project Scaffold
-Create Next.js 16 project with all dependencies, configs, and directory structure.
-- Spec: `tasks/todo.md` Sprint 1.1 section
-- Config details: `docs/setup/config.md`
-- Dependencies: `docs/setup/dependencies.md`
-- Verify: `npm run dev` starts, `npm run build` succeeds, `npx tsc --noEmit` clean
+### Phases 1-5 — COMPLETE (2026-03-20)
+- **Sprint 1.1-1.3:** Project scaffold, design system, data layer
+- **Sprint 2.1-2.5:** Layout shell, all content pages, blog system, legal pages, error pages
+- **Sprint 3.1:** SEO infrastructure (meta, JSON-LD, canonical, hreflang, OG)
+- **Sprint 4.1-4.3:** Animations (GSAP ScrollTrigger, R3F 3D hero, pricing wizard, FAB)
+- **Sprint 5.1-5.7:** Backend (SQLite + Drizzle, forms, booking, CMS, AI chat, analytics, parcel tracking)
 
-### Sprint 1.2 — Design System
-Tailwind v4 tokens, fonts (Albert Sans + Manrope via next/font), dark/light mode, UI primitives.
-- Color tokens: `docs/design/colors-tokens.md`
-- Typography: `docs/design/typography.md`
-- Layout/spacing: `docs/design/layout-spacing.md`
-- Animation: `docs/design/animation.md`
-- Components: `docs/components/ui-primitives.md`
-- Verify: `/dev/` kitchen-sink page renders all tokens and primitives in both modes
+### Admin Dashboard — COMPLETE
+10-page admin dashboard with authentication. CMS, analytics, orders, bookings, chat conversations, build management.
 
-### Sprint 1.3 — Data Layer + i18n
-Markdown parser, content loaders, i18n middleware, build-time generators.
-- i18n: `docs/i18n.md` (English = no prefix, /hr/, /de/)
-- Blog system: `docs/blog-content-strategy.md`
-- Build generators: sitemap, robots, search index
-- ISR strategy: `docs/setup/isr-strategy.md`
-- Verify: All 103 posts + 17 pages load. Build produces sitemap.xml, robots.txt
+### Security Hardening — COMPLETE
+Timing-safe token comparison, rate limiting on all endpoints, consolidated auth middleware, no dev key fallback in production.
+
+### Feature Quality Pass — COMPLETE
+- Z.AI GLM-4.5 with function calling for AI chat
+- RAG pipeline for website knowledge (3,342 chunks)
+- Carrier scrapers for parcel tracking (HP, GLS, DPD)
+- Professional branded email templates via Zoho SMTP
+- Blog post redirects (old WordPress slugs)
+- 103 blog posts rewritten in HR and DE (206 files)
+- 8 real Google Maps testimonials replacing placeholders
+- 6 portfolio case studies documented with screenshots
+- 7 missing page translations created
+
+### Current Task — Design Phase
+Go page by page to make each section visually premium, following `docs/design/` specs and `tasks/design-prompts.md`. Screenshot self-correction workflow.
 
 ### Key Architecture Facts
 - **Standalone mode** (`output: 'standalone'`), NOT static export
 - **No /en/ in URLs** — English is default at root, /hr/ and /de/ for others
 - **Middleware** handles i18n routing + Accept-Language detection
-- **API routes** at `src/app/api/` — no separate backend
+- **43+ API routes** at `src/app/api/` — no separate backend
+- **428+ static pages** generated at build time
 - **next/image** optimization works natively
 - **ISR** available for CMS-managed content
 - **Server Actions** available for form mutations
 - **730 redirects** in `next.config.ts` `redirects()` — data in `tasks/redirect-map.md`
+- **Email:** Zoho SMTP via nodemailer
+- **AI Chat:** Z.AI GLM-4.5 with function calling, RAG context
+- **Database:** SQLite + Drizzle ORM (WAL mode)
+- **Specs:** `docs/backend/api-contracts.md`, `docs/features/form-validation.md`, `docs/features/parcel-tracking.md`, `docs/backend/cron-jobs.md`

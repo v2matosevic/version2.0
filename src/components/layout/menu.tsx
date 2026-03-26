@@ -37,19 +37,19 @@ function Menu({ isOpen, onClose, lang, navItems }: MenuProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop — full bleed dark overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/50"
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             style={{ zIndex: 49 } as React.CSSProperties}
             onClick={onClose}
             aria-hidden="true"
           />
 
-          {/* Desktop sidebar */}
+          {/* Desktop sidebar — slides from right */}
           <motion.div
             ref={panelRef}
             id="menu-panel"
@@ -59,16 +59,28 @@ function Menu({ isOpen, onClose, lang, navItems }: MenuProps) {
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 right-0 h-full bg-sunken hidden lg:block"
-            style={{ zIndex: 'var(--z-menu)', width: '400px' } as React.CSSProperties}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed top-0 right-0 h-full hidden lg:flex flex-col"
+            style={{
+              zIndex: 'var(--z-menu)',
+              width: '420px',
+              background: 'var(--color-sunken)',
+              borderLeft: '1px solid color-mix(in srgb, var(--color-line) 40%, transparent)',
+            } as React.CSSProperties}
           >
+            {/* Grain texture */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              }}
+              aria-hidden="true"
+            />
             <MenuContent onClose={onClose} lang={lang} navItems={navItems} isMobile={false} />
           </motion.div>
 
-          {/* Mobile fullscreen */}
+          {/* Mobile fullscreen — fades in */}
           <motion.div
-            ref={panelRef}
             id="menu-panel-mobile"
             role="dialog"
             aria-modal="true"
@@ -76,18 +88,23 @@ function Menu({ isOpen, onClose, lang, navItems }: MenuProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-sunken lg:hidden overflow-y-auto"
-            style={{ zIndex: 'var(--z-menu)', paddingBottom: 'env(safe-area-inset-bottom)' } as React.CSSProperties}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed inset-0 lg:hidden overflow-y-auto flex flex-col"
+            style={{
+              zIndex: 'var(--z-menu)',
+              background: 'var(--color-sunken)',
+              paddingBottom: 'env(safe-area-inset-bottom)',
+            } as React.CSSProperties}
           >
-            <motion.div
-              initial={{ y: 20 }}
-              animate={{ y: 0 }}
-              exit={{ y: 20 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <MenuContent onClose={onClose} lang={lang} navItems={navItems} isMobile={true} />
-            </motion.div>
+            {/* Grain texture */}
+            <div
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              }}
+              aria-hidden="true"
+            />
+            <MenuContent onClose={onClose} lang={lang} navItems={navItems} isMobile={true} />
           </motion.div>
         </>
       )}

@@ -11,6 +11,8 @@
 
 **Resolved: Zoho Mail via SMTP.** Transport: `nodemailer` with Zoho's SMTP relay. The backend abstracts the provider behind a `sendEmail()` utility so swapping providers requires changing one file.
 
+In development, missing SMTP config falls back to console logging for safe local iteration. In production, missing SMTP config is treated as a hard misconfiguration and throws immediately when email delivery is attempted.
+
 - **Package:** `nodemailer ^6.9`
 - **Connection:** SSL on port 465 (Zoho EU endpoint)
 - **Env vars:** `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
@@ -73,12 +75,18 @@ Check interval: 5 minutes. Alert on 2 consecutive failures.
 {
   "status": "ok",
   "timestamp": "2026-02-26T12:00:00Z",
-  "db": "connected",
-  "uptime_seconds": 86400
+  "uptime": 86400,
+  "checks": {
+    "database": "connected",
+    "smtp": "configured",
+    "adminAuth": "configured",
+    "sentry": "configured",
+    "llm": "configured"
+  }
 }
 ```
 
-Returns `200` when healthy, `503` when the database is unreachable. No authentication required (it exposes no sensitive data).
+Returns `200` when healthy, `503` when a required subsystem is degraded. No authentication required (it exposes no secrets, only coarse readiness state).
 
 ### Alerting
 
@@ -117,6 +125,9 @@ SMTP_FROM=Version2 <office@version2.hr>
 
 # === Admin Auth ===
 ADMIN_API_KEY=xxx
+
+# Optional: extra trusted browser origins for POST APIs
+ALLOWED_ORIGINS=https://staging.version2.hr
 
 # === AI Chat ===
 LLM_PROVIDER=anthropic

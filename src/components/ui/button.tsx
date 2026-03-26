@@ -13,14 +13,14 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary: 'bg-brand-red text-white hover:bg-brand-red-light active:bg-brand-red-dark',
-  secondary: 'border border-line text-foreground hover:border-brand-red bg-transparent',
+  secondary: 'border border-foreground/20 text-foreground hover:border-brand-red hover:text-brand-red bg-transparent',
   ghost: 'text-muted hover:text-foreground bg-transparent',
   outline: 'border border-line text-foreground hover:bg-raised bg-transparent',
 }
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
   sm: 'px-4 py-2 text-sm',
-  md: 'px-6 py-3 text-base',
+  md: 'px-6 py-3 text-sm',
   lg: 'px-8 py-4 text-base',
 }
 
@@ -33,14 +33,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={isDisabled}
         className={[
-          'inline-flex items-center justify-center rounded-lg font-body transition-colors',
+          'inline-flex items-center justify-center rounded-lg font-body transition-all',
           'focus-visible:ring-2 focus-visible:ring-brand-red/40 focus-visible:ring-offset-2 focus-visible:ring-offset-base',
           VARIANT_CLASSES[variant],
           SIZE_CLASSES[size],
           isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
           className,
         ].join(' ')}
-        style={{ fontWeight: 'var(--font-weight-body-semibold)' } as React.CSSProperties}
+        style={{
+          fontWeight: 'var(--font-weight-body-semibold)',
+          letterSpacing: '0.02em',
+          transitionDuration: 'var(--duration-normal)',
+          transitionTimingFunction: 'var(--ease-smooth)',
+        } as React.CSSProperties}
         {...props}
       >
         {loading ? (

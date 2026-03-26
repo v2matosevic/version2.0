@@ -27,6 +27,8 @@ function SmoothScroll({ children }: { children: React.ReactNode }) {
     })
 
     lenisRef.current = lenis
+    // Expose Lenis instance so useLockBody can stop/start it
+    ;(window as unknown as Record<string, unknown>).__lenis = lenis
 
     lenis.on('scroll', ScrollTrigger.update)
 
@@ -43,6 +45,7 @@ function SmoothScroll({ children }: { children: React.ReactNode }) {
       gsap.ticker.remove(update)
       lenis.destroy()
       lenisRef.current = null
+      delete (window as unknown as Record<string, unknown>).__lenis
     }
   }, [])
 

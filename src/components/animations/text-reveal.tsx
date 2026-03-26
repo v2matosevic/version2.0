@@ -64,17 +64,27 @@ function TextReveal({
   }, { dependencies: [prefersReducedMotion, text, mode, trigger, stagger, duration] })
 
   // Split text into spans — visible by default, GSAP animates as progressive enhancement
+  // Characters are grouped by word so the browser can line-break between words naturally
   const parts = mode === 'chars'
-    ? text.split('').map((char, i) => (
-        <span
-          key={i}
-          data-split=""
-          style={{
-            display: 'inline-block',
-            whiteSpace: char === ' ' ? 'pre' : undefined,
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
+    ? text.split(' ').map((word, wordIdx, arr) => (
+        <span key={wordIdx} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
+          {word.split('').map((char, charIdx) => (
+            <span
+              key={`${wordIdx}-${charIdx}`}
+              data-split=""
+              style={{ display: 'inline-block' }}
+            >
+              {char}
+            </span>
+          ))}
+          {wordIdx < arr.length - 1 && (
+            <span
+              data-split=""
+              style={{ display: 'inline-block', width: '0.3em' }}
+            >
+              {'\u00A0'}
+            </span>
+          )}
         </span>
       ))
     : text.split(' ').map((word, i, arr) => (

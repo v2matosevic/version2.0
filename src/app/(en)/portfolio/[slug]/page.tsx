@@ -49,56 +49,91 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
         { name: frontmatter.title, url: `${SITE_URL}/portfolio/${slug}/` },
       ]} />
 
-      <section className="bg-base pt-32 pb-12 md:pt-40 md:pb-16">
+      {/* Hero — atmospheric */}
+      <section
+        className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, var(--color-sunken) 0%, var(--color-base) 100%)',
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+            backgroundRepeat: 'repeat',
+          }}
+        />
         <Container>
-          <Link
-            href="/portfolio/"
-            className="inline-flex items-center gap-2 text-muted hover:text-brand-red transition-colors mb-8"
-            style={{ fontSize: 'var(--text-small)' }}
-          >
-            <ArrowLeft size={16} />
-            Back to Portfolio
-          </Link>
+          <div className="relative">
+            <Link
+              href="/portfolio/"
+              className="inline-flex items-center gap-2 text-muted hover:text-brand-red transition-colors mb-10"
+              style={{ fontSize: 'var(--text-small)' }}
+            >
+              <ArrowLeft size={14} />
+              Back to Portfolio
+            </Link>
 
-          <div className="max-w-3xl">
-            <p
-              className="mb-3 uppercase text-muted font-body"
-              style={{
-                fontSize: 'var(--text-overline)',
-                fontWeight: 'var(--font-weight-body-semibold)',
-                letterSpacing: 'var(--tracking-overline)',
-              } as React.CSSProperties}
-            >
-              {frontmatter.industry} — {frontmatter.year}
-            </p>
-            <h1
-              className="font-heading text-foreground mb-4"
-              style={{
-                fontSize: 'var(--text-h1)',
-                fontWeight: 'var(--font-weight-headline)',
-                lineHeight: 'var(--leading-display)',
-                letterSpacing: 'var(--tracking-h1)',
-              }}
-            >
-              {frontmatter.title}
-            </h1>
-            <p
-              className="text-muted max-w-xl"
-              style={{
-                fontSize: 'var(--text-body-lg)',
-                lineHeight: 'var(--leading-body)',
-              }}
-            >
-              {frontmatter.summary}
-            </p>
+            <div className="max-w-3xl">
+              <p
+                className="mb-4 uppercase text-brand-red font-body"
+                style={{
+                  fontSize: 'var(--text-overline)',
+                  fontWeight: 'var(--font-weight-body-semibold)',
+                  letterSpacing: 'var(--tracking-overline)',
+                } as React.CSSProperties}
+              >
+                {frontmatter.industry} — {frontmatter.year}
+              </p>
+              <h1
+                className="font-heading text-foreground"
+                style={{
+                  fontSize: 'var(--text-h1)',
+                  fontWeight: 'var(--font-weight-headline)',
+                  lineHeight: 'var(--leading-display)',
+                  letterSpacing: 'var(--tracking-h1)',
+                }}
+              >
+                {frontmatter.title}
+              </h1>
+              <div
+                className="mt-6 mb-6"
+                style={{ width: '48px', height: '2px', background: 'var(--color-brand-red)' }}
+              />
+              <p
+                className="text-muted max-w-xl"
+                style={{
+                  fontSize: 'var(--text-body-lg)',
+                  lineHeight: 'var(--leading-body)',
+                }}
+              >
+                {frontmatter.summary}
+              </p>
+
+              {/* Tech + Services tags inline */}
+              <div className="mt-8 flex flex-wrap gap-2">
+                {frontmatter.tech.map((tech) => (
+                  <Badge key={tech}>{tech}</Badge>
+                ))}
+                {frontmatter.services.map((service) => (
+                  <span
+                    key={service}
+                    className="inline-block rounded-full px-3 py-1 text-sm border border-brand-red/30 text-brand-red"
+                  >
+                    {service}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </Container>
       </section>
 
+      {/* Hero image — cinematic */}
       {frontmatter.hero_image && (
-        <section className="bg-base pb-12">
+        <section className="bg-base pb-12 md:pb-16 -mt-2">
           <Container>
-            <div className="rounded-xl overflow-hidden border border-line">
+            <div className="relative rounded-xl overflow-hidden">
               <Image
                 src={frontmatter.hero_image}
                 alt={frontmatter.title}
@@ -107,49 +142,49 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
                 className="w-full h-auto"
                 priority
               />
+              <div
+                className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
+                style={{ background: 'linear-gradient(to top, var(--color-base), transparent)' }}
+              />
             </div>
           </Container>
         </section>
       )}
 
-      <section className="bg-base pb-16 md:pb-24">
+      {/* Content */}
+      <section className="bg-base pb-20 md:pb-32">
         <Container>
           <div className="max-w-3xl">
             <div className="prose-blog" dangerouslySetInnerHTML={{ __html: html }} />
 
-            <div className="mt-12 flex flex-wrap gap-2">
-              {frontmatter.tech.map((tech) => (
-                <Badge key={tech}>{tech}</Badge>
-              ))}
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-2">
-              {frontmatter.services.map((service) => (
-                <span
-                  key={service}
-                  className="inline-block rounded-full px-3 py-1 text-sm border border-brand-red/30 text-brand-red"
-                >
-                  {service}
-                </span>
-              ))}
-            </div>
-
+            {/* Testimonial — editorial blockquote */}
             {frontmatter.testimonial && (
-              <blockquote className="mt-12 border-l-2 border-brand-red pl-6 py-2">
-                <p className="text-muted italic" style={{ fontSize: 'var(--text-body-lg)' }}>
+              <blockquote
+                className="mt-16 py-8 border-l-3 pl-8"
+                style={{ borderColor: 'var(--color-brand-red)' }}
+              >
+                <p
+                  className="font-heading text-foreground"
+                  style={{
+                    fontSize: 'var(--text-body-lg)',
+                    fontWeight: 'var(--font-weight-headline)',
+                    lineHeight: 'var(--leading-snug)',
+                  }}
+                >
                   &ldquo;{frontmatter.testimonial.quote}&rdquo;
                 </p>
-                <footer className="mt-4 text-foreground">
-                  <strong>{frontmatter.testimonial.author}</strong>
+                <footer className="mt-4">
+                  <strong className="text-foreground">{frontmatter.testimonial.author}</strong>
                   <span className="text-faint ml-2">{frontmatter.testimonial.role}</span>
                 </footer>
               </blockquote>
             )}
 
+            {/* Screenshots */}
             {screenshots.length > 0 && (
-              <div className="mt-16">
+              <div className="mt-20">
                 <h2
-                  className="mb-8 font-heading text-foreground"
+                  className="mb-10 font-heading text-foreground"
                   style={{
                     fontSize: 'var(--text-h3)',
                     fontWeight: 'var(--font-weight-headline)',
@@ -162,7 +197,11 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
               </div>
             )}
 
-            <div className="mt-12 flex items-center gap-4">
+            {/* Actions */}
+            <div
+              className="mt-16 pt-8 flex items-center gap-4"
+              style={{ borderTop: '1px solid var(--color-line)' }}
+            >
               {frontmatter.url && (
                 <a href={frontmatter.url} target="_blank" rel="noopener noreferrer">
                   <Button variant="primary" size="md">

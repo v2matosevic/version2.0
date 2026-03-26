@@ -74,14 +74,24 @@ export default function AboutPage() {
 
       <ScrollReveal>
         <ContentSection background="raised" heading="What We Believe">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-px md:grid-cols-2 rounded-xl overflow-hidden border border-line-subtle">
             {VALUES.map((value) => (
-              <div key={value.title}>
-                <div className="mb-4 w-8 h-0.5 bg-brand-red" />
+              <div
+                key={value.title}
+                className="group p-8 lg:p-10"
+                style={{ background: 'var(--color-base)' }}
+              >
+                <div
+                  className="mb-5 w-8 h-0.5 transition-all group-hover:w-12"
+                  style={{
+                    background: 'var(--color-brand-red)',
+                    transitionDuration: 'var(--duration-normal)',
+                  }}
+                />
                 <h3 className="font-heading text-foreground" style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}>
                   {value.title}
                 </h3>
-                <p className="mt-2 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+                <p className="mt-3 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
                   {value.description}
                 </p>
               </div>
@@ -91,22 +101,34 @@ export default function AboutPage() {
       </ScrollReveal>
 
       <ScrollReveal>
-        <section className="py-12 md:py-16 lg:py-20 bg-sunken">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap justify-between items-center gap-8">
+        <section
+          className="relative py-16 md:py-20 lg:py-24 overflow-hidden"
+          style={{
+            background: 'linear-gradient(180deg, var(--color-sunken) 0%, var(--color-base) 100%)',
+          }}
+        >
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.03]"
+            style={{
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+              backgroundRepeat: 'repeat',
+            }}
+          />
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
               {ANIMATED_STATS.map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="font-heading text-foreground" style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}>
+                  <div className="font-heading text-foreground" style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline)', lineHeight: 1 } as React.CSSProperties}>
                     <CounterAnimation target={stat.target} suffix={stat.suffix} decimals={stat.decimals} />
                   </div>
-                  <p className="mt-1 text-sm text-muted">{stat.label}</p>
+                  <p className="mt-2 text-sm text-muted">{stat.label}</p>
                 </div>
               ))}
               <div className="text-center">
-                <div className="font-heading text-foreground" style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}>
+                <div className="font-heading text-foreground" style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline)', lineHeight: 1 } as React.CSSProperties}>
                   2022
                 </div>
-                <p className="mt-1 text-sm text-muted">Founded</p>
+                <p className="mt-2 text-sm text-muted">Founded</p>
               </div>
             </div>
           </div>

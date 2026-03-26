@@ -1,12 +1,24 @@
 import type { HTMLAttributes } from 'react'
 
-type BadgeProps = HTMLAttributes<HTMLSpanElement>
+type BadgeVariant = 'default' | 'brand'
 
-function Badge({ className = '', children, ...props }: BadgeProps) {
+type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+  variant?: BadgeVariant
+}
+
+function Badge({ variant = 'default', className = '', children, ...props }: BadgeProps) {
+  const variantClasses = variant === 'brand'
+    ? 'bg-brand-red/10 border-brand-red/20 text-brand-red'
+    : 'bg-raised border-line text-muted'
+
   return (
     <span
-      className={`inline-block rounded-md px-2 py-0.5 text-sm bg-raised border border-line text-muted font-body ${className}`}
-      style={{ fontWeight: 'var(--font-weight-body-semibold)' } as React.CSSProperties}
+      className={`inline-block rounded-md px-2.5 py-1 text-sm border font-body ${variantClasses} ${className}`}
+      style={{
+        fontSize: 'var(--text-small)',
+        fontWeight: 'var(--font-weight-body-semibold)',
+        letterSpacing: '0.01em',
+      } as React.CSSProperties}
       {...props}
     >
       {children}
@@ -15,4 +27,4 @@ function Badge({ className = '', children, ...props }: BadgeProps) {
 }
 
 export { Badge }
-export type { BadgeProps }
+export type { BadgeProps, BadgeVariant }

@@ -8,6 +8,8 @@ import { isSlotAvailable } from '@/lib/booking-availability'
 import { generateIcs } from '@/lib/ics'
 import { sendEmail } from '@/lib/email'
 import { bookingTeamNotification, bookingConfirmation } from '@/lib/booking-emails'
+import { reportError } from '@/lib/monitoring'
+import { validateRequestOrigin } from '@/lib/request-origin'
 import { db, schema } from '@/db'
 import { initDatabase } from '@/db/init'
 
@@ -15,6 +17,9 @@ const TEAM_EMAIL = process.env.TEAM_EMAIL ?? 'info@version2.hr'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   initDatabase()
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'booking', { windowMs: 60_000, maxRequests: 5 })
@@ -92,7 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       ],
     })
   } catch (err) {
-    console.error('[Booking] Confirmation email failed:', err)
+    reportError(err, { scope: 'Booking confirmation email failed', extras: { id, ip } })
   }
 
   // Notify team
@@ -107,7 +112,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }),
     })
   } catch (err) {
-    console.error('[Booking] Team notification failed:', err)
+    reportError(err, { scope: 'Booking team email failed', extras: { id, ip } })
   }
 
   return NextResponse.json({

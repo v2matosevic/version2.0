@@ -26,6 +26,9 @@ SQLite is the right choice for this workload: single-server deployment, low-to-m
 | `analytics_events` | Custom analytics tracking | id, event_type, page_path, metadata_json, session_id, created_at |
 | `blog_drafts` | CMS draft content | id, slug, language, title, content_md, frontmatter_json, updated_at, published |
 | `build_logs` | CMS rebuild history | id, triggered_by, status (running/success/failed), stdout, stderr, started_at, completed_at, duration_ms |
+| `admin_sessions` | Revocable admin sessions | id, session_hash, expires_at, last_seen_at, revoked_at, ip, user_agent |
+| `rate_limit_windows` | Persistent rate limiting windows | key_hash, endpoint, hits, window_started_at, expires_at |
+| `security_events` | Auth and request security audit trail | id, event_type, level, ip, user_agent, details |
 
 ### Migrations
 
@@ -56,13 +59,14 @@ Reject all other origins. No wildcard `*` in production.
 
 ### Authentication
 
-- **Public endpoints** (contact form, pricing tool, booking, career, chat): No auth required. Protected by rate limiting and honeypot.
-- **CMS endpoints** (content CRUD, rebuild trigger, analytics dashboard, conversation logs): API key in `Authorization: Bearer <key>` header. Key stored in environment variable, never in code.
-- **Internal endpoints** (rebuild trigger, health check): Restricted to localhost or API key.
+- **Public endpoints** (contact form, pricing tool, booking, career, chat): No auth required. Protected by rate limiting, honeypot fields, and same-origin request validation.
+- **Admin/CMS endpoints**: Protected by an `HttpOnly` admin session cookie created by `POST /api/admin/auth`. Sessions are HMAC-signed, stored server-side in SQLite, expire after 7 days, and can be revoked on logout.
+- **Session cookie policy:** `Secure` in production, `SameSite=Strict`, `Priority=High`.
+- **Internal endpoints** (health check): No auth required, but they expose only non-sensitive operational state.
 
 ### Rate Limiting
 
-Per-IP limits, enforced by an in-memory store (no Redis needed at this scale):
+Per-IP limits, enforced by a SQLite-backed window store. The limiter stores a hashed key per endpoint/window/IP combination, so limits survive process restarts without persisting raw IPs in the rate-limit table:
 
 | Endpoint Group | Limit | Window |
 |---|---|---|
@@ -79,14 +83,15 @@ Return `429 Too Many Requests` with `Retry-After` header when exceeded.
 ### CSRF Protection
 
 With Next.js standalone mode, Server Actions have built-in CSRF protection. For API routes used by client-side forms:
-- **SameSite cookies:** `SameSite=Strict` on any session cookies
-- **Origin header check:** Backend validates `Origin` or `Referer` header matches the CORS whitelist
+- **SameSite cookies:** `SameSite=Strict` on admin session cookies
+- **Origin header check:** Browser-facing `POST` endpoints reject requests whose `Origin` or `Referer` does not match the configured site origin (`NEXT_PUBLIC_SITE_URL` / `SITE_URL` / `ALLOWED_ORIGINS`)
 - **No cookie-based auth on public endpoints:** Public forms use no cookies, eliminating CSRF risk entirely
 
 ### Input Sanitization
 
-- All user inputs validated with Zod schemas (same schemas as frontend — see `../features/form-architecture.md`)
-- HTML stripped from text fields before storage
+- All user inputs validated with Zod schemas (same schemas as frontend - see `../features/form-architecture.md`)
+- Admin emails escape user-provided values before rendering HTML
+- Markdown rendering does **not** allow raw HTML nodes through the parser pipeline
 - SQL injection prevented by Drizzle ORM parameterized queries (never raw SQL)
 - File uploads (career applications): if added later, validate MIME type, enforce size limits, store outside webroot
 
@@ -95,7 +100,7 @@ With Next.js standalone mode, Server Actions have built-in CSRF protection. For 
 Set on all API responses:
 
 ```
-Content-Security-Policy: default-src 'self'
+Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; ...
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 X-XSS-Protection: 0
@@ -103,7 +108,7 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 Referrer-Policy: strict-origin-when-cross-origin
 ```
 
-HSTS is critical — enforces HTTPS on all connections. The `includeSubDomains` directive covers `app.`, `qr.`, `web.`, and `staging.` subdomains.
+HSTS is critical - enforces HTTPS on all connections. The `includeSubDomains` directive covers `app.`, `qr.`, `web.`, and `staging.` subdomains. The current CSP also removes `'unsafe-eval'`, blocks objects/frames, and restricts form submissions to same-origin.
 
 ---
 

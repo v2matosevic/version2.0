@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
-import { ChevronDown } from 'lucide-react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import type { NavMenuItem } from '@/lib/content/get-menu-items'
 
@@ -10,76 +8,67 @@ type MenuNavLinkProps = {
   item: NavMenuItem
   onClose: () => void
   isMobile: boolean
+  index: number
+  /** When another item's dropdown is expanded, this item should dim */
+  dimmed?: boolean
 }
 
-function MenuNavLink({ item, onClose, isMobile }: MenuNavLinkProps) {
-  const [expanded, setExpanded] = useState(false)
-  const textSize = isMobile ? 'var(--text-h2)' : 'var(--text-h3)'
+const STAGGER_DELAY = 0.06
+
+function MenuNavLink({ item, onClose, isMobile, index, dimmed = false }: MenuNavLinkProps) {
+  const linkStyle: React.CSSProperties = {
+    fontSize: isMobile ? 'var(--text-h2)' : 'var(--text-h3)',
+    fontWeight: 'var(--font-weight-headline)',
+    lineHeight: 'var(--leading-tight)',
+    letterSpacing: 'var(--tracking-h2)',
+  }
+
+  // Dimming styles — when another item is expanded, this item fades and shrinks
+  const dimStyle: React.CSSProperties = dimmed ? {
+    opacity: 0.25,
+    filter: 'blur(1px)',
+    transform: 'scale(0.97)',
+    pointerEvents: 'none' as const,
+  } : {
+    opacity: 1,
+    filter: 'blur(0)',
+    transform: 'scale(1)',
+  }
 
   if (item.children) {
-    return (
-      <div>
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-2 py-2 font-heading text-foreground hover:text-brand-red transition-colors w-full text-left"
-          style={{
-            fontSize: textSize,
-            fontWeight: 'var(--font-weight-headline)',
-            lineHeight: 'var(--leading-tight)',
-          } as React.CSSProperties}
-        >
-          {item.label}
-          <ChevronDown
-            size={20}
-            className="transition-transform"
-            style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)' }}
-          />
-        </button>
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="pl-6 flex flex-col gap-1 pb-2">
-                {item.children.map((child) => (
-                  <Link
-                    key={child.href}
-                    href={child.href}
-                    onClick={onClose}
-                    className="block py-1.5 text-muted hover:text-foreground transition-colors font-heading"
-                    style={{
-                      fontSize: 'var(--text-body)',
-                      fontWeight: 'var(--font-weight-headline)',
-                    } as React.CSSProperties}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    )
+    // This is handled by the parent — MenuContent manages expanded state
+    // This component just renders the button + children
+    return null
   }
 
   return (
-    <Link
-      href={item.href}
-      onClick={onClose}
-      className="block py-2 font-heading text-foreground hover:text-brand-red transition-colors"
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        duration: 0.4,
+        delay: index * STAGGER_DELAY,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className="transition-all"
       style={{
-        fontSize: textSize,
-        fontWeight: 'var(--font-weight-headline)',
-        lineHeight: 'var(--leading-tight)',
-      } as React.CSSProperties}
+        ...dimStyle,
+        transitionDuration: 'var(--duration-normal)',
+        transitionTimingFunction: 'var(--ease-out)',
+      }}
     >
-      {item.label}
-    </Link>
+      <Link
+        href={item.href}
+        onClick={onClose}
+        className="block py-3 font-heading text-foreground hover:text-brand-red transition-colors"
+        style={{
+          ...linkStyle,
+          transitionDuration: 'var(--duration-fast)',
+        } as React.CSSProperties}
+      >
+        {item.label}
+      </Link>
+    </motion.div>
   )
 }
 

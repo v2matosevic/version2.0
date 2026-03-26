@@ -15,7 +15,7 @@ The backend uses **Next.js API routes** (App Router `route.ts` handlers) — con
 
 | Method | Endpoint | Auth | Rate Limit | Purpose |
 |--------|----------|------|------------|---------|
-| GET | /api/health | None | None | Health check (DB connectivity + uptime) |
+| GET | /api/health | None | None | Health check (DB + operational dependencies + uptime) |
 | POST | /api/contact | None | 5/min/IP | Contact form submission |
 | POST | /api/career | None | 3/min/IP | Career application submission |
 | POST | /api/pricing | None | 10/min/IP | Pricing tool estimate submission |
@@ -69,6 +69,11 @@ The `type` field distinguishes regular contact submissions from analysis/audit r
 **Validation 400:**
 ```json
 { "success": false, "errors": [{ "field": "string", "message": "string" }] }
+```
+
+**Origin 403:**
+```json
+{ "success": false, "error": "Origin not allowed" }
 ```
 
 **Rate limit 429:**
@@ -147,6 +152,8 @@ Non-streaming. Complete response returned. Streaming may be added later.
 ```json
 { "received": 0 }
 ```
+
+Browser-facing `POST` endpoints (`/api/contact`, `/api/pricing`, `/api/booking`, `/api/career`, `/api/chat`, `/api/analytics/events`, `/api/admin/auth`, `/api/admin/logout`) enforce same-origin `Origin` / `Referer` validation and may return `403` when the request comes from an untrusted origin.
 
 ### POST /api/pricing
 

@@ -5,9 +5,11 @@ import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
 import { generateId } from '@/lib/generate-id'
 import { sendEmail } from '@/lib/email'
+import { reportError } from '@/lib/monitoring'
 import { pricingNotification } from '@/lib/notification-emails'
 import { calculateEstimate } from '@/lib/pricing/calculate-estimate'
 import { PRICING_CONFIG } from '@/lib/pricing/load-pricing-config'
+import { validateRequestOrigin } from '@/lib/request-origin'
 import { db, schema } from '@/db'
 import { initDatabase } from '@/db/init'
 import type { WizardSelections, AddonSelection } from '@/types/pricing'
@@ -50,6 +52,9 @@ function toWizardSelections(sel: PricingSelections): WizardSelections {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   initDatabase()
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'pricing', { windowMs: 60_000, maxRequests: 10 })
@@ -129,7 +134,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }),
     })
   } catch (err) {
-    console.error('[Pricing] Email send failed:', err)
+    reportError(err, { scope: 'Pricing email send failed', extras: { id, ip, hasMismatch } })
   }
 
   return NextResponse.json({

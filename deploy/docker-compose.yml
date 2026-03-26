@@ -1,0 +1,250 @@
+# ============================================================
+# Version2.hr — Full Stack Docker Compose
+# ============================================================
+# Services:
+#   nginx       — Reverse proxy + SSL termination (Cloudflare Origin Cert)
+#   nextjs      — Main website (version2.hr) — Next.js 16 standalone
+#   mysql       — Shared MySQL 8.0 (app + web + offer databases)
+#   app-php     — app.version2.hr — Laravel 10 + PHP 8.2-FPM
+#   app-worker  — app.version2.hr — Laravel queue worker
+#   web-php     — web.version2.hr — Laravel + PHP 8.2-FPM
+#   offer-php   — offer.version2.hr — Vanilla PHP 8.x-FPM
+#   qr-nextjs   — qr.version2.hr — Next.js (future, separate app)
+# ============================================================
+
+services:
+
+  # ── Reverse Proxy ──
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: v2-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      nextjs:
+        condition: service_started
+    networks:
+      - v2-network
+    restart: unless-stopped
+
+  # ── Main Website (version2.hr) ──
+  nextjs:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: v2-nextjs
+    expose:
+      - "3000"
+    env_file:
+      - ./env/nextjs.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - COMING_SOON=true
+    volumes:
+      - nextjs-data:/app/data
+    networks:
+      - v2-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ── Shared MySQL ──
+  mysql:
+    image: mysql:8.0
+    container_name: v2-mysql
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - v2-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  # ── app.version2.hr (Laravel) ──
+  # Uncomment when GitHub repo + DB dump are provided
+  #
+  # app-php:
+  #   build:
+  #     context: ./app/src
+  #     dockerfile: Dockerfile
+  #   container_name: v2-app-php
+  #   expose:
+  #     - "9000"
+  #   env_file:
+  #     - ./env/app.env
+  #   volumes:
+  #     - app-uploads:/var/www/html/public/uploads
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+  #
+  # app-worker:
+  #   build:
+  #     context: ./app/src
+  #     dockerfile: Dockerfile
+  #   container_name: v2-app-worker
+  #   command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+  #   env_file:
+  #     - ./env/app.env
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+  #
+  # app-nginx:
+  #   image: nginx:1.27-alpine
+  #   container_name: v2-app-nginx
+  #   expose:
+  #     - "8001"
+  #   volumes:
+  #     - ./nginx/app-fpm.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - ./app/src/public:/var/www/html/public:ro
+  #     - app-uploads:/var/www/html/public/uploads:ro
+  #   depends_on:
+  #     - app-php
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+
+  # ── web.version2.hr (Laravel) ──
+  # Uncomment when GitHub repo + DB dump are provided
+  #
+  # web-php:
+  #   build:
+  #     context: ./web/src
+  #     dockerfile: Dockerfile
+  #   container_name: v2-web-php
+  #   expose:
+  #     - "9000"
+  #   env_file:
+  #     - ./env/web.env
+  #   volumes:
+  #     - web-uploads:/var/www/html/public/uploads
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+  #
+  # web-nginx:
+  #   image: nginx:1.27-alpine
+  #   container_name: v2-web-nginx
+  #   expose:
+  #     - "8002"
+  #   volumes:
+  #     - ./nginx/web-fpm.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - ./web/src/public:/var/www/html/public:ro
+  #     - web-uploads:/var/www/html/public/uploads:ro
+  #   depends_on:
+  #     - web-php
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+
+  # ── offer.version2.hr (Vanilla PHP) ──
+  # Uncomment when GitHub repo + DB dump are provided
+  #
+  # offer-php:
+  #   build:
+  #     context: ./offer/src
+  #     dockerfile: Dockerfile
+  #   container_name: v2-offer-php
+  #   expose:
+  #     - "9000"
+  #   env_file:
+  #     - ./env/offer.env
+  #   volumes:
+  #     - offer-uploads:/var/www/html/public/uploads
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+  #
+  # offer-nginx:
+  #   image: nginx:1.27-alpine
+  #   container_name: v2-offer-nginx
+  #   expose:
+  #     - "8003"
+  #   volumes:
+  #     - ./nginx/offer-fpm.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - ./offer/src/public:/var/www/html/public:ro
+  #     - offer-uploads:/var/www/html/public/uploads:ro
+  #   depends_on:
+  #     - offer-php
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+
+  # ── qr.version2.hr (Next.js — future) ──
+  # Will be built as a separate Next.js app
+  #
+  # qr-nextjs:
+  #   build:
+  #     context: ./qr/src
+  #     dockerfile: Dockerfile
+  #   container_name: v2-qr-nextjs
+  #   expose:
+  #     - "3001"
+  #   env_file:
+  #     - ./env/qr.env
+  #   environment:
+  #     - NODE_ENV=production
+  #     - PORT=3001
+  #     - HOSTNAME=0.0.0.0
+  #   volumes:
+  #     - qr-data:/app/data
+  #   networks:
+  #     - v2-network
+  #   restart: unless-stopped
+
+# ── Volumes ──
+volumes:
+  nextjs-data:
+    driver: local
+  mysql-data:
+    driver: local
+  # app-uploads:
+  #   driver: local
+  # web-uploads:
+  #   driver: local
+  # offer-uploads:
+  #   driver: local
+  # qr-data:
+  #   driver: local
+
+# ── Network ──
+networks:
+  v2-network:
+    driver: bridge

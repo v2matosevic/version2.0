@@ -40,6 +40,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.68",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^7.6.13",

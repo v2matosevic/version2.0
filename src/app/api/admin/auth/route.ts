@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
+import { validateRequestOrigin } from '@/lib/request-origin'
+import { recordSecurityEvent } from '@/lib/security-events'
 import {
   getAdminKey,
   verifyPassword,
@@ -10,6 +12,10 @@ import {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const ip = getClientIp(request)
+  const userAgent = request.headers.get('user-agent')
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   // 5 attempts per minute
   const minuteLimit = rateLimit(ip, 'admin-login', { windowMs: 60_000, maxRequests: 5 })
@@ -41,6 +47,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     getAdminKey()
   } catch (err) {
+    recordSecurityEvent({
+      eventType: 'admin.login.misconfigured',
+      level: 'error',
+      ip,
+      userAgent,
+    })
     return NextResponse.json(
       { success: false, error: (err as Error).message },
       { status: 500 },
@@ -48,13 +60,25 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   if (!verifyPassword(password)) {
+    recordSecurityEvent({
+      eventType: 'admin.login.failed',
+      level: 'warning',
+      ip,
+      userAgent,
+    })
     return NextResponse.json(
       { success: false, error: 'Invalid credentials' },
       { status: 401 },
     )
   }
 
-  const { token, isDevKey } = createSession()
+  const { token, isDevKey } = createSession({ ip, userAgent })
+  recordSecurityEvent({
+    eventType: 'admin.login.success',
+    ip,
+    userAgent,
+  })
+
   const response = NextResponse.json({
     success: true,
     warning: isDevKey ? 'Using default dev key. Set ADMIN_API_KEY in production.' : undefined,

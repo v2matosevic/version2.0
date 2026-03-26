@@ -42,7 +42,7 @@ next-env.d.ts
 
 # database
 data/
-*.sql
+/*.sql
 
 # IDE
 .idea/
@@ -52,3 +52,16 @@ data/
 
 # playwright
 .playwright-mcp/
+.env
+.env.local
+.env.production
+
+# Clipboard images from terminal paste
+.clipboard-images/
+
+# deployment secrets (keep .example files)
+deploy/env/*.env
+deploy/env/!*.env.example
+deploy/.env
+deploy/nginx/ssl/*.pem
+deploy/nginx/ssl/*.key

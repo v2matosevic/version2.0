@@ -17,9 +17,9 @@ export type ParsedMarkdown<T> = {
 
 const processor = unified()
   .use(remarkParse)
-  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(remarkRehype)
   .use(rehypeHighlight)
-  .use(rehypeStringify, { allowDangerousHtml: true })
+  .use(rehypeStringify)
 
 export async function parseMarkdown<T>(raw: string): Promise<ParsedMarkdown<T>> {
   const { data, content } = matter(raw)

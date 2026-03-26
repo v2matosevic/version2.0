@@ -10,6 +10,7 @@ type TocHeading = {
 
 type TableOfContentsProps = {
   html: string
+  variant?: 'auto' | 'mobile' | 'desktop'
 }
 
 const HEADING_REGEX = /<h([23])[^>]*id="([^"]*)"[^>]*>(.*?)<\/h[23]>/gi
@@ -32,7 +33,7 @@ function parseHeadings(html: string): TocHeading[] {
   return headings
 }
 
-function TableOfContents({ html }: TableOfContentsProps) {
+function TableOfContents({ html, variant = 'auto' }: TableOfContentsProps) {
   const headings = parseHeadings(html)
   const [activeId, setActiveId] = useState<string>('')
   const [isOpen, setIsOpen] = useState(false)
@@ -79,17 +80,20 @@ function TableOfContents({ html }: TableOfContentsProps) {
     setIsOpen(false)
   }
 
+  const showMobile = variant === 'auto' || variant === 'mobile'
+  const showDesktop = variant === 'auto' || variant === 'desktop'
+
   return (
     <>
       {/* Mobile: collapsible section above content */}
-      <nav
+      {showMobile && <nav
         className="lg:hidden mb-8"
         aria-label="Table of contents"
       >
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex w-full items-center justify-between rounded-lg border border-line px-4 py-3 text-foreground transition-colors hover:border-accent"
+          className="flex w-full items-center justify-between rounded-lg border border-line px-4 py-3 text-foreground transition-colors hover:border-brand-red"
           style={{ fontSize: 'var(--text-small)' }}
         >
           <span className="font-medium">Table of Contents</span>
@@ -132,10 +136,10 @@ function TableOfContents({ html }: TableOfContentsProps) {
             ))}
           </ul>
         )}
-      </nav>
+      </nav>}
 
       {/* Desktop: sticky sidebar */}
-      <aside
+      {showDesktop && <aside
         className="hidden lg:block"
         aria-label="Table of contents"
       >
@@ -156,7 +160,7 @@ function TableOfContents({ html }: TableOfContentsProps) {
                     heading.level === 3 ? 'pl-6' : 'pl-4'
                   } py-1.5 -ml-px border-l-2 ${
                     activeId === heading.id
-                      ? 'border-accent text-foreground'
+                      ? 'border-brand-red text-foreground'
                       : 'border-transparent text-muted hover:text-foreground hover:border-line'
                   }`}
                   style={{ fontSize: 'var(--text-small)' }}
@@ -167,7 +171,7 @@ function TableOfContents({ html }: TableOfContentsProps) {
             ))}
           </ul>
         </div>
-      </aside>
+      </aside>}
     </>
   )
 }

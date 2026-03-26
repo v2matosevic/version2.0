@@ -7,7 +7,6 @@ import { Footer } from '@/components/layout/footer'
 import { PageTransition } from '@/components/layout/page-transition'
 import { SmoothScroll } from '@/components/layout/smooth-scroll'
 import { CookieConsent } from '@/components/layout/cookie-consent'
-import { CustomCursor } from '@/components/animations/custom-cursor'
 import { Analytics } from '@/components/layout/analytics'
 import { AnalyticsTracker } from '@/components/layout/analytics-tracker'
 import { Fab } from '@/components/layout/fab'
@@ -54,7 +53,6 @@ function LayoutShell({ lang, navItems, children }: LayoutShellProps) {
       <AnalyticsTracker />
       <Fab contactHref={contactHref} onOpenChat={openChat} />
       <ChatWidget lang={lang} isOpen={chatOpen} onClose={() => setChatOpen(false)} />
-      <CustomCursor />
     </SmoothScroll>
   )
 }

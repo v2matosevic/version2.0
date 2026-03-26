@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifySession } from '@/lib/admin-auth'
+import { verifySession } from '@/lib/admin-session-token'
 
 const SUPPORTED_LANGUAGES = ['en', 'hr', 'de'] as const
 const DEFAULT_LANGUAGE = 'en'
@@ -56,8 +56,22 @@ function getLanguageFromPath(pathname: string): typeof SUPPORTED_LANGUAGES[numbe
   return 'en'
 }
 
+const COMING_SOON = process.env.COMING_SOON === 'true'
+
 export function proxy(request: NextRequest): NextResponse | undefined {
   const { pathname } = request.nextUrl
+
+  // Coming soon mode — redirect all public routes to /coming-soon/
+  if (COMING_SOON && !shouldSkip(pathname) && !pathname.startsWith('/coming-soon') && !pathname.startsWith('/admin')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/coming-soon/'
+    if (pathname.startsWith('/hr')) {
+      url.searchParams.set('lang', 'hr')
+    } else if (pathname.startsWith('/de')) {
+      url.searchParams.set('lang', 'de')
+    }
+    return NextResponse.redirect(url, 302)
+  }
 
   // Admin auth check — protect /admin/ routes except /admin/login
   if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {

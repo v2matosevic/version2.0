@@ -129,6 +129,39 @@ export function ensureDatabase(): void {
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS admin_sessions (
+      id TEXT PRIMARY KEY,
+      session_hash TEXT NOT NULL UNIQUE,
+      expires_at TEXT NOT NULL,
+      last_seen_at TEXT,
+      revoked_at TEXT,
+      ip TEXT,
+      user_agent TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS rate_limit_windows (
+      key_hash TEXT PRIMARY KEY,
+      endpoint TEXT NOT NULL,
+      hits INTEGER NOT NULL DEFAULT 1,
+      window_started_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS security_events (
+      id TEXT PRIMARY KEY,
+      event_type TEXT NOT NULL,
+      level TEXT NOT NULL DEFAULT 'info',
+      ip TEXT,
+      user_agent TEXT,
+      details TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS orders (
       id TEXT PRIMARY KEY,
       customer_name TEXT NOT NULL,
@@ -159,6 +192,9 @@ export function ensureDatabase(): void {
     CREATE INDEX IF NOT EXISTS idx_analytics_events_session ON analytics_events(session_id);
     CREATE INDEX IF NOT EXISTS idx_analytics_events_type ON analytics_events(type);
     CREATE INDEX IF NOT EXISTS idx_blog_drafts_slug ON blog_drafts(slug, language);
+    CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires ON admin_sessions(expires_at);
+    CREATE INDEX IF NOT EXISTS idx_rate_limit_windows_expires ON rate_limit_windows(expires_at);
+    CREATE INDEX IF NOT EXISTS idx_security_events_type ON security_events(event_type);
     CREATE INDEX IF NOT EXISTS idx_orders_tracking ON orders(tracking_number);
     CREATE INDEX IF NOT EXISTS idx_tracking_events_order ON tracking_events(order_id);
   `)

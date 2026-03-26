@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 
 const STORAGE_KEY = 'v2_cookie_consent'
@@ -33,7 +34,6 @@ function CookieConsent() {
   useEffect(() => {
     const stored = getStoredConsent()
     if (!stored) {
-      // Intentional: check localStorage once on mount to show banner
       setVisible(true) // eslint-disable-line react-hooks/set-state-in-effect
     }
   }, [])
@@ -49,74 +49,108 @@ function CookieConsent() {
     setVisible(false)
   }, [])
 
-  if (!visible) return null
-
   return (
-    <div
-      role="dialog"
-      aria-label="Cookie preferences"
-      className="fixed bottom-0 left-0 w-full bg-raised border-t border-line"
-      style={{ zIndex: 'var(--z-cookie)' } as React.CSSProperties}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
-          <p className="text-foreground font-body text-base">
-            We use cookies for analytics to improve your experience.
-          </p>
-          <div className="flex items-center gap-3 shrink-0">
-            <Button variant="primary" size="sm" onClick={() => saveConsent(true)}>
-              Accept All
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => saveConsent(false)}>
-              Decline
-            </Button>
-            <button
-              onClick={() => setShowCustomize(!showCustomize)}
-              className="text-sm text-muted underline font-body hover:text-foreground transition-colors"
-            >
-              Customize
-            </button>
-          </div>
-        </div>
-
-        {showCustomize && (
-          <div className="mt-4 pt-4 border-t border-line-subtle">
-            <div className="flex flex-col gap-4 max-w-md">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground font-body">Functional</span>
-                <span className="text-sm text-muted font-body">Always active</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground font-body">Analytics</span>
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          role="dialog"
+          aria-label="Cookie preferences"
+          initial={{ y: '100%', opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: '100%', opacity: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-0 left-0 w-full"
+          style={{
+            zIndex: 'var(--z-cookie)',
+            background: 'color-mix(in srgb, var(--color-sunken) 95%, transparent)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            borderTop: '1px solid color-mix(in srgb, var(--color-line) 40%, transparent)',
+          } as React.CSSProperties}
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 pr-20 sm:pr-6 lg:pr-8">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-6">
+              <p
+                className="text-muted font-body"
+                style={{ fontSize: 'var(--text-small)' } as React.CSSProperties}
+              >
+                We use cookies for analytics to improve your experience.
+              </p>
+              <div className="flex items-center gap-3 shrink-0">
+                <Button variant="primary" size="sm" onClick={() => saveConsent(true)}>
+                  Accept
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => saveConsent(false)}>
+                  Decline
+                </Button>
                 <button
-                  role="switch"
-                  aria-checked={analyticsEnabled}
-                  onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
-                  className={[
-                    'relative w-10 h-5 rounded-full transition-colors',
-                    analyticsEnabled ? 'bg-brand-red' : 'bg-line',
-                  ].join(' ')}
+                  onClick={() => setShowCustomize(!showCustomize)}
+                  className="text-sm text-faint hover:text-muted transition-colors font-body underline underline-offset-2"
+                  style={{ transitionDuration: 'var(--duration-fast)' }}
                 >
-                  <span
-                    className={[
-                      'absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform',
-                      analyticsEnabled ? 'translate-x-5' : 'translate-x-0',
-                    ].join(' ')}
-                  />
+                  Customize
                 </button>
               </div>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => saveConsent(analyticsEnabled)}
-              >
-                Save Preferences
-              </Button>
             </div>
+
+            <AnimatePresence>
+              {showCustomize && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 pt-4 border-t border-line-subtle">
+                    <div className="flex flex-col gap-4 max-w-sm">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-foreground font-body">Functional</span>
+                        <span
+                          className="text-faint font-body"
+                          style={{ fontSize: 'var(--text-small)' }}
+                        >
+                          Always active
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-foreground font-body">Analytics</span>
+                        <button
+                          role="switch"
+                          aria-checked={analyticsEnabled}
+                          onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
+                          className="relative w-10 h-5 rounded-full transition-colors"
+                          style={{
+                            backgroundColor: analyticsEnabled ? 'var(--color-brand-red)' : 'var(--color-line)',
+                            transitionDuration: 'var(--duration-normal)',
+                          }}
+                        >
+                          <span
+                            className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform"
+                            style={{
+                              transform: analyticsEnabled ? 'translateX(20px)' : 'translateX(0)',
+                              transitionDuration: 'var(--duration-normal)',
+                              transitionTimingFunction: 'var(--ease-out)',
+                            }}
+                          />
+                        </button>
+                      </div>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => saveConsent(analyticsEnabled)}
+                      >
+                        Save Preferences
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
-      </div>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 

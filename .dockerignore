@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+
+# Build output (rebuilt in container)
+.next
+
+# Data (mounted as volume)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# Git
+.git
+.gitignore
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+
+# Screenshots & dev artifacts
+*.png
+*.jpg
+
+# Deployment configs (not needed in app image)
+deploy/
+
+# Environment files (injected at runtime)
+.env
+.env.local
+.env.production
+
+# Claude / AI
+.claude/
+.mcp.json
+
+# Docs & tasks (not needed at runtime)
+docs/
+tasks/
+
+# Scripts (build-time only, already run in postbuild)
+scripts/
+
+# OS files
+Thumbs.db
+.DS_Store

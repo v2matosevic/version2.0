@@ -11,13 +11,25 @@ type EmailOptions = {
   }>
 }
 
+function isSmtpConfigured(): boolean {
+  return Boolean(
+    process.env.SMTP_HOST &&
+    process.env.SMTP_PORT &&
+    process.env.SMTP_USER &&
+    process.env.SMTP_PASS,
+  )
+}
+
 function createTransport(): nodemailer.Transporter | null {
   const host = process.env.SMTP_HOST
   const port = process.env.SMTP_PORT
   const user = process.env.SMTP_USER
   const pass = process.env.SMTP_PASS
 
-  if (!host || !port || !user || !pass) {
+  if (!isSmtpConfigured()) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('SMTP is not configured for production')
+    }
     return null
   }
 
@@ -56,3 +68,5 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     attachments: options.attachments,
   })
 }
+
+export { isSmtpConfigured }

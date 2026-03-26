@@ -3,12 +3,16 @@ import { analyticsEventsSchema } from '@/lib/validation/schemas/analytics-schema
 import { parseZodErrors } from '@/lib/parse-zod-errors'
 import { rateLimit } from '@/lib/rate-limiter'
 import { getClientIp } from '@/lib/client-ip'
+import { validateRequestOrigin } from '@/lib/request-origin'
 import { generateId } from '@/lib/generate-id'
 import { db, schema } from '@/db'
 import { initDatabase } from '@/db/init'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   initDatabase()
+
+  const originError = validateRequestOrigin(request)
+  if (originError) return originError
 
   const ip = getClientIp(request)
   const rateLimited = rateLimit(ip, 'analytics', { windowMs: 60_000, maxRequests: 100 })

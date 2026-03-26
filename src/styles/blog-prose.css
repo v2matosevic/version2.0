@@ -1,0 +1,229 @@
+/* ============================================================
+   Blog Prose — Dark Cinematic Premium
+   Applied via .prose-blog class on blog post content wrapper.
+   Albert Sans headings, Manrope body, generous spacing.
+   The reading experience IS the product demonstration.
+   ============================================================ */
+
+.prose-blog {
+  font-family: var(--font-body);
+  font-size: var(--text-body-prose);
+  font-weight: var(--font-weight-body);
+  line-height: var(--leading-prose);
+  color: var(--color-muted);
+  max-width: 768px;
+}
+
+/* — Headings — editorial, commanding hierarchy — */
+
+.prose-blog h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h3);
+  font-weight: var(--font-weight-headline);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-foreground);
+  margin-top: 3.5rem;
+  margin-bottom: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-line-subtle);
+}
+
+.prose-blog > :first-child,
+.prose-blog h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.prose-blog h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: var(--font-weight-headline);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-foreground);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose-blog h4 {
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  font-weight: var(--font-weight-headline-bold);
+  line-height: var(--leading-snug);
+  color: var(--color-foreground);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* — Paragraphs — generous breathing room — */
+
+.prose-blog p {
+  margin-bottom: 1.75rem;
+}
+
+/* — Links — brand red with refined underline — */
+
+.prose-blog a {
+  color: var(--color-brand-red-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--color-brand-red-light) 40%, transparent);
+  transition: color var(--duration-fast) ease, text-decoration-color var(--duration-fast) ease;
+}
+
+.prose-blog a:hover {
+  color: var(--color-brand-red);
+  text-decoration-color: var(--color-brand-red);
+}
+
+/* — Strong & Em — */
+
+.prose-blog strong {
+  font-weight: var(--font-weight-body-semibold);
+  color: var(--color-foreground);
+}
+
+.prose-blog em {
+  font-style: italic;
+}
+
+/* — Lists — red markers, clear spacing — */
+
+.prose-blog ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose-blog ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.prose-blog li {
+  margin-bottom: 0.625rem;
+  padding-left: 0.375rem;
+}
+
+.prose-blog li::marker {
+  color: var(--color-brand-red);
+}
+
+/* Nested lists */
+.prose-blog li > ul,
+.prose-blog li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* — Blockquote — editorial left border, larger text — */
+
+.prose-blog blockquote {
+  border-left: 3px solid var(--color-brand-red);
+  padding: 1.25rem 0 1.25rem 1.75rem;
+  margin: 2.5rem 0;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-headline);
+  font-style: normal;
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-foreground);
+}
+
+.prose-blog blockquote p {
+  margin-bottom: 0;
+}
+
+.prose-blog blockquote cite,
+.prose-blog blockquote footer {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  font-weight: var(--font-weight-body);
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+/* — Code — warm charcoal with subtle borders — */
+
+.prose-blog code {
+  font-size: 0.875em;
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  color: var(--color-foreground);
+}
+
+.prose-blog pre {
+  background: var(--color-sunken);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2.5rem 0;
+  overflow-x: auto;
+  font-size: var(--text-small);
+  line-height: 1.7;
+}
+
+.prose-blog pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* — Images — cinematic treatment — */
+
+.prose-blog img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 2.5rem 0;
+}
+
+/* — Tables — clean, readable — */
+
+.prose-blog table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: var(--text-body);
+}
+
+.prose-blog th {
+  text-align: left;
+  font-weight: var(--font-weight-body-semibold);
+  color: var(--color-foreground);
+  border-bottom: 2px solid var(--color-line);
+  padding: 0.75rem 1rem;
+}
+
+.prose-blog td {
+  border-bottom: 1px solid var(--color-line-subtle);
+  padding: 0.75rem 1rem;
+}
+
+.prose-blog tr:last-child td {
+  border-bottom: none;
+}
+
+/* — Horizontal Rule — refined separator — */
+
+.prose-blog hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-line) 20%,
+    var(--color-line) 80%,
+    transparent
+  );
+  margin: 3.5rem 0;
+}

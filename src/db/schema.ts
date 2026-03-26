@@ -117,6 +117,36 @@ export const buildLogs = sqliteTable('build_logs', {
   ...timestamps,
 })
 
+export const adminSessions = sqliteTable('admin_sessions', {
+  id: text('id').primaryKey(),
+  sessionHash: text('session_hash').notNull().unique(),
+  expiresAt: text('expires_at').notNull(),
+  lastSeenAt: text('last_seen_at'),
+  revokedAt: text('revoked_at'),
+  ip: text('ip'),
+  userAgent: text('user_agent'),
+  ...timestamps,
+})
+
+export const rateLimitWindows = sqliteTable('rate_limit_windows', {
+  keyHash: text('key_hash').primaryKey(),
+  endpoint: text('endpoint').notNull(),
+  hits: integer('hits').notNull().default(1),
+  windowStartedAt: text('window_started_at').notNull(),
+  expiresAt: text('expires_at').notNull(),
+  ...timestamps,
+})
+
+export const securityEvents = sqliteTable('security_events', {
+  id: text('id').primaryKey(),
+  eventType: text('event_type').notNull(),
+  level: text('level').notNull().default('info'),
+  ip: text('ip'),
+  userAgent: text('user_agent'),
+  details: text('details'),
+  ...timestamps,
+})
+
 export const orders = sqliteTable('orders', {
   id: text('id').primaryKey(),
   customerName: text('customer_name').notNull(),

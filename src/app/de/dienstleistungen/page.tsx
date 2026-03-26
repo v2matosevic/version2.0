@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { buildPageMetadata } from '@/lib/seo'
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld'
 import { SITE_URL } from '@/lib/seo'
+import { ScrollReveal } from '@/components/animations/scroll-reveal'
+import { ServiceVisual } from '@/components/services/service-visual'
+import type { ServiceSlug } from '@/components/services/service-visual'
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Dienstleistungen',
@@ -16,12 +19,12 @@ export const metadata: Metadata = buildPageMetadata({
 })
 
 const CORE_SERVICES = [
-  { number: '01', title: 'Individuelle Websites', href: '/de/dienstleistungen/web-design/', description: 'Von Grund auf gestaltet. Schnell, responsiv und auf Konversion ausgelegt. Keine Themes, keine Templates — sauberer Code, geformt um Ihre Marke.' },
-  { number: '02', title: 'Web-Anwendungen', href: '/de/dienstleistungen/web-anwendungen/', description: 'Dashboards, Portale, interne Tools. Komplexe Frontends mit Echtzeitdaten. Gebaut auf modernen Stacks, die skalieren.' },
-  { number: '03', title: 'Online-Shops', href: '/de/dienstleistungen/e-commerce/', description: 'E-Commerce, der funktioniert. Produktverwaltung, Zahlungen, Versand — alles integriert, nichts angeflickt.' },
-  { number: '04', title: 'KI-Integration', href: '/de/dienstleistungen/ki-integration/', description: 'Chatbots, Content-Generierung, intelligente Suche. KI, die echte Geschäftsprobleme löst, keine Buzzword-Demos.' },
-  { number: '05', title: 'SEO', href: '/de/dienstleistungen/seo/', description: 'Technisches SEO in den Build integriert. Strukturierte Daten, Core Web Vitals, Crawlability — die Grundlagen für Rankings.' },
-] as const
+  { number: '01', title: 'Individuelle Websites', href: '/de/dienstleistungen/web-design/', slug: 'web-design' as ServiceSlug, description: 'Von Grund auf gestaltet. Schnell, responsiv und auf Konversion ausgelegt. Keine Themes, keine Templates — sauberer Code, geformt um Ihre Marke.' },
+  { number: '02', title: 'Web-Anwendungen', href: '/de/dienstleistungen/web-anwendungen/', slug: 'web-applications' as ServiceSlug, description: 'Dashboards, Portale, interne Tools. Komplexe Frontends mit Echtzeitdaten. Gebaut auf modernen Stacks, die skalieren.' },
+  { number: '03', title: 'Online-Shops', href: '/de/dienstleistungen/e-commerce/', slug: 'e-commerce' as ServiceSlug, description: 'E-Commerce, der funktioniert. Produktverwaltung, Zahlungen, Versand — alles integriert, nichts angeflickt.' },
+  { number: '04', title: 'KI-Integration', href: '/de/dienstleistungen/ki-integration/', slug: 'ai-integration' as ServiceSlug, description: 'Chatbots, Content-Generierung, intelligente Suche. KI, die echte Geschäftsprobleme löst, keine Buzzword-Demos.' },
+  { number: '05', title: 'SEO', href: '/de/dienstleistungen/seo/', slug: 'seo' as ServiceSlug, description: 'Technisches SEO in den Build integriert. Strukturierte Daten, Core Web Vitals, Crawlability — die Grundlagen für Rankings.' },
+]
 
 const SUPPORTING_SERVICES = [
   { title: 'Digitale Visitenkarten', description: 'NFC-fähige Karten mit eigener Micro-Site. Antippen, teilen, fertig.' },
@@ -52,28 +55,51 @@ export default function DeServicesPage() {
       />
 
       {CORE_SERVICES.map((service, index) => (
+        <ScrollReveal key={service.number}>
         <section
-          key={service.number}
-          className={`py-16 md:py-24 lg:py-32 ${index % 2 === 0 ? 'bg-base' : 'bg-raised'}`}
+          className="relative py-20 md:py-28 lg:py-36 overflow-hidden"
+          style={{
+            background: index % 2 === 0
+              ? 'var(--color-base)'
+              : 'linear-gradient(180deg, var(--color-raised) 0%, var(--color-base) 100%)',
+          }}
         >
           <Container>
-            <div className={`grid grid-cols-1 gap-12 lg:grid-cols-2 items-center ${index % 2 !== 0 ? 'lg:direction-rtl' : ''}`}>
+            <div className={`grid grid-cols-1 gap-12 lg:gap-16 lg:grid-cols-2 items-center`}>
               <div className={index % 2 !== 0 ? 'lg:order-2' : ''}>
+                {/* Number — large, atmospheric */}
                 <span
-                  className="block mb-4 font-heading text-brand-red"
-                  style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline)' } as React.CSSProperties}
+                  className="block mb-2 font-heading text-brand-red"
+                  style={{
+                    fontSize: 'var(--text-overline)',
+                    fontWeight: 'var(--font-weight-body-semibold)',
+                    letterSpacing: 'var(--tracking-overline)',
+                  } as React.CSSProperties}
                 >
                   {service.number}
                 </span>
                 <h2
                   className="font-heading text-foreground"
-                  style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline)', lineHeight: 'var(--leading-tight)', letterSpacing: 'var(--tracking-h2)' } as React.CSSProperties}
+                  style={{
+                    fontSize: 'var(--text-h2)',
+                    fontWeight: 'var(--font-weight-headline)',
+                    lineHeight: 'var(--leading-tight)',
+                    letterSpacing: 'var(--tracking-h2)',
+                  } as React.CSSProperties}
                 >
                   {service.title}
                 </h2>
+                {/* Red accent bar */}
+                <div
+                  className="mt-4 mb-5"
+                  style={{ width: '40px', height: '2px', background: 'var(--color-brand-red)' }}
+                />
                 <p
-                  className="mt-4 text-muted max-w-lg"
-                  style={{ fontSize: 'var(--text-body-lg)', lineHeight: 'var(--leading-body)' } as React.CSSProperties}
+                  className="text-muted max-w-lg"
+                  style={{
+                    fontSize: 'var(--text-body-lg)',
+                    lineHeight: 'var(--leading-body)',
+                  } as React.CSSProperties}
                 >
                   {service.description}
                 </p>
@@ -83,24 +109,43 @@ export default function DeServicesPage() {
                   </Link>
                 </div>
               </div>
-              <div className={`rounded-xl bg-sunken border border-line-subtle aspect-[4/3] ${index % 2 !== 0 ? 'lg:order-1' : ''}`} />
+              <div className={index % 2 !== 0 ? 'lg:order-1' : ''}>
+                <ServiceVisual
+                  service={service.slug}
+                  number={service.number}
+                />
+              </div>
             </div>
           </Container>
         </section>
+        </ScrollReveal>
       ))}
 
       <ContentSection background="raised" overline="Außerdem" heading="Ergänzende Dienste">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {SUPPORTING_SERVICES.map((service) => (
-            <div key={service.title} className="p-6 rounded-xl bg-base border border-line-subtle">
-              <div className="mb-4 w-8 h-0.5 bg-brand-red" />
+            <div
+              key={service.title}
+              className="group p-8 rounded-xl border border-line-subtle transition-colors hover:border-line"
+              style={{
+                background: 'linear-gradient(135deg, var(--color-base) 0%, var(--color-sunken) 100%)',
+                transitionDuration: 'var(--duration-normal)',
+              }}
+            >
+              <div
+                className="mb-5 w-8 h-0.5 transition-all group-hover:w-12"
+                style={{
+                  background: 'var(--color-brand-red)',
+                  transitionDuration: 'var(--duration-normal)',
+                }}
+              />
               <h3
                 className="font-heading text-foreground"
                 style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}
               >
                 {service.title}
               </h3>
-              <p className="mt-2 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+              <p className="mt-3 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
                 {service.description}
               </p>
             </div>
@@ -108,27 +153,86 @@ export default function DeServicesPage() {
         </div>
       </ContentSection>
 
-      <section className="py-12 md:py-16 lg:py-20 bg-sunken">
+      <section
+        className="relative py-20 md:py-28 lg:py-36 overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, var(--color-sunken) 0%, var(--color-base) 100%)',
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+            backgroundRepeat: 'repeat',
+          }}
+        />
         <Container>
           <p
-            className="mb-8 uppercase text-muted font-body text-center"
-            style={{ fontSize: 'var(--text-overline)', fontWeight: 'var(--font-weight-body-semibold)', letterSpacing: 'var(--tracking-overline)' } as React.CSSProperties}
+            className="mb-3 uppercase text-muted font-body"
+            style={{
+              fontSize: 'var(--text-overline)',
+              fontWeight: 'var(--font-weight-body-semibold)',
+              letterSpacing: 'var(--tracking-overline)',
+            } as React.CSSProperties}
           >
-            Unser Prozess
+            Wie Wir Arbeiten
           </p>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-            {PROCESS_STEPS.map((step) => (
-              <div key={step.step} className="text-center">
-                <span className="block font-heading text-brand-red" style={{ fontSize: 'var(--text-h3)', fontWeight: 'var(--font-weight-headline)' } as React.CSSProperties}>
+          <h2
+            className="mb-16 font-heading text-foreground"
+            style={{
+              fontSize: 'var(--text-h2)',
+              fontWeight: 'var(--font-weight-headline)',
+              lineHeight: 'var(--leading-tight)',
+              letterSpacing: 'var(--tracking-h2)',
+            } as React.CSSProperties}
+          >
+            Vier Schritte. Keine Überraschungen.
+          </h2>
+          <div className="grid grid-cols-1 gap-0 md:grid-cols-4">
+            {PROCESS_STEPS.map((step, index) => (
+              <div
+                key={step.step}
+                className="relative py-8 md:py-0 md:px-6 first:md:pl-0 last:md:pr-0"
+                style={{
+                  borderBottom: index < PROCESS_STEPS.length - 1 ? '1px solid var(--color-line-subtle)' : 'none',
+                }}
+              >
+                {/* Connector line between steps (desktop) */}
+                {index < PROCESS_STEPS.length - 1 && (
+                  <div
+                    className="hidden md:block absolute top-0 right-0 w-px h-full"
+                    style={{ background: 'var(--color-line-subtle)' }}
+                  />
+                )}
+                <span
+                  className="block font-heading text-brand-red mb-3"
+                  style={{
+                    fontSize: 'var(--text-overline)',
+                    fontWeight: 'var(--font-weight-body-semibold)',
+                    letterSpacing: 'var(--tracking-overline)',
+                  } as React.CSSProperties}
+                >
                   {step.step}
                 </span>
                 <h3
-                  className="mt-2 font-heading text-foreground"
-                  style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}
+                  className="font-heading text-foreground mb-2"
+                  style={{
+                    fontSize: 'var(--text-h4)',
+                    fontWeight: 'var(--font-weight-headline-bold)',
+                    lineHeight: 'var(--leading-snug)',
+                  } as React.CSSProperties}
                 >
                   {step.title}
                 </h3>
-                <p className="mt-1 text-sm text-muted">{step.description}</p>
+                <p
+                  className="text-muted"
+                  style={{
+                    fontSize: 'var(--text-body)',
+                    lineHeight: 'var(--leading-body)',
+                  }}
+                >
+                  {step.description}
+                </p>
               </div>
             ))}
           </div>

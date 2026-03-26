@@ -49,17 +49,24 @@ export default function DeEcommercePage() {
       />
 
       <ContentSection background="raised" overline="Was Sie Bekommen" heading="End-to-End E-Commerce">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-px md:grid-cols-2 rounded-xl overflow-hidden border border-line-subtle">
           {FEATURES.map((feature) => (
-            <div key={feature.title}>
-              <div className="mb-4 w-8 h-0.5 bg-brand-red" />
+            <div
+              key={feature.title}
+              className="group p-8 lg:p-10"
+              style={{ background: 'var(--color-base)' }}
+            >
+              <div
+                className="mb-5 w-8 h-0.5 transition-all group-hover:w-12"
+                style={{ background: 'var(--color-brand-red)', transitionDuration: 'var(--duration-normal)' }}
+              />
               <h3
                 className="font-heading text-foreground"
                 style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}
               >
                 {feature.title}
               </h3>
-              <p className="mt-2 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+              <p className="mt-3 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
                 {feature.description}
               </p>
             </div>
@@ -67,7 +74,10 @@ export default function DeEcommercePage() {
         </div>
       </ContentSection>
 
-      <section className="py-16 md:py-24 lg:py-32 bg-base">
+      <section
+        className="relative py-20 md:py-28 lg:py-36 overflow-hidden"
+        style={{ background: 'linear-gradient(180deg, var(--color-base) 0%, var(--color-sunken) 50%, var(--color-base) 100%)' }}
+      >
         <Container>
           <p
             className="mb-3 uppercase text-muted font-body"
@@ -76,24 +86,34 @@ export default function DeEcommercePage() {
             Wie Wir Arbeiten
           </p>
           <h2
-            className="mb-12 font-heading text-foreground"
+            className="mb-16 font-heading text-foreground"
             style={{ fontSize: 'var(--text-h2)', fontWeight: 'var(--font-weight-headline)', lineHeight: 'var(--leading-tight)', letterSpacing: 'var(--tracking-h2)' } as React.CSSProperties}
           >
             Vom Katalog zum Checkout
           </h2>
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
-            {PROCESS_STEPS.map((step) => (
-              <div key={step.step}>
-                <span className="block font-heading text-brand-red" style={{ fontSize: 'var(--text-h3)', fontWeight: 'var(--font-weight-headline)' } as React.CSSProperties}>
+          <div className="grid grid-cols-1 gap-0 md:grid-cols-4">
+            {PROCESS_STEPS.map((step, index) => (
+              <div
+                key={step.step}
+                className="relative py-8 md:py-0 md:px-6 first:md:pl-0 last:md:pr-0"
+                style={{ borderBottom: index < PROCESS_STEPS.length - 1 ? '1px solid var(--color-line-subtle)' : 'none' }}
+              >
+                {index < PROCESS_STEPS.length - 1 && (
+                  <div className="hidden md:block absolute top-0 right-0 w-px h-full" style={{ background: 'var(--color-line-subtle)' }} />
+                )}
+                <span
+                  className="block font-heading text-brand-red mb-3"
+                  style={{ fontSize: 'var(--text-overline)', fontWeight: 'var(--font-weight-body-semibold)', letterSpacing: 'var(--tracking-overline)' } as React.CSSProperties}
+                >
                   {step.step}
                 </span>
                 <h3
-                  className="mt-2 font-heading text-foreground"
-                  style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)' } as React.CSSProperties}
+                  className="font-heading text-foreground mb-2"
+                  style={{ fontSize: 'var(--text-h4)', fontWeight: 'var(--font-weight-headline-bold)', lineHeight: 'var(--leading-snug)' } as React.CSSProperties}
                 >
                   {step.title}
                 </h3>
-                <p className="mt-2 text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+                <p className="text-muted" style={{ fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
                   {step.description}
                 </p>
               </div>

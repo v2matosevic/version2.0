@@ -1,112 +1,185 @@
+import 'server-only'
+
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
+import { and, eq, gt, isNull } from 'drizzle-orm'
+import { db, schema } from '@/db'
+import { initDatabase } from '@/db/init'
+import { getClientIp } from '@/lib/client-ip'
+import { recordSecurityEvent } from '@/lib/security-events'
+import {
+  COOKIE_NAME,
+  SESSION_MAX_AGE_SECONDS,
+  SESSION_TTL_MS,
+  createSessionToken,
+  getAdminKey,
+  hashSessionToken,
+  parseSessionToken,
+  verifyPassword,
+  verifySession,
+} from '@/lib/admin-session-token'
 
-const DEV_KEY = 'v2-dev-admin-key'
-const COOKIE_NAME = 'v2_admin_session'
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
+const SESSION_TOUCH_INTERVAL_MS = 15 * 60 * 1000
 
-/**
- * Get the admin API key. Requires ADMIN_API_KEY in production.
- * Falls back to dev key only in development mode.
- */
-function getAdminKey(): string {
-  const key = process.env.ADMIN_API_KEY
-  if (key) return key
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('Server misconfigured: ADMIN_API_KEY required in production')
-  }
-  return DEV_KEY
+function clearSessionCookie(response: NextResponse): void {
+  response.cookies.set(COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 0,
+    priority: 'high',
+  })
 }
 
-/**
- * HMAC-sign a session ID.
- */
-function signSession(sessionId: string): string {
-  return createHmac('sha256', getAdminKey()).update(sessionId).digest('hex')
-}
-
-/**
- * Verify a session cookie value using timing-safe comparison.
- */
-function verifySession(cookieValue: string): boolean {
-  const parts = cookieValue.split('.')
-  if (parts.length !== 2) return false
-  const [sessionId, signature] = parts
-  if (!sessionId || !signature) return false
-  const expected = signSession(sessionId)
-  try {
-    return timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
-  } catch {
-    return false
-  }
-}
-
-/**
- * Create a new admin session. Returns the token and dev key status.
- */
-function createSession(): { token: string; isDevKey: boolean } {
-  const sessionId = randomBytes(32).toString('hex')
-  const signature = signSession(sessionId)
-  return {
-    token: `${sessionId}.${signature}`,
-    isDevKey: !process.env.ADMIN_API_KEY,
-  }
-}
-
-/**
- * Set the admin session cookie on a response.
- */
 function setSessionCookie(response: NextResponse, token: string): void {
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'strict',
     path: '/',
-    maxAge: SESSION_MAX_AGE,
+    maxAge: SESSION_MAX_AGE_SECONDS,
+    priority: 'high',
   })
 }
 
-/**
- * Validate the admin session cookie on API routes.
- * Returns null if the session is valid, or a 401 response if not.
- */
+function buildUnauthorizedResponse(message: string, clearCookie = false): NextResponse {
+  const response = NextResponse.json(
+    { success: false, error: message },
+    { status: 401 },
+  )
+
+  if (clearCookie) {
+    clearSessionCookie(response)
+  }
+
+  return response
+}
+
+function trimUserAgent(userAgent?: string | null): string | null {
+  if (!userAgent) return null
+  return userAgent.slice(0, 500)
+}
+
+function createSession(context: {
+  ip: string
+  userAgent?: string | null
+}): { token: string; isDevKey: boolean } {
+  initDatabase()
+
+  const { token, sessionId, sessionHash } = createSessionToken()
+  const now = new Date()
+  const nowIso = now.toISOString()
+  const expiresAt = new Date(now.getTime() + SESSION_TTL_MS).toISOString()
+
+  db.insert(schema.adminSessions)
+    .values({
+      id: sessionId,
+      sessionHash,
+      expiresAt,
+      lastSeenAt: nowIso,
+      ip: context.ip,
+      userAgent: trimUserAgent(context.userAgent),
+      createdAt: nowIso,
+      updatedAt: nowIso,
+    })
+    .run()
+
+  return {
+    token,
+    isDevKey: !process.env.ADMIN_API_KEY,
+  }
+}
+
+function revokeSession(token: string, context?: { ip?: string; userAgent?: string | null }): void {
+  if (!verifySession(token)) return
+
+  const parsed = parseSessionToken(token)
+  if (!parsed) return
+
+  initDatabase()
+  const revokedAt = new Date().toISOString()
+
+  db.update(schema.adminSessions)
+    .set({ revokedAt, updatedAt: revokedAt })
+    .where(eq(schema.adminSessions.id, parsed.sessionId))
+    .run()
+
+  recordSecurityEvent({
+    eventType: 'admin.logout',
+    ip: context?.ip ?? null,
+    userAgent: context?.userAgent,
+    details: { sessionId: parsed.sessionId },
+  })
+}
+
 function validateAdminCookie(request: NextRequest): NextResponse | null {
+  initDatabase()
+
   const sessionCookie = request.cookies.get(COOKIE_NAME)
+  const ip = getClientIp(request)
+  const userAgent = request.headers.get('user-agent')
+
   if (!sessionCookie?.value) {
-    return NextResponse.json(
-      { success: false, error: 'Unauthorized' },
-      { status: 401 },
-    )
+    return buildUnauthorizedResponse('Unauthorized')
   }
 
   if (!verifySession(sessionCookie.value)) {
-    return NextResponse.json(
-      { success: false, error: 'Invalid session' },
-      { status: 401 },
+    recordSecurityEvent({
+      eventType: 'admin.session.invalid-signature',
+      level: 'warning',
+      ip,
+      userAgent,
+    })
+    return buildUnauthorizedResponse('Invalid session', true)
+  }
+
+  const parsed = parseSessionToken(sessionCookie.value)
+  if (!parsed) {
+    return buildUnauthorizedResponse('Invalid session', true)
+  }
+
+  const sessionHash = hashSessionToken(parsed.sessionId, parsed.secret)
+  const nowIso = new Date().toISOString()
+  const session = db.select()
+    .from(schema.adminSessions)
+    .where(
+      and(
+        eq(schema.adminSessions.id, parsed.sessionId),
+        eq(schema.adminSessions.sessionHash, sessionHash),
+        isNull(schema.adminSessions.revokedAt),
+        gt(schema.adminSessions.expiresAt, nowIso),
+      ),
     )
+    .get()
+
+  if (!session) {
+    recordSecurityEvent({
+      eventType: 'admin.session.rejected',
+      level: 'warning',
+      ip,
+      userAgent,
+      details: { sessionId: parsed.sessionId },
+    })
+    return buildUnauthorizedResponse('Session expired or revoked', true)
+  }
+
+  const lastSeenAt = session.lastSeenAt ? Date.parse(session.lastSeenAt) : 0
+  if (!Number.isNaN(lastSeenAt) && Date.now() - lastSeenAt > SESSION_TOUCH_INTERVAL_MS) {
+    db.update(schema.adminSessions)
+      .set({ lastSeenAt: nowIso, updatedAt: nowIso })
+      .where(eq(schema.adminSessions.id, parsed.sessionId))
+      .run()
   }
 
   return null
 }
 
-/**
- * Verify admin password using timing-safe comparison.
- */
-function verifyPassword(password: string): boolean {
-  try {
-    const adminKey = getAdminKey()
-    return timingSafeEqual(Buffer.from(password), Buffer.from(adminKey))
-  } catch {
-    // timingSafeEqual throws if buffers differ in length — password doesn't match
-    return false
-  }
-}
-
 export {
   COOKIE_NAME,
-  getAdminKey,
-  verifySession,
+  clearSessionCookie,
   createSession,
+  getAdminKey,
+  revokeSession,
   setSessionCookie,
   validateAdminCookie,
   verifyPassword,

@@ -101,14 +101,15 @@
    ============================================================ */
 
 html.light {
+  --logo-filter: invert(1) brightness(0.15);
   --color-base: #F5F0EB;
   --color-raised: #FFFFFF;
-  --color-sunken: #EDE8E3;
+  --color-sunken: #E8E2DB;
   --color-foreground: #1A1714;
   --color-muted: #6B635C;
   --color-faint: #8A8380;
-  --color-line: #DDD5CC;
-  --color-line-subtle: #E8E2DB;
+  --color-line: #D5CEC5;
+  --color-line-subtle: #E0D9D1;
 
   /* Font weight compensation for light backgrounds */
   --font-weight-headline: 325;
@@ -135,6 +136,13 @@ body {
 
 :focus:not(:focus-visible) {
   outline: none;
+}
+
+/* Scroll indicator animation */
+@keyframes scrollLine {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(200%); }
+  100% { transform: translateY(-100%); }
 }
 
 /* Reduced motion */
