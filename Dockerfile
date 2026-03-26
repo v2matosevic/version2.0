@@ -15,9 +15,13 @@ COPY . .
 # Rebuild native modules (better-sqlite3) for Linux
 RUN npm rebuild better-sqlite3
 
+# Create data directory (SQLite needs this during build-time page collection)
+RUN mkdir -p data
+
 # Build-time env
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV DATABASE_PATH=./data/version2.db
 
 # Build Next.js (standalone output)
 RUN npm run build
