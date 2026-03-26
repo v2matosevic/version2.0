@@ -38,8 +38,8 @@ deploy/
 docs/
 tasks/
 
-# Scripts (build-time only, already run in postbuild)
-scripts/
+# Scripts (keep — needed for postbuild: sitemap, robots, search index)
+# scripts/
 
 # OS files
 Thumbs.db
