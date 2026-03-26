@@ -22,8 +22,11 @@ data/*.db-shm
 *.png
 *.jpg
 
-# Deployment configs (not needed in app image)
-deploy/
+# Deployment configs (not needed in app image, except nginx which builds its own image)
+deploy/env/
+deploy/mysql/
+deploy/scripts/
+deploy/docker-compose.yml
 
 # Environment files (injected at runtime)
 .env
