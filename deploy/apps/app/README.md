@@ -1,35 +1,27 @@
-# app.version2.hr — Deployment Spec
+# v2-app — app.version2.hr (Laravel)
 
 ## What This App Is
 
 Digital business card platform. Users create, customize, and share NFC-enabled digital business cards with 21 design templates.
 
-## Your Slot on the VPS
+## Hostinger Project
 
 | Property | Value |
 |----------|-------|
+| **Project Name** | `v2-app` |
+| **Deploy Method** | GitHub: `v2matosevic/v2-app` |
 | **Domain** | app.version2.hr |
-| **Container (PHP-FPM)** | `v2-app-php` |
-| **Container (Queue Worker)** | `v2-app-worker` |
-| **Container (Nginx)** | `v2-app-nginx` |
+| **Containers** | `v2-app-php` (FPM), `v2-app-worker` (queue), `v2-app-nginx` (sidecar) |
 | **Internal Port** | 8001 (via v2-app-nginx) |
-| **PHP-FPM Port** | 9000 (internal, v2-app-php) |
-| **Database Host** | `v2-mysql` |
-| **Database Port** | 3306 |
-| **Database Name** | `app_v2cards` |
-| **Database User** | `v2app` |
-| **Database Password** | Set in `deploy/env/app.env` |
-| **Docker Network** | `v2-network` |
-| **Nginx Config** | `deploy/nginx/conf.d/20-app.conf` |
-| **PHP-FPM Config** | `deploy/nginx/app-fpm.conf` |
-| **Env Template** | `deploy/env/app.env.example` |
+| **Database** | `app_v2cards` on `v2-mysql` (user: `v2app`) |
+| **Network** | `v2-net` (external) |
 
 ## Stack Requirements
 
 - PHP 8.2 with extensions: pdo_mysql, gd (freetype + jpeg), bcmath, mbstring
 - Composer for dependency management
 - Node.js (for asset compilation via Laravel Mix, build-time only)
-- Laravel queue worker running: `php artisan queue:work --sleep=3 --tries=3`
+- Laravel queue worker: `php artisan queue:work --sleep=3 --tries=3`
 
 ## Dockerfile
 
@@ -71,28 +63,31 @@ EXPOSE 9000
 CMD ["php-fpm"]
 ```
 
-## Environment Variables
+## Prerequisites
 
-Copy `deploy/env/app.env.example` to `deploy/env/app.env` and fill in:
-
-```env
-APP_KEY=           # Generate with: php artisan key:generate --show
-DB_PASSWORD=       # Must match what's set in deploy/.env (APP_DB_PASSWORD)
-MAIL_PASSWORD=     # Zoho app-specific password
-```
-
-The database host is `v2-mysql` (Docker service name), NOT `localhost`.
+1. **v2-main** project running (creates `v2-net` network)
+2. **v2-db** project running (provides `v2-mysql`)
+3. Database `app_v2cards` created and populated with production data
 
 ## How to Deploy
 
-1. Push your code to your GitHub repo with the Dockerfile above
-2. The orchestrating agent uncomments your service block in `deploy/docker-compose.yml`
-3. The orchestrating agent uncomments the proxy block in `deploy/nginx/conf.d/20-app.conf`
-4. Import your database: `docker exec -i v2-mysql mysql -u root -p app_v2cards < dump.sql`
-5. Rebuild: `VPS_createNewProjectV1(virtualMachineId=1396909, project_name="version2", content="https://github.com/v2matosevic/version2.0")`
+1. Push code with Dockerfile to `v2matosevic/v2-app` on GitHub
+2. Create `.env` file with database credentials (DB_HOST=v2-mysql)
+3. Deploy:
+   ```
+   VPS_createNewProjectV1(
+     virtualMachineId=1396909,
+     project_name="v2-app",
+     content="https://github.com/v2matosevic/v2-app"
+   )
+   ```
+4. Import database dump if not already done:
+   ```bash
+   docker exec -i v2-mysql mysql -u root -p app_v2cards < dump.sql
+   ```
 
 ## How to Verify
 
-- Container running: `VPS_getProjectContainersV1` → look for `v2-app-php`, `v2-app-nginx`
-- Logs: `VPS_getProjectLogsV1(projectName="version2")`
-- Web: Navigate to `https://app.version2.hr` (after DNS) or test via Host header
+- Containers running: `VPS_getProjectContainersV1(projectName="v2-app")`
+- Logs: `VPS_getProjectLogsV1(projectName="v2-app")`
+- Web: Navigate to `https://app.version2.hr`

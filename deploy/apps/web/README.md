@@ -1,27 +1,20 @@
-# web.version2.hr — Deployment Spec
+# v2-web — web.version2.hr (Laravel)
 
 ## What This App Is
 
 Laravel-based web application. Currently getting a redesign.
 
-## Your Slot on the VPS
+## Hostinger Project
 
 | Property | Value |
 |----------|-------|
+| **Project Name** | `v2-web` |
+| **Deploy Method** | GitHub: `v2matosevic/v2-web` |
 | **Domain** | web.version2.hr |
-| **Container (PHP-FPM)** | `v2-web-php` |
-| **Container (Nginx)** | `v2-web-nginx` |
+| **Containers** | `v2-web-php` (FPM), `v2-web-nginx` (sidecar) |
 | **Internal Port** | 8002 (via v2-web-nginx) |
-| **PHP-FPM Port** | 9000 (internal, v2-web-php) |
-| **Database Host** | `v2-mysql` |
-| **Database Port** | 3306 |
-| **Database Name** | `web_v2` |
-| **Database User** | `v2web` |
-| **Database Password** | Set in `deploy/env/web.env` |
-| **Docker Network** | `v2-network` |
-| **Nginx Config** | `deploy/nginx/conf.d/30-web.conf` |
-| **PHP-FPM Config** | `deploy/nginx/web-fpm.conf` |
-| **Env Template** | `deploy/env/web.env.example` |
+| **Database** | `web_v2` on `v2-mysql` (user: `v2web`) |
+| **Network** | `v2-net` (external) |
 
 ## Stack Requirements
 
@@ -31,25 +24,30 @@ Laravel-based web application. Currently getting a redesign.
 
 ## Dockerfile
 
-Same pattern as app.version2.hr — see `deploy/apps/app/README.md` for the template. Adjust extensions as needed for your app's requirements.
+Same pattern as v2-app. See `deploy/apps/app/README.md` for the template. Adjust extensions as needed.
 
-## Environment Variables
+## Prerequisites
 
-Copy `deploy/env/web.env.example` to `deploy/env/web.env` and fill in:
-
-```env
-APP_KEY=           # Generate with: php artisan key:generate --show
-DB_PASSWORD=       # Must match WEB_DB_PASSWORD in deploy/.env
-MAIL_PASSWORD=     # Zoho app-specific password
-```
-
-Database host is `v2-mysql`, NOT `localhost`.
+1. **v2-main** project running (creates `v2-net` network)
+2. **v2-db** project running (provides `v2-mysql`)
+3. Database `web_v2` created and populated with production data
 
 ## How to Deploy
 
-Same pattern as app.version2.hr:
-1. Push code with Dockerfile to GitHub repo
-2. Orchestrating agent uncomments service block in `deploy/docker-compose.yml`
-3. Orchestrating agent uncomments proxy block in `deploy/nginx/conf.d/30-web.conf`
-4. Import database dump
-5. Rebuild via Hostinger MCP
+1. Push code with Dockerfile to `v2matosevic/v2-web` on GitHub
+2. Create `.env` file with database credentials (DB_HOST=v2-mysql)
+3. Deploy:
+   ```
+   VPS_createNewProjectV1(
+     virtualMachineId=1396909,
+     project_name="v2-web",
+     content="https://github.com/v2matosevic/v2-web"
+   )
+   ```
+4. Import database dump if not already done
+
+## How to Verify
+
+- Containers running: `VPS_getProjectContainersV1(projectName="v2-web")`
+- Logs: `VPS_getProjectLogsV1(projectName="v2-web")`
+- Web: Navigate to `https://web.version2.hr`

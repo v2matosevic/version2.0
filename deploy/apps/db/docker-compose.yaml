@@ -1,0 +1,56 @@
+# ============================================================
+# v2-db — Shared MySQL Database
+# Hostinger project: v2-db (raw YAML via createNewProjectV1)
+# ============================================================
+# Provides MySQL 8.0 for app, web, and offer subdomains.
+# Creates three databases on first start via init script.
+#
+# Deploy with:
+#   VPS_createNewProjectV1(
+#     virtualMachineId=1396909,
+#     project_name="v2-db",
+#     content="<this YAML>"
+#   )
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: v2-mysql
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-changeme}
+      WEB_DB_PASSWORD: ${WEB_DB_PASSWORD:-changeme}
+      OFFER_DB_PASSWORD: ${OFFER_DB_PASSWORD:-changeme}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - v2-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    # Note: The init script (01-create-databases.sql) must be injected
+    # after first deploy. SSH into the VPS and place it at:
+    #   /docker/v2-db/init/01-create-databases.sql
+    # Then recreate the container to trigger initialization.
+    # Alternatively, run the SQL manually:
+    #   docker exec -i v2-mysql mysql -u root -p < init.sql
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  v2-net:
+    external: true
+    name: v2-net

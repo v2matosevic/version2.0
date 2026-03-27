@@ -1,35 +1,32 @@
-# qr.version2.hr — Deployment Spec
+# v2-qr — qr.version2.hr (Next.js)
 
 ## What This App Is
 
-QR code generation and management tool. **Being built from scratch** as a new Next.js application. This is NOT a migration — it's a greenfield project.
+QR code generation and management tool. Being built from scratch as a new Next.js application.
 
-## Your Slot on the VPS
+## Hostinger Project
 
 | Property | Value |
 |----------|-------|
+| **Project Name** | `v2-qr` |
+| **Deploy Method** | GitHub: `v2matosevic/v2-qr` |
 | **Domain** | qr.version2.hr |
 | **Container** | `v2-qr-nextjs` |
 | **Internal Port** | 3001 |
-| **Database** | TBD (SQLite recommended for simplicity, or MySQL on `v2-mysql`) |
-| **Docker Network** | `v2-network` |
-| **Nginx Config** | `deploy/nginx/conf.d/50-qr.conf` |
-| **Env Template** | TBD (create `deploy/env/qr.env.example`) |
+| **Database** | TBD (SQLite recommended) |
+| **Network** | `v2-net` (external) |
 
 ## Stack
 
-- **Next.js** + TypeScript + Tailwind CSS
-- This is a separate standalone app from version2.hr — own repo, own container
+- Next.js + TypeScript + Tailwind CSS
+- Separate standalone app from version2.hr — own repo, own container
 - Runs on port 3001 (version2.hr runs on 3000)
 
 ## Dockerfile
 
-Same pattern as version2.hr's `Dockerfile` (multi-stage Next.js standalone build). Copy it and change `PORT` to `3001`:
+Same pattern as version2.hr's `Dockerfile` (multi-stage Next.js standalone build). Key difference: `ENV PORT=3001`.
 
 ```dockerfile
-# Same structure as the root Dockerfile in version2.0 repo
-# Key difference: ENV PORT=3001
-
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -61,18 +58,32 @@ ENV HOSTNAME="0.0.0.0"
 CMD ["node", "server.js"]
 ```
 
+## Prerequisites
+
+1. **v2-main** project running (creates `v2-net` network)
+
 ## How to Deploy
 
-1. Create a new GitHub repo for the QR app
-2. Build the Next.js app with Tailwind CSS
-3. Add the Dockerfile above to the repo root
-4. Orchestrating agent uncomments the `v2-qr-nextjs` service in `deploy/docker-compose.yml`
-5. Orchestrating agent uncomments the proxy block in `deploy/nginx/conf.d/50-qr.conf`
-6. Rebuild via Hostinger MCP
+1. Create a new GitHub repo `v2matosevic/v2-qr`
+2. Build the Next.js app with the Dockerfile above
+3. Deploy:
+   ```
+   VPS_createNewProjectV1(
+     virtualMachineId=1396909,
+     project_name="v2-qr",
+     content="https://github.com/v2matosevic/v2-qr"
+   )
+   ```
+
+## How to Verify
+
+- Container running: `VPS_getProjectContainersV1(projectName="v2-qr")`
+- Logs: `VPS_getProjectLogsV1(projectName="v2-qr")`
+- Web: Navigate to `https://qr.version2.hr`
 
 ## Design Guidelines
 
-This app should follow the same brand aesthetics as version2.hr:
+Follow the same brand aesthetics as version2.hr:
 - Dark Cinematic Premium theme
 - Albert Sans 300 headlines, Manrope 400 body
 - Red #991717 accent

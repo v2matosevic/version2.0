@@ -2,7 +2,9 @@
 
 ## Overview
 
-All Version2 properties run on a single Hostinger VPS (KVM 2) using Docker containers behind an Nginx reverse proxy. Cloudflare sits in front for DNS, CDN, and public SSL. The main website shows a "coming soon" page until the design phase is complete — flipping `COMING_SOON=false` reveals the full site without redeployment.
+All Version2 properties run on a single Hostinger VPS (KVM 2) using Docker containers. The infrastructure is split into 6 independent Hostinger Docker projects that share a common network (`v2-net`). Each project deploys independently — updating one app does not rebuild or restart others.
+
+Cloudflare sits in front for DNS, CDN, and public SSL. The main website shows a "coming soon" page until the design phase is complete — flipping `COMING_SOON=false` reveals the full site without redeployment.
 
 ## Server
 
@@ -18,9 +20,74 @@ All Version2 properties run on a single Hostinger VPS (KVM 2) using Docker conta
 | Disk | 100 GB SSD |
 | Hostname | version2.hr |
 
-## Domains & Apps
+## Multi-Project Architecture
 
-Five properties share the VPS. Each gets its own Docker container(s) and Nginx server block.
+### Why Multiple Projects?
+
+The previous monolithic compose required rebuilding ALL services whenever ANY app changed. The multi-project approach gives each app independent deployments, independent failure domains, and independent scaling.
+
+### The 6 Projects
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        v2-net (bridge)                      │
+│                                                             │
+│  v2-main (GitHub: v2matosevic/version2.0)                   │
+│  ┌──────────────┐  ┌──────────────┐                         │
+│  │  v2-nginx    │  │  v2-nextjs   │                         │
+│  │  :80 / :443  │──│  :3000       │                         │
+│  └──────┬───────┘  └──────────────┘                         │
+│         │                                                   │
+│         ├──── version2.hr ──────────── v2-nextjs:3000       │
+│         ├──── app.version2.hr ──────── v2-app-nginx:8001    │
+│         ├──── web.version2.hr ──────── v2-web-nginx:8002    │
+│         ├──── offer.version2.hr ────── v2-offer-nginx:8003  │
+│         └──── qr.version2.hr ──────── v2-qr-nextjs:3001    │
+│                                                             │
+│  v2-db (raw YAML)         v2-app (GitHub: v2matosevic/v2-app)
+│  ┌──────────────┐         ┌──────────┬─────────┬──────────┐│
+│  │  v2-mysql    │         │v2-app-php│v2-app-  │v2-app-   ││
+│  │  :3306       │◄────────│  :9000   │worker   │nginx:8001││
+│  └──────────────┘         └──────────┴─────────┴──────────┘│
+│         ▲                                                   │
+│         │  v2-web (GitHub: v2matosevic/v2-web)               │
+│         │  ┌──────────┬──────────┐                          │
+│         ├──│v2-web-php│v2-web-   │                          │
+│         │  │  :9000   │nginx:8002│                          │
+│         │  └──────────┴──────────┘                          │
+│         │                                                   │
+│         │  v2-offer (GitHub: v2matosevic/v2-offer)           │
+│         │  ┌────────────┬────────────┐                      │
+│         └──│v2-offer-php│v2-offer-   │                      │
+│            │  :9000     │nginx:8003  │                      │
+│            └────────────┴────────────┘                      │
+│                                                             │
+│  v2-qr (GitHub: v2matosevic/v2-qr)                          │
+│  ┌──────────────┐                                           │
+│  │ v2-qr-nextjs │                                           │
+│  │  :3001       │                                           │
+│  └──────────────┘                                           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Project Details
+
+| # | Project | Source | Creates | Depends On |
+|---|---------|--------|---------|------------|
+| 1 | **v2-main** | GitHub: `v2matosevic/version2.0` | v2-net network, v2-nginx, v2-nextjs | — |
+| 2 | **v2-db** | Raw YAML | v2-mysql | v2-net (from v2-main) |
+| 3 | **v2-app** | GitHub: `v2matosevic/v2-app` | v2-app-php, v2-app-worker, v2-app-nginx | v2-net, v2-mysql |
+| 4 | **v2-web** | GitHub: `v2matosevic/v2-web` | v2-web-php, v2-web-nginx | v2-net, v2-mysql |
+| 5 | **v2-offer** | GitHub: `v2matosevic/v2-offer` | v2-offer-php, v2-offer-nginx | v2-net, v2-mysql |
+| 6 | **v2-qr** | GitHub: `v2matosevic/v2-qr` | v2-qr-nextjs | v2-net |
+
+### Deploy Order
+
+1. **v2-main** — must be first (creates the shared `v2-net` network)
+2. **v2-db** — if PHP apps need MySQL
+3. **v2-app**, **v2-web**, **v2-offer**, **v2-qr** — in any order
+
+## Domains & Apps
 
 ### 1. version2.hr — Main Website
 
@@ -31,6 +98,7 @@ Five properties share the VPS. Each gets its own Docker container(s) and Nginx s
 | Port | 3000 (internal) |
 | Database | SQLite (Drizzle ORM, WAL mode) — Docker volume `nextjs-data` |
 | Repo | `v2matosevic/version2.0` |
+| Project | `v2-main` |
 | Status | **Deployed.** Coming-soon page live at VPS IP. |
 
 Features: 428+ pages (3 languages), 103 blog posts, AI chat, booking system, admin dashboard, contact/career forms, analytics, pricing wizard. All gated behind `COMING_SOON=true` until design phase is complete.
@@ -40,34 +108,33 @@ Features: 428+ pages (3 languages), 103 blog posts, AI chat, booking system, adm
 | | |
 |---|---|
 | Stack | Laravel 10 + PHP 8.2 + Livewire 2 |
-| Containers | `v2-app-php` (PHP-FPM) + `v2-app-worker` (queue) + `v2-app-nginx` (static assets) |
+| Containers | `v2-app-php` (PHP-FPM) + `v2-app-worker` (queue) + `v2-app-nginx` (sidecar) |
 | Database | MySQL 8.0 — `app_v2cards` (user: `v2app`) |
-| Repo | TBD (user will provide) |
-| Status | **Awaiting GitHub repo + DB dump.** Nginx placeholder active. |
-
-Features: 21 card templates, QR code generation, vCard export, analytics per card, appointment scheduling, 999 users, 61 active vcards. Laravel queue worker for emails and media processing.
+| Repo | `v2matosevic/v2-app` (TBD) |
+| Project | `v2-app` |
+| Status | **Awaiting GitHub repo + DB dump.** Nginx maintenance page active. |
 
 ### 3. web.version2.hr — Web Application
 
 | | |
 |---|---|
 | Stack | Laravel + PHP 8.2 |
-| Containers | `v2-web-php` (PHP-FPM) + `v2-web-nginx` (static assets) |
+| Containers | `v2-web-php` (PHP-FPM) + `v2-web-nginx` (sidecar) |
 | Database | MySQL 8.0 — `web_v2` (user: `v2web`) |
-| Repo | TBD (user will provide) |
-| Status | **Getting a redesign.** Awaiting new repo + DB dump. Nginx placeholder active. |
+| Repo | `v2matosevic/v2-web` (TBD) |
+| Project | `v2-web` |
+| Status | **Getting a redesign.** Nginx maintenance page active. |
 
 ### 4. offer.version2.hr — Smart Web Plan Landing Page
 
 | | |
 |---|---|
 | Stack | Vanilla PHP 8.x (no framework) |
-| Containers | `v2-offer-php` (PHP-FPM) + `v2-offer-nginx` (static assets) |
+| Containers | `v2-offer-php` (PHP-FPM) + `v2-offer-nginx` (sidecar) |
 | Database | MySQL 8.0 — `offer_v2` (user: `v2offer`) |
-| Repo | TBD (user will provide) |
-| Status | **Keeping as-is.** May be absorbed into main site later. Nginx placeholder active. |
-
-Features: Stripe payment links, AI chat widget (GPT-4o-mini), custom analytics, admin panel, onboarding wizard.
+| Repo | `v2matosevic/v2-offer` (TBD) |
+| Project | `v2-offer` |
+| Status | **Keeping as-is.** May be absorbed into main site. Nginx maintenance page active. |
 
 ### 5. qr.version2.hr — QR Code Tool
 
@@ -77,72 +144,44 @@ Features: Stripe payment links, AI chat widget (GPT-4o-mini), custom analytics, 
 | Container | `v2-qr-nextjs` (Node.js 20 Alpine) |
 | Port | 3001 (internal) |
 | Database | TBD |
-| Repo | TBD (will be created) |
-| Status | **Not yet built.** Nginx placeholder active. |
+| Repo | `v2matosevic/v2-qr` (TBD) |
+| Project | `v2-qr` |
+| Status | **Not yet built.** Nginx maintenance page active. |
 
-## Architecture
+## Docker Network
 
-```
-                         Internet
-                            │
-                       ┌────┴────┐
-                       │Cloudflare│  DNS + CDN + SSL (visitor ↔ Cloudflare)
-                       └────┬────┘
-                            │  Cloudflare Origin Certificate (Cloudflare ↔ VPS)
-                            │
-                  ┌─────────┴─────────┐
-                  │   v2-nginx        │  Nginx reverse proxy
-                  │   :80 / :443      │  Routes by Host header
-                  └─────────┬─────────┘
-          ┌────────┬────────┼────────┬────────┐
-          │        │        │        │        │
-      v2-nextjs  v2-app  v2-web  v2-offer  v2-qr
-       :3000    :8001    :8002    :8003    :3001
-         │        │        │        │
-      SQLite    ┌─┴────────┴────────┘
-     (volume)   │
-             v2-mysql
-              :3306
-            (volume)
+Single bridge network `v2-net`, created by the `v2-main` project with `name: v2-net` (prevents Docker from prefixing the project name). All other projects join it as `external: true`.
+
+Containers resolve each other by `container_name` via Docker's embedded DNS resolver at `127.0.0.11`.
+
+## Nginx Resilience
+
+The nginx configs use the Docker DNS resolver trick so nginx starts even when backend containers are absent:
+
+```nginx
+resolver 127.0.0.11 valid=30s;
+set $upstream http://v2-app-nginx:8001;
+proxy_pass $upstream;
 ```
 
-### Docker Services
+When a backend is unreachable, nginx serves a branded maintenance page via `error_page 502 503 504 = @maintenance`.
 
-| Service | Image | Ports | Depends On | Restart |
-|---------|-------|-------|------------|---------|
-| `v2-nginx` | Custom (baked configs) | 80, 443 (published) | nextjs | unless-stopped |
-| `v2-nextjs` | Custom (multi-stage build) | 3000 (internal) | — | unless-stopped |
-| `v2-mysql` | mysql:8.0 | 3306 (internal) | — | unless-stopped |
-| `v2-app-php` | Custom (PHP 8.2-FPM) | 9000 (internal) | mysql | unless-stopped |
-| `v2-app-worker` | Same as app-php | — | mysql | unless-stopped |
-| `v2-app-nginx` | nginx:alpine | 8001 (internal) | app-php | unless-stopped |
-| `v2-web-php` | Custom (PHP 8.2-FPM) | 9000 (internal) | mysql | unless-stopped |
-| `v2-web-nginx` | nginx:alpine | 8002 (internal) | web-php | unless-stopped |
-| `v2-offer-php` | Custom (PHP 8.x-FPM) | 9000 (internal) | mysql | unless-stopped |
-| `v2-offer-nginx` | nginx:alpine | 8003 (internal) | offer-php | unless-stopped |
-| `v2-qr-nextjs` | Custom (multi-stage build) | 3001 (internal) | — | unless-stopped |
+## Docker Volumes
 
-### Docker Volumes
-
-| Volume | Purpose | Backup? |
-|--------|---------|---------|
-| `nextjs-data` | SQLite database + RAG index | Yes — SQLite `.backup` |
-| `mysql-data` | All MySQL databases | Yes — `mysqldump` |
-| `app-uploads` | User uploads for app.version2.hr | Yes — file copy |
-| `web-uploads` | User uploads for web.version2.hr | Yes — file copy |
-| `offer-uploads` | Portfolio images for offer.version2.hr | Yes — file copy |
-| `qr-data` | QR app database | Yes |
-
-### Network
-
-Single Docker bridge network `v2-network`. All containers communicate by service name (e.g., `v2-nextjs:3000`, `v2-mysql:3306`).
+| Volume | Project | Purpose | Backup? |
+|--------|---------|---------|---------|
+| `nextjs-data` | v2-main | SQLite database + RAG index | Yes — SQLite `.backup` |
+| `mysql-data` | v2-db | All MySQL databases | Yes — `mysqldump` |
+| `uploads` | v2-app | User uploads for app.version2.hr | Yes — file copy |
+| `uploads` | v2-web | User uploads for web.version2.hr | Yes — file copy |
+| `qr-data` | v2-qr | QR app database | Yes |
 
 ## SSL Strategy
 
 | Layer | Certificate | Managed By |
 |-------|-------------|------------|
-| Visitor ↔ Cloudflare | Cloudflare Universal SSL | Cloudflare (automatic) |
-| Cloudflare ↔ VPS | Cloudflare Origin Certificate | Us — installed on Nginx |
+| Visitor <-> Cloudflare | Cloudflare Universal SSL | Cloudflare (automatic) |
+| Cloudflare <-> VPS | Cloudflare Origin Certificate | Us — installed on Nginx |
 
 **Origin Certificate:** Wildcard for `*.version2.hr` + `version2.hr`. 15-year validity. Generated in Cloudflare dashboard, installed at `/etc/nginx/ssl/origin.pem` and `origin-key.pem`.
 
@@ -168,8 +207,8 @@ Single Docker bridge network `v2-network`. All containers communicate by service
 
 Nginx routes by `Host` header to the correct backend:
 
-| Host | → Backend | Config File |
-|------|-----------|-------------|
+| Host | Backend | Config File |
+|------|---------|-------------|
 | `version2.hr` / `www.version2.hr` | `v2-nextjs:3000` | `10-version2.conf` |
 | `app.version2.hr` | `v2-app-nginx:8001` | `20-app.conf` |
 | `web.version2.hr` | `v2-web-nginx:8002` | `30-web.conf` |
@@ -177,7 +216,7 @@ Nginx routes by `Host` header to the correct backend:
 | `qr.version2.hr` | `v2-qr-nextjs:3001` | `50-qr.conf` |
 | Any other / IP | `v2-nextjs:3000` | `00-default.conf` |
 
-Each subdomain currently serves a branded maintenance page until the real app is deployed.
+Each subdomain shows a branded maintenance page when its backend is unavailable.
 
 ## Database Strategy
 
@@ -188,72 +227,100 @@ Each subdomain currently serves a branded maintenance page until the real app is
 - Backup: `sqlite3 .backup` command
 
 ### MySQL 8.0 (app, web, offer)
-- Single shared container `v2-mysql`
+- Separate project `v2-db`, container `v2-mysql`
 - Three databases, three users (least-privilege):
   - `app_v2cards` / `v2app`
   - `web_v2` / `v2web`
   - `offer_v2` / `v2offer`
-- Init script: `deploy/mysql/init/01-create-databases.sql` runs on first container start
+- Init script: `deploy/mysql/init/01-create-databases.sql` (run manually after first start)
 - Production data: imported from DB dumps provided by user
 - Backup: `mysqldump --all-databases --single-transaction`
 
 ## File Structure on VPS
 
+Each Hostinger project clones to `/docker/{project-name}/`:
+
 ```
-/docker/version2/                    ← Hostinger Docker project root
-├── docker-compose.yaml              ← Active compose (cloned from GitHub)
-├── Dockerfile                       ← Next.js multi-stage build
-├── deploy/
-│   ├── docker-compose.yml           ← Full multi-app reference
-│   ├── nginx/
-│   │   ├── Dockerfile               ← Custom nginx with baked configs
-│   │   ├── nginx.conf               ← Main nginx config
-│   │   ├── entrypoint.sh            ← Self-signed cert generator
-│   │   ├── conf.d/
-│   │   │   ├── 00-default.conf      ← Catch-all (proxy to nextjs)
-│   │   │   ├── 10-version2.conf     ← version2.hr
-│   │   │   ├── 20-app.conf          ← app.version2.hr
-│   │   │   ├── 30-web.conf          ← web.version2.hr
-│   │   │   ├── 40-offer.conf        ← offer.version2.hr
-│   │   │   └── 50-qr.conf           ← qr.version2.hr
-│   │   ├── app-fpm.conf             ← PHP-FPM upstream for app
-│   │   ├── web-fpm.conf             ← PHP-FPM upstream for web
-│   │   └── offer-fpm.conf           ← PHP-FPM upstream for offer
-│   ├── env/
-│   │   ├── nextjs.env.example
-│   │   ├── app.env.example
-│   │   ├── web.env.example
-│   │   └── offer.env.example
-│   ├── mysql/init/
-│   │   └── 01-create-databases.sql  ← Auto-creates DBs on first run
-│   └── scripts/
-│       ├── backup.sh                ← Daily backup (MySQL + SQLite)
-│       ├── deploy-nextjs.sh         ← Redeploy main site
-│       └── generate-self-signed-cert.sh
-├── src/                             ← Next.js source code
-├── content/                         ← Blog posts, portfolio data
-└── public/                          ← Static assets
+/docker/
+├── v2-main/                          <- GitHub: v2matosevic/version2.0
+│   ├── docker-compose.yaml           <- nginx + nextjs, creates v2-net
+│   ├── Dockerfile                    <- Next.js multi-stage build
+│   ├── deploy/
+│   │   ├── nginx/
+│   │   │   ├── Dockerfile            <- Custom nginx with baked configs
+│   │   │   ├── nginx.conf
+│   │   │   ├── entrypoint.sh
+│   │   │   └── conf.d/
+│   │   │       ├── 00-default.conf
+│   │   │       ├── 10-version2.conf
+│   │   │       ├── 20-app.conf
+│   │   │       ├── 30-web.conf
+│   │   │       ├── 40-offer.conf
+│   │   │       └── 50-qr.conf
+│   │   ├── apps/                     <- Template compose files (reference only)
+│   │   │   ├── db/
+│   │   │   ├── app/
+│   │   │   ├── web/
+│   │   │   ├── offer/
+│   │   │   └── qr/
+│   │   └── mysql/init/
+│   │       └── 01-create-databases.sql
+│   ├── src/                          <- Next.js source code
+│   ├── content/                      <- Blog posts, portfolio data
+│   └── public/                       <- Static assets
+│
+├── v2-db/                            <- Raw YAML (no git repo)
+│   └── (managed by Hostinger)
+│
+├── v2-app/                           <- GitHub: v2matosevic/v2-app
+│   ├── docker-compose.yaml
+│   ├── Dockerfile
+│   ├── .env
+│   └── (Laravel source)
+│
+├── v2-web/                           <- GitHub: v2matosevic/v2-web
+│   ├── docker-compose.yaml
+│   ├── Dockerfile
+│   ├── .env
+│   └── (Laravel source)
+│
+├── v2-offer/                         <- GitHub: v2matosevic/v2-offer
+│   ├── docker-compose.yaml
+│   ├── Dockerfile
+│   ├── .env
+│   └── (PHP source)
+│
+└── v2-qr/                            <- GitHub: v2matosevic/v2-qr
+    ├── docker-compose.yaml
+    ├── Dockerfile
+    ├── .env
+    └── (Next.js source)
 ```
 
 ## Deployment Workflow
 
 Deployments are manual, triggered via Claude Code using Hostinger MCP tools.
 
-### Deploying a code change to version2.hr:
+### Deploying v2-main (this repo):
 1. Make changes locally, commit, push to `v2matosevic/version2.0` on GitHub
-2. Via Claude Code: `createNewProjectV1` with GitHub URL — Hostinger clones + builds + starts
-3. Verify via Playwright or browser at VPS IP (pre-DNS) or domain (post-DNS)
+2. Via Claude Code: `createNewProjectV1(project_name="v2-main", content="https://github.com/v2matosevic/version2.0")`
+3. Verify via Playwright or browser
 
-### Adding a new subdomain app:
-1. User provides GitHub repo URL + MySQL dump (if applicable)
-2. Add Dockerfile to the app repo
-3. Uncomment the service block in `deploy/docker-compose.yml`
-4. Update the nginx conf to proxy instead of showing placeholder
-5. Import DB dump: `docker exec -i v2-mysql mysql -u root -p < dump.sql`
-6. Deploy via `createNewProjectV1`
+### Deploying v2-db:
+1. Copy the YAML from `deploy/apps/db/docker-compose.yaml`
+2. Via Claude Code: `createNewProjectV1(project_name="v2-db", content="<yaml>")`
+3. Run init SQL to create databases
 
-### Future: GHCR-based deploys
-GitHub Actions already builds and pushes the Next.js image to GHCR on every push to master. Once GHCR auth is configured on the VPS, deployments can use pre-built images (faster, no build on VPS).
+### Deploying a subdomain app:
+1. Push code to the app's GitHub repo (e.g., `v2matosevic/v2-app`)
+2. Via Claude Code: `createNewProjectV1(project_name="v2-app", content="https://github.com/v2matosevic/v2-app")`
+3. The app joins v2-net automatically
+4. Nginx routes traffic to it (or shows maintenance if unavailable)
+
+### Updating an existing project:
+```
+VPS_updateProjectV1(projectName="v2-app")
+```
 
 ## Firewall
 
@@ -273,8 +340,8 @@ Firewall ID: 209601, name: "v2mail-production" (to be renamed). Managed via Host
 ## Backup Strategy
 
 **Daily automated backups** via `deploy/scripts/backup.sh`:
-- MySQL: `mysqldump --all-databases` → gzipped
-- SQLite: `sqlite3 .backup` → gzipped
+- MySQL: `mysqldump --all-databases` -> gzipped
+- SQLite: `sqlite3 .backup` -> gzipped
 - Retention: 7 days rolling
 - Schedule: cron at 03:00 UTC
 - Location: `/opt/version2/data/backups/`
@@ -290,13 +357,13 @@ Firewall ID: 209601, name: "v2mail-production" (to be renamed). Managed via Host
 - [x] GitHub Actions workflow for Docker image builds
 - [x] version2.hr deployed — coming-soon page live at `76.13.134.6`
 - [x] Nginx reverse proxy running with all domain placeholders
+- [x] Multi-project architecture restructured (6 independent projects)
 
 ### Phase 2 — Prepare Remaining Apps
 - [ ] User provides GitHub repos for app, web, offer
 - [ ] User provides MySQL dumps for app, web, offer databases
-- [ ] Add Dockerfiles to each app repo
-- [ ] Build and test each app container on VPS
-- [ ] Import database dumps
+- [ ] Deploy v2-db project with MySQL
+- [ ] Deploy each app as its own Hostinger project
 - [ ] Verify all 5 domains serve correctly (via /etc/hosts or Cloudflare)
 
 ### Phase 3 — SSL & DNS
@@ -322,4 +389,7 @@ Firewall ID: 209601, name: "v2mail-production" (to be renamed). Managed via Host
 4. **`createNewProjectV1` with same name reuses cached images.** Delete first, then create for a clean rebuild.
 5. **`upgrade-insecure-requests` CSP breaks IP-based testing.** Assets load over HTTPS which fails with self-signed cert. Resolves once Cloudflare is in front.
 6. **SQLite needs `data/` directory during Next.js build.** The build collects page data which triggers DB connection.
-7. **`scripts/` must not be in `.dockerignore`** — postbuild steps (sitemap, robots, search index) need them.
+7. **`scripts/` must not be in `.dockerignore`** -- postbuild steps (sitemap, robots, search index) need them.
+8. **Multi-project architecture requires named networks.** Use `name: v2-net` on the creating project to prevent Docker from prefixing the project name (e.g., `v2-main_v2-net`).
+9. **Nginx resolver trick for resilient startup.** Use `resolver 127.0.0.11 valid=30s; set $upstream ...;` so nginx starts even when backends are absent.
+10. **Nginx sidecar config via entrypoint.** Hostinger may clean up cloned files after build. Inject nginx config inline via shell command to avoid volume mount issues.

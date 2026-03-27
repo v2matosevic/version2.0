@@ -1,0 +1,41 @@
+# ============================================================
+# v2-qr — qr.version2.hr (Next.js)
+# Hostinger project: v2-qr (from GitHub: v2matosevic/v2-qr)
+# ============================================================
+# QR code generation and management tool. Next.js standalone.
+# Joins the shared v2-net network created by v2-main.
+#
+# Prerequisites:
+#   - v2-main project running (creates v2-net network)
+
+services:
+
+  nextjs:
+    build: .
+    container_name: v2-qr-nextjs
+    expose:
+      - "3001"
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      HOSTNAME: "0.0.0.0"
+    volumes:
+      - qr-data:/app/data
+    networks:
+      - v2-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  qr-data:
+    driver: local
+
+networks:
+  v2-net:
+    external: true
+    name: v2-net

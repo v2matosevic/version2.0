@@ -1,0 +1,82 @@
+# ============================================================
+# v2-app — app.version2.hr (Laravel)
+# Hostinger project: v2-app (from GitHub: v2matosevic/v2-app)
+# ============================================================
+# Digital business card platform. PHP-FPM + queue worker + nginx sidecar.
+# Joins the shared v2-net network created by v2-main.
+#
+# Prerequisites:
+#   - v2-main project running (creates v2-net network)
+#   - v2-db project running (provides v2-mysql)
+#   - Database 'app_v2cards' created and populated
+
+services:
+
+  php:
+    build: .
+    container_name: v2-app-php
+    expose:
+      - "9000"
+    env_file: .env
+    volumes:
+      - uploads:/var/www/html/public/uploads
+    networks:
+      - v2-net
+    restart: unless-stopped
+
+  worker:
+    build: .
+    container_name: v2-app-worker
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    env_file: .env
+    networks:
+      - v2-net
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: v2-app-nginx
+    expose:
+      - "8001"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        cat > /etc/nginx/conf.d/default.conf << 'CONF'
+        server {
+            listen 8001;
+            server_name _;
+            root /var/www/html/public;
+            index index.php;
+
+            location / {
+                try_files $$uri $$uri/ /index.php?$$query_string;
+            }
+
+            location ~ \.php$$ {
+                resolver 127.0.0.11 valid=30s;
+                set $$php_upstream v2-app-php:9000;
+                fastcgi_pass $$php_upstream;
+                fastcgi_param SCRIPT_FILENAME /var/www/html/public$$fastcgi_script_name;
+                include fastcgi_params;
+            }
+
+            location ~ /\.(?!well-known).* {
+                deny all;
+            }
+        }
+        CONF
+        nginx -g 'daemon off;'
+    depends_on:
+      - php
+    networks:
+      - v2-net
+    restart: unless-stopped
+
+volumes:
+  uploads:
+    driver: local
+
+networks:
+  v2-net:
+    external: true
+    name: v2-net

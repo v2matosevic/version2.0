@@ -1,8 +1,13 @@
 # ============================================================
-# Version2.hr — Production Docker Compose
-# Used by Hostinger VPS Docker project management
+# Version2.hr — v2-main Docker Compose
+# Hostinger project: v2-main (from GitHub: v2matosevic/version2.0)
 # ============================================================
-# For the full multi-app reference, see deploy/docker-compose.yml
+# This project owns the shared network and runs nginx + nextjs.
+# Other apps (db, app, web, offer, qr) deploy as independent
+# Hostinger projects that join v2-net externally.
+#
+# See deploy/apps/ for per-app compose templates.
+# See docs/deployment.md for full architecture.
 
 services:
 
@@ -15,11 +20,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    depends_on:
-      nextjs:
-        condition: service_started
     networks:
-      - v2-network
+      - v2-net
     restart: unless-stopped
 
   # ── Main Website (version2.hr) ──
@@ -40,7 +42,7 @@ services:
     volumes:
       - nextjs-data:/app/data
     networks:
-      - v2-network
+      - v2-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health/"]
@@ -54,5 +56,6 @@ volumes:
     driver: local
 
 networks:
-  v2-network:
+  v2-net:
+    name: v2-net
     driver: bridge
