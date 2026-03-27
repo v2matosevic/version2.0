@@ -2,8 +2,9 @@ import Database from 'better-sqlite3'
 import path from 'node:path'
 import fs from 'node:fs'
 
-const DB_DIR = path.join(process.cwd(), 'data')
-const DB_PATH = path.join(DB_DIR, 'version2.db')
+const DB_PATH = process.env.DATABASE_PATH
+  ?? path.join(process.cwd(), 'data', 'version2.db')
+const DB_DIR = path.dirname(DB_PATH)
 
 export function ensureDatabase(): void {
   if (!fs.existsSync(DB_DIR)) {
